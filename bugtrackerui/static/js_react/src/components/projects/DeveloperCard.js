@@ -13,7 +13,7 @@ const dummydata = {
     'percent_complete': 101//go with bps, per 10k
 }
 
-// takes in 'onClick' and 'displayState'
+// takes in 'onClick' and 'displayState' and 'onProjectClick'
 const DeveloperCard = props => {
     const ctx = useContext(AuthContext)
     const [projectsData, setProjectsData] = useState([])
@@ -50,7 +50,7 @@ const DeveloperCard = props => {
     //Don't map unless you have data to map too!
     if(props.displayState && projectsData.length > 0){
         developerCards = projectsData.map(data => {
-            return <ProjectCard data={data}/>
+            return <ProjectCard data={data} onClick={props.onProjectClick} />
         })
     }
     return (

@@ -12,6 +12,9 @@
     [x] - Fixing Django Model to take in all information. 
     [x] - Working with a Reducer to manage the display of Dashboard
 
+[ ] - Implement deleting projects for testing purposes
+[ ] - There is Management and Developer views... 
+
 [ ] - When a project is created, app must call information from API to update
     [ ] - Could do a toggle value of some sort based on successful creation of project. 
 

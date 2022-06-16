@@ -52,6 +52,16 @@ const Dashboard = (props) => {
     const clickDevelopmentHandler = event => {
         setDisplayState({type: 'DEVELOPMENT'})
     }
+
+    //Clicking on internal Project Cards must render information. 
+    const onOwnerClickHandler = (event, jsonData) => {
+        console.log('OwnerCard')
+        console.log(jsonData);
+    }
+    const onDeveloperClickHandler = (event, jsonData) => {
+        console.log('DevCard')
+        console.log(jsonData);
+    }
     
     return (
         <Card>
@@ -66,8 +76,8 @@ const Dashboard = (props) => {
                         <h2 onClick={newProjectHandler}>New Project +</h2>
                         {displayState.newProject && <NewProjectCont/>}
                     </Card>
-                    <OwnershipCard onClick={clickManagementHandler} displayState={displayState.management} />
-                    <DeveloperCard onClick={clickDevelopmentHandler} displayState={displayState.development} />
+                    <OwnershipCard onClick={clickManagementHandler} onProjectClick={onOwnerClickHandler} displayState={displayState.management} />
+                    <DeveloperCard onClick={clickDevelopmentHandler} onProjectClick={onDeveloperClickHandler} displayState={displayState.development} />
                 </div>
                 <div>
                     <p>for the actual projects</p>

@@ -136,6 +136,7 @@ class ProjectViewUpdateClass(generics.UpdateAPIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+# localhost:8000/destroy/<pk>
 class ProjectViewDestroyClass(generics.DestroyAPIView):
     """
     Provides 'Delete' method handler

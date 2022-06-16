@@ -2,13 +2,9 @@ import React, { useState } from "react";
 
 import Card from "../ui/Card";
 
-//Taking in Json data object as 'data'
+//Taking in Json data object as 'data' and an 'onClick'
 const ProjectCard = props => {
-    //const [theData, setTheData] = useState(props.data)
-    console.log('this is <ProjectCard/>')
-    //console.log(theData)
-    console.log(props.data)
-    let { title, sub_title: subTitle, start_date: startDate, end_date: endDate, percent_complete: percentComplete } = props.data
+    let { id, title, sub_title: subTitle, start_date: startDate, end_date: endDate, percent_complete: percentComplete } = props.data
 
     //endDate manipulation
     let endDateStr = 'TBD';
@@ -27,9 +23,10 @@ const ProjectCard = props => {
         endDateStr = `${endDate.toLocaleDateString('en-gb', dateOptions)} @ ${endDate.toLocaleTimeString('en-gb', timeOptions)}`;
     }
 
-
+    //click comes from DeveloperCard or OwnershipCard
     return (
-        <Card>
+        <Card onClick={props.onClick} data={props.data}>
+            <input type="hidden" value={id} />
             <h3>{title}</h3>
             <h4>{subTitle}</h4>
             <p>Due: {endDateStr}</p>
