@@ -1,0 +1,22 @@
+.navigation {
+    background-color: black;
+    color: ghostwhite;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.padding {
+    padding: 0 1rem;
+    margin: 0.5rem;
+}
+.div-buttons {
+    cursor: pointer;
+    padding: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 400;
+    transition: transform 0.5s;
+}
+.div-buttons:hover {
+    transform: scale(1.2);
+}

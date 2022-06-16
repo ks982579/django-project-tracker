@@ -1,0 +1,21 @@
+[x] - Get user to Login
+[x] - get user to loggout
+[x] - Check On reload if user is logged in. 
+[x] - Login form still present when logged in
+[x] - Get projects 'ownership' data from server
+[x] - Get projects 'developers' data from server
+[x] - display ownership data
+[x] - display developers data
+
+[x] -> Create a Project!
+    [x] - Move 'New Project' inside of <Dashboard/>
+    [x] - Fixing Django Model to take in all information. 
+    [x] - Working with a Reducer to manage the display of Dashboard
+
+[ ] - When a project is created, app must call information from API to update
+    [ ] - Could do a toggle value of some sort based on successful creation of project. 
+
+( ) - Maybe a 'home' section when others on Dashboard are false
+    that shows user their weekly sprint
+
+[ ] - If user is unsuccessful Logging in...

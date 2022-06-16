@@ -1,0 +1,6 @@
+/* https://www.w3schools.com/css/css_grid.asp */
+
+.dash-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
