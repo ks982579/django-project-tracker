@@ -7,6 +7,8 @@ import OwnershipCard from "./OwnershipCard";
 
 import styles from './Dashboard.module.css';
 import NewProjectCont from "./create_project/NewProjectCont";
+import ProjectEditScreen from "./management_editor/ProjectEditScreen";
+import TaskDisplayScreen from "../development_editor/TaskDisplayScreen";
 
 /* Many different Screens can be managed more easily with useReducer. */
 /* That should also ensure components re-render for changes */
@@ -81,9 +83,8 @@ const Dashboard = (props) => {
                 </div>
                 <div>
                     <p>for the actual projects</p>
-                </div>
-                <div>
-                    <p>for the tasks for projects...</p>
+                    <ProjectEditScreen/>
+                    <TaskDisplayScreen/>
                 </div>
             </div>
         </Card>

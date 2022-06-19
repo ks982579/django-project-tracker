@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from .models import ProjectModel
-from .serializers import ProjectSerializer, UserSerializer
+from .models import ProjectModel, TaskModel
+from .serializers import ProjectSerializer, UserSerializer, TaskSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 import json
@@ -13,6 +13,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect, requires_csrf_token
 from django.utils.decorators import method_decorator
+
 
 # https://www.django-rest-framework.org/api-guide/generic-views/
 ## Youtube: Build a Django REST API...
@@ -136,7 +137,7 @@ class ProjectViewUpdateClass(generics.UpdateAPIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-# localhost:8000/destroy/<pk>
+# localhost:8000/api/destroy/<pk>
 class ProjectViewDestroyClass(generics.DestroyAPIView):
     """
     Provides 'Delete' method handler
@@ -146,3 +147,59 @@ class ProjectViewDestroyClass(generics.DestroyAPIView):
     serializer_class = ProjectSerializer
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+class TaskHandler(APIView):
+    """
+    dispatch handler methods for CRUD operations
+    """
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    # localhost:8000/api/task-handler/ GET
+    def get(self, request, format=None):
+        #get user using pk from the request.user.id
+        current_user = User.objects.get(pk=request.user.id)
+        # Get all of user tasks
+        user_tasks = current_user.user_task_set.all()
+        # Serialize all information
+        serialized_tasks = TaskSerializer(user_tasks, many=True)
+        return Response(data=serialized_tasks.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        # making TaskModel object.
+        print(request.data)
+        serializer = TaskSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return None
+    """
+    {
+        "developers": [1],
+        "parent_task": 3,
+        "task_name": "This is the way"
+    }
+    """
+    def put(self, request):
+        # Extract the data and keys to use
+        data = request.data.copy()
+        # data['pk'] = data.get('id')
+        # remove the 'id' key so we don't try to update it
+        req_keys = data.keys()
+        current_task = TaskModel.objects.get(pk=data.get('id'))
+        del data['id']
+        for _key in req_keys:
+            # Models are objects, not dictionaries...
+            setattr(current_task, _key, data.get(_key))
+        # Save updated data
+        current_task.save(update_fields=req_keys)
+
+        # Serialize and return data
+        serialized_task = TaskSerializer(current_task, many=False)
+        return Response(data=serialized_task.data, status=status.HTTP_200_OK)
+"""
+{"id": 4, "task_name": "I'll figure this out", "description": "", "end_date": null, "percent_complete": 1}
+{"id": 4, "task_name": "I'll figure this out", "description": "Update - try 3", "end_date": null, "percent_complete": 2}
+"""

@@ -1,10 +1,14 @@
 from rest_framework import serializers
-from .models import ProjectModel
+from .models import ProjectModel, TaskModel
 from django.contrib.auth.models import User
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectModel
+        fields = "__all__"
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TaskModel
         fields = "__all__"
 
 class UserSerializer(serializers.ModelSerializer):
