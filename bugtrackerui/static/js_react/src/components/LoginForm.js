@@ -4,10 +4,12 @@ import CookieMonster from "./CookieMonster";
 //Get Context
 import AuthContext from "./store/auth-context";
 import AuthActions from "../actions/auth-actions";
+import DevContext from "./store/dev-context";
 
 const LoginForm = (props) => {
     // Getting Context
     const ctx = useContext(AuthContext);
+    const devCtx = useContext(DevContext)
 
     const submitHandler = (event) => {
         event.preventDefault()
@@ -18,6 +20,7 @@ const LoginForm = (props) => {
             if(json_data != null && json_data.login == 'successful'){
                 console.log("setting Context 'isLoggedIn'...")
                 ctx.setLogin(true);
+                devCtx.update();
             }
             return json_data
         }

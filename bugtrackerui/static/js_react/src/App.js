@@ -7,6 +7,7 @@ import Dashboard from './components/projects/Dashboard';
 
 import AuthContext from './components/store/auth-context';
 import Greeting from './components/projects/Greeting';
+import { DevContextProvider } from './components/store/dev-context';
 
 
 
@@ -23,12 +24,12 @@ function App() {
 
 
   return (
-    <div className="App">
+    <DevContextProvider>
       <Navbar loginClick={login_yes} />
       {!wantsToLogin && !ctx.isLoggedIn && <Greeting />}
       {wantsToLogin && !ctx.isLoggedIn && <LoginForm cancelClick={login_no}/>}
       {ctx.isLoggedIn && <Dashboard/>}
-    </div>
+    </DevContextProvider>
   );
 }
 

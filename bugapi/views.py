@@ -199,7 +199,14 @@ class TaskHandler(APIView):
         # Serialize and return data
         serialized_task = TaskSerializer(current_task, many=False)
         return Response(data=serialized_task.data, status=status.HTTP_200_OK)
-"""
-{"id": 4, "task_name": "I'll figure this out", "description": "", "end_date": null, "percent_complete": 1}
-{"id": 4, "task_name": "I'll figure this out", "description": "Update - try 3", "end_date": null, "percent_complete": 2}
-"""
+        """
+        {"id": 4, "task_name": "I'll figure this out", "description": "", "end_date": null, "percent_complete": 1}
+        {"id": 4, "task_name": "I'll figure this out", "description": "Update - try 3", "end_date": null, "percent_complete": 2}
+        """
+    def delete(self, request):
+        print(request.data)
+        task_id = request.data.get('id')
+        # Also Implement Check that user deleting is developer as well.
+        #TaskModel.objects.get(pk=task_id).delete()
+        return Response({'Status': 'Task Deleted'}, status=status.HTTP_204_NO_CONTENT)
+
