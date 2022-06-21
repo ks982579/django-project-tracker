@@ -25,6 +25,7 @@ export const AuthContextProvider = (props) => {
                 }
             })
     },[])
+    console.log('AuthContextProvider Ran')
     return (
         <AuthContext.Provider value={{
             isLoggedIn: isLoggedIn,

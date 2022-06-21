@@ -85,7 +85,32 @@ const AuthActions = {
         console.log(typeof jsonRes);
         return jsonRes;
     },
+    fetchAllProjects: () => {
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+
+        // create options
+        const reqOptions = {
+            method: 'GET',
+            headers: httpHeader,
+        } //GET/HEAD methods cannot have body...
+
+        // Fetching Data!
+        const jsonRes = fetch(`${window.location.href}api/`, reqOptions)
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data)// Now it prints the JSON response :)
+                return data
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return null;
+            });
+        return jsonRes;
+    },
     fetchAllData: () => {
+        console.log("%cfetching [GET, .../api/task-handler/]","color:grey")
         // Create Header...
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
@@ -100,6 +125,7 @@ const AuthActions = {
         // Fetching Data!
         const jsonRes = fetch(`${window.location.href}api/task-handler/`, reqOptions)
             .then(response => {
+                console.log("%cPromise Received!","color:blue");
                 return response.json();
             }).then(data => {
                 console.log(data)// Now it prints the JSON response :)
@@ -108,8 +134,8 @@ const AuthActions = {
                 console.error(`Failed to fetch: ${error}`);
                 return null;
             })
-        console.log(typeof jsonRes);
-        return jsonRes;;
+        //console.log(typeof jsonRes);
+        return jsonRes;
     }
 }
 
