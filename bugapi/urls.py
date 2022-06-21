@@ -2,6 +2,7 @@ from django.urls import path, include
 from .views import ProjectViewGetAllClass, ProjectViewCreateClass, ProjectViewUpdateClass, ProjectViewDestroyClass, ProjectViewGetOwnershipClass, AuthenticateUser, GetUserInfo, TaskHandler
 from rest_framework.authtoken.views import obtain_auth_token
 
+# Git note
 urlpatterns = [
     path('', ProjectViewGetAllClass.as_view(), name="project-list-all-view"),
     path('what-i-own/', ProjectViewGetOwnershipClass.as_view(), name="project-list-ownership-view"),
