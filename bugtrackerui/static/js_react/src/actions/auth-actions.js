@@ -86,6 +86,7 @@ const AuthActions = {
         return jsonRes;
     },
     fetchAllProjects: () => {
+        // Gets project data, not tasks
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
         httpHeader.append('Accept', 'application/json');

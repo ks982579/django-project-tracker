@@ -6,6 +6,7 @@ import LinkedList, { ProjectNode, TaskNode } from "./linked-list";
 
 const DevContext = React.createContext({
     projectData: [],
+    taskData: [],
     update: {},
 });
 
@@ -89,7 +90,7 @@ export const DevContextProvider = (props) => {
     const [taskData, setTaskData] = useState([]);
     const [runUpdate, setRunUpdate] = useState(0);
     //instantiate a LinkedList
-    const [linkedList, dispatchLinkedList] = useReducer(updateLinkedList, new LinkedList())
+    //const [linkedList, dispatchLinkedList] = useReducer(updateLinkedList, new LinkedList())
     console.log('Running DevContextProvider')
 
     const callAPI = () => {
@@ -101,19 +102,18 @@ export const DevContextProvider = (props) => {
         console.log('DevContextProvider useEffect')
         // Fetching PROJECTS
         const newProjects = await AuthActions.fetchAllProjects();
-        console.log(`fetched -> ${newProjects}`)
-        let newList = { type: "NEW_LIST", val: newProjects };
-        dispatchLinkedList(newList);
+        //console.log(`fetched -> ${newProjects}`)
+        setProjectData(newProjects);
 
         //Fetching TASKS
         const newData = await AuthActions.fetchAllData();
-        let newTasks = { type: "NEW_TASKS", val: newData };
-        dispatchLinkedList(newTasks);
+        setTaskData(newData);
     }, [runUpdate]);
 
     return (
         <DevContext.Provider value={{
             projectData: projectData,
+            taskData: taskData,
             update: callAPI,
         }}>
             {props.children}

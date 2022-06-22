@@ -17,6 +17,7 @@ const Card = props => {
                 props.onClick(event, props.data);
             } else {
                 console.log('No Data')
+                event.stopPropagation();
                 props.onClick(event);
             }
         }
