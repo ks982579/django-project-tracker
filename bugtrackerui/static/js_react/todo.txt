@@ -12,7 +12,12 @@
     [x] - Fixing Django Model to take in all information. 
     [x] - Working with a Reducer to manage the display of Dashboard
 
-[ ] - Display tasks to project
+[x] - Display tasks to project
+[ ] -> Get 'CREATE NEW TASK +' button to work
+    * lives in <TaskView>
+    * 
+[ ] - Update Task Display
+
 
 [ ] - Implement deleting projects for testing purposes
 [ ] - There is Management and Developer views... 
@@ -24,3 +29,5 @@
     that shows user their weekly sprint
 
 [ ] - If user is unsuccessful Logging in...
+
+[ ] - Adjust all Time in a project, or something... 

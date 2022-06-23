@@ -11,7 +11,7 @@ const NewProjectCont = () => {
     const newProjectSubmitHandler = event => {
         event.preventDefault();
 
-        //create FormData object
+        //create FormData object ---> S/B in AuthActions!
         const data = new FormData(event.target)
         const dataObj = {
             title: data.get('title'),

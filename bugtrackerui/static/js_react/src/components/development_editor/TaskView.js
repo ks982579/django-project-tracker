@@ -1,13 +1,15 @@
-import React, {useContext} from "react";
+import React, {useContext, useReducer} from "react";
 
 import LinkedList, {ProjectNode, TaskNode} from "../store/linked-list";
 import DevContext from "../store/dev-context";
 import Card from "../ui/Card";
 import TaskDetails from "./TaskDetails";
+import CreateNewTask from "./CreateNewTask";
 
 //props.parentProject = {id};
 const TaskView = (props) => {
     const devctx = useContext(DevContext);
+    //const [ taskList, dispatchTaskList ] = useReducer(linkedListReducer, new LinkedList())
     let taskList = new LinkedList(); //{head: null, length: 0}
     let returnedJSX = [];
     if(props.parentProject){
@@ -20,6 +22,7 @@ const TaskView = (props) => {
             }
         }
     }
+
     if(props.parentTask){
         // Project cycles through pushing on New Tasks...
         console.log(devctx.taskData);
@@ -42,7 +45,7 @@ const TaskView = (props) => {
         <Card>
             <h3>Task View</h3>
             {returnedJSX}
-            <h4>Create New Task +</h4>
+            <CreateNewTask/>
         </Card>
     )
 };

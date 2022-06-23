@@ -85,6 +85,7 @@ const AuthActions = {
         console.log(typeof jsonRes);
         return jsonRes;
     },
+
     fetchAllProjects: () => {
         // Gets project data, not tasks
         const httpHeader = new Headers();
@@ -137,6 +138,44 @@ const AuthActions = {
             })
         //console.log(typeof jsonRes);
         return jsonRes;
+    },
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/FormData
+    createNewTask: (rawFormData) => {
+        //Form Data MUST HAVE CSRF TOKEN
+        const data = new FormData(rawFormData); //rawFormData = event.target;
+
+        const dataObj = {
+            name: data.get('taskName')
+        }
+        //Construct Request
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+        httpHeader.append('X-CSRFtoken', data.get('csrftoken'));
+
+        const jsonPackage  =JSON.stringify(dataObj);
+
+        const reqOptions = {
+            method: 'POST',
+            headers: httpHeader,
+            body: jsonPackage,
+        }
+
+        /*
+        const jsonRes = fetch(`${window.location.href}api/task-handler/`, reqOptions)
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data)// Now it prints the JSON response :)
+                return data
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return null;
+            })
+        console.log(typeof jsonRes);
+        */
+        return jsonPackage;
     }
 }
 
