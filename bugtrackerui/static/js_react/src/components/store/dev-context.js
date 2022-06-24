@@ -94,6 +94,7 @@ export const DevContextProvider = (props) => {
     console.log('Running DevContextProvider')
 
     const callAPI = () => {
+        console.log(`%cCalling API...`, "background-color: black; color: red;")
         setRunUpdate((runUpdate + 1) % 2)
     }
 
@@ -102,12 +103,15 @@ export const DevContextProvider = (props) => {
         console.log('DevContextProvider useEffect')
         // Fetching PROJECTS
         const newProjects = await AuthActions.fetchAllProjects();
-        //console.log(`fetched -> ${newProjects}`)
+        console.log(`fetching Projects -> ${newProjects}`)
         setProjectData(newProjects);
+        console.log('Projects Stored');
 
         //Fetching TASKS
+        console.log('Fetching Tasks...');
         const newData = await AuthActions.fetchAllData();
         setTaskData(newData);
+        console.log('Tasks Stores...')
     }, [runUpdate]);
 
     //May want to change 'value' to be State / reducer?

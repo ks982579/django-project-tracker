@@ -141,20 +141,28 @@ const AuthActions = {
     },
 
     // https://developer.mozilla.org/en-US/docs/Web/API/FormData
-    createNewTask: (rawFormData) => {
+    createNewTask: (rawFormData, parentID) => {
         //Form Data MUST HAVE CSRF TOKEN
+        // parentID is object -> { project or task : int }
         const data = new FormData(rawFormData); //rawFormData = event.target;
 
         const dataObj = {
-            name: data.get('taskName')
+            task_name: data.get('taskName'),
+            description: data.get('description'),
         }
+        console.log(parentID)
+        if(parentID.parentProject){
+            dataObj['parent_project'] = parentID.parentProject;
+        } else if(parentID.parentTask){
+            dataObj['parent_task'] = parentID.parentTask;
+        };
         //Construct Request
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
         httpHeader.append('Accept', 'application/json');
         httpHeader.append('X-CSRFtoken', data.get('csrftoken'));
 
-        const jsonPackage  =JSON.stringify(dataObj);
+        const jsonPackage = JSON.stringify(dataObj);
 
         const reqOptions = {
             method: 'POST',
@@ -162,20 +170,16 @@ const AuthActions = {
             body: jsonPackage,
         }
 
-        /*
         const jsonRes = fetch(`${window.location.href}api/task-handler/`, reqOptions)
             .then(response => {
                 return response.json();
             }).then(data => {
-                console.log(data)// Now it prints the JSON response :)
                 return data
             }).catch(error => {
                 console.error(`Failed to fetch: ${error}`);
-                return null;
+                return {error: 'Could not create...'};
             })
-        console.log(typeof jsonRes);
-        */
-        return jsonPackage;
+        return jsonRes;
     }
 }
 

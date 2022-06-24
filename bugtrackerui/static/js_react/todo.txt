@@ -15,8 +15,15 @@
 [x] - Display tasks to project
 [ ] -> Get 'CREATE NEW TASK +' button to work
     * lives in <TaskView>
-    * 
+    * Weird Problem. The task is created But REDUCER isn't working <TaskView>
+
+[ ] - ! Weird crash when logging in, but fine on reload. !
+    * I think devContext needs to be managed in the <DashBoard>
+    * We can then use Memo to hold components stable through context changes. 
 [ ] - Update Task Display
+
+[ ] - <TaskDetails>
+    [ ] - Percent Complete
 
 
 [ ] - Implement deleting projects for testing purposes

@@ -4,6 +4,7 @@ import Card from "../ui/Card";
 
 //Taking in Json data object as 'data' and an 'onClick'
 const ProjectCard = props => {
+    console.log('Rendering <ProjectCard>')
     let { id, title, sub_title: subTitle, start_date: startDate, end_date: endDate, percent_complete: percentComplete } = props.data
 
     //endDate manipulation
@@ -22,6 +23,7 @@ const ProjectCard = props => {
         }
         endDateStr = `${endDate.toLocaleDateString('en-gb', dateOptions)} @ ${endDate.toLocaleTimeString('en-gb', timeOptions)}`;
     }
+    console.log('Rendered <ProjectCard>')
 
     //click comes from DeveloperCard or OwnershipCard
     return (

@@ -17,6 +17,7 @@ const CookieMonster = () => {
     }
     /* end getCookie */
     const csrftoken = getCookie('csrftoken');
+    //console.log(`<CookieMonster value={${csrftoken}}`)
 
     return <input type='hidden' name="csrftoken" value={csrftoken}/>;
 }

@@ -42,7 +42,6 @@ const quickStyles = {
 // COMPONENT
 // +++++++++++++++++++++++++++++++++++++++++++++
 const Dashboard = (props) => {
-
     // Reducer hook
     const [displayState, setDisplayState] = useReducer(displayReducer, initDisplayState)
     
@@ -66,12 +65,10 @@ const Dashboard = (props) => {
 
     //Clicking on internal Project Cards must render information. 
     const onOwnerClickHandler = (event, jsonData) => {
-        console.log('OwnerCard')
         setManagerSelected(jsonData);
         setProjectSelected(false);
     }
     const onDeveloperClickHandler = (event, jsonData) => {
-        console.log('DevCard')
         setProjectSelected(jsonData);
         setManagerSelected(false);
     }

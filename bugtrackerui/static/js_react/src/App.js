@@ -22,7 +22,6 @@ function App() {
     setWantsToLogin(false);
   }
 
-
   return (
     <DevContextProvider>
       <Navbar loginClick={login_yes} />

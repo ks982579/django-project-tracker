@@ -167,8 +167,9 @@ class TaskHandler(APIView):
 
     def post(self, request):
         # making TaskModel object.
-        print(request.data)
-        serializer = TaskSerializer(data=request.data)
+        taskData = request.data
+        taskData.update({'developers': [request.user.id]})
+        serializer = TaskSerializer(data=taskData)
         if serializer.is_valid():
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)

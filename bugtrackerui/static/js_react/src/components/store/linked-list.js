@@ -68,9 +68,7 @@ class LinkedList {
     
     set push(node) {
         if(this.head == null){
-            console.log('pushing node as head')
             this.head = node;
-            console.log('Push successful')
         } else {
             this.last.next = node; //Not Complete
         }

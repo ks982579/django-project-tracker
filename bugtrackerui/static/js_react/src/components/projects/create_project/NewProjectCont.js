@@ -19,8 +19,6 @@ const NewProjectCont = () => {
         }
         const jsonObj = JSON.stringify(dataObj)
         const csrfToken = data.get('csrftoken');
-        console.log(jsonObj) // the Form
-        console.log(`CSRF Token: ${csrfToken}`)
         AuthActions.newProject(jsonObj, csrfToken);
     }
 

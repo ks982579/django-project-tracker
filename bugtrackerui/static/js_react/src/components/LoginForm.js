@@ -19,10 +19,10 @@ const LoginForm = (props) => {
             const json_data = await AuthActions.login(event.target.children); //waits for this data
             if(json_data != null && json_data.login == 'successful'){
                 console.log("setting Context 'isLoggedIn'...")
-                ctx.setLogin(true);
                 devCtx.update();
+                ctx.setLogin(true);
             }
-            return json_data
+            return json_data;
         }
         console.log(jsonRes())
     }
