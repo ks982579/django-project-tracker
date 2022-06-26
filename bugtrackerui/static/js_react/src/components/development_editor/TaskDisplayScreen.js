@@ -18,7 +18,7 @@ const TaskDisplayScreen = (props) => {
     }
     return (
         <Card>
-            <sup>&gt;TaskDisplayScreen&lt;</sup>
+            <sup>&lt;TaskDisplayScreen&gt;</sup>
             {returnedJSX}
             <TaskView parentProject={props.selected.id} parentName={props.selected.title}/>
         </Card>

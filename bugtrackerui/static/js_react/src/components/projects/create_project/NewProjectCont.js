@@ -20,6 +20,7 @@ const NewProjectCont = () => {
         const jsonObj = JSON.stringify(dataObj)
         const csrfToken = data.get('csrftoken');
         AuthActions.newProject(jsonObj, csrfToken);
+        //There's no update for components?
     }
 
     return (

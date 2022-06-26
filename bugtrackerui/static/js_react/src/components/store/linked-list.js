@@ -5,6 +5,9 @@ class LinkedListNode {
         this.children = new LinkedList(); //Should always be a list of Tasks...
         this.next = null;
     }
+    stringify(){
+        return JSON.stringify(this.data);
+    }
 }
 
 export class ProjectNode extends LinkedListNode {
@@ -47,6 +50,11 @@ class LinkedList {
             this.length = 0;
         }
     }
+
+    addition(){
+        return null;
+    }
+
     get last() {
         if(this.length == 0){
             return null;
@@ -66,11 +74,18 @@ class LinkedList {
         }
     }
     
-    set push(node) {
+    push(node) {
+        const formatLog = `background-color: navy; color: floralwhite`;
+        console.log(`%cInside push(node)`, formatLog);
         if(this.head == null){
+            console.log(`%cNew Head`, formatLog);
             this.head = node;
+            console.log(`%c${this.head.stringify()}`, formatLog);
         } else {
-            this.last.next = node; //Not Complete
+            console.log(`%cNew Last`, formatLog);
+            let lastNode = this.last;
+            lastNode.next = node; //Not Complete
+            console.log(`%c${this.last.stringify()}`, formatLog);
         }
         this.length++
     }

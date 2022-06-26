@@ -16,6 +16,9 @@
 [ ] -> Get 'CREATE NEW TASK +' button to work
     * lives in <TaskView>
     * Weird Problem. The task is created But REDUCER isn't working <TaskView>
+    [x] - Clear if submit was fine.
+    [ ] - Do we update through API? Or add to list?
+    [ ] - Make Form Look nicer than it does.
 
 [ ] - ! Weird crash when logging in, but fine on reload. !
     * I think devContext needs to be managed in the <DashBoard>

@@ -28,7 +28,10 @@ const CreateNewTask = (props) =>{
         //If no error
         if(!newData.error){
             console.log(`Trying to Save Data`);
+            console.log(`%cReturned data\n${JSON.stringify(newData)}`, `color:green;`)
             props.saveNewTask(newData);
+            event.target.reset(); //might not work.
+            setDisplay(false);
         } else {
             console.log(newData.error);
         }
@@ -54,6 +57,7 @@ const CreateNewTask = (props) =>{
                 autoCorrect="off"
                 spellCheck="true" />
             <input type='submit' />
+            <input type='reset' value="Clear Form" />
         </form>
     )
 

@@ -23,8 +23,6 @@ const ProjectCard = props => {
         }
         endDateStr = `${endDate.toLocaleDateString('en-gb', dateOptions)} @ ${endDate.toLocaleTimeString('en-gb', timeOptions)}`;
     }
-    console.log('Rendered <ProjectCard>')
-
     //click comes from DeveloperCard or OwnershipCard
     return (
         <Card onClick={props.onClick} data={props.data}>
