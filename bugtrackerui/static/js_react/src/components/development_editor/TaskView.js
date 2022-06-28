@@ -5,6 +5,8 @@ import Card from "../ui/Card";
 import TaskDetails from "./TaskDetails";
 import CreateNewTask from "./CreateNewTask";
 
+import styles from './TaskView.module.css';
+
 
 //props.parentProject = {id};
 //props.parentName = str
@@ -52,8 +54,8 @@ const TaskView = (props) => {
     }
 
     return (
-        <Card>
-            <sup>&lt;TaskView&gt;</sup>
+        <Card className={styles['the-view']}>
+            <sup>&lt;TaskView&gt;</sup><br/>
             <b>{props.parentName} Tasks...</b>
             {returnedJSX}
             <CreateNewTask parent={parentID} saveNewTask={createTaskHandler} />

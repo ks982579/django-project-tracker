@@ -3,10 +3,10 @@ import React from "react";
 import styles from './Card.module.css';
 
 const Card = props => {
-    let cardStyles = styles.card;
+    let cardStyles = `${props.className} ${styles.card}`;
 
     if (props.onClick) {
-        cardStyles = `${styles.card} ${styles.clickable}`
+        cardStyles = `${cardStyles} ${styles.clickable}`
     }
 
     // Pass in data if we have any

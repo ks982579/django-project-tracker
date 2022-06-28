@@ -4,6 +4,8 @@
 */
 import DummyDetails from "./secrets";
 
+const DOMAIN = 'http://localhost:4000/' //window.location.href;
+
 const AuthActions = {
     getCSRFToken: (formChildren) => {
         let csrftoken = ''
@@ -31,7 +33,7 @@ const AuthActions = {
             })
         }
 
-        const jsonRes = fetch(`${window.location.href}api/auth/`, reqOptions)
+        const jsonRes = fetch(`${DOMAIN}api/auth/`, reqOptions)
             .then(response => {
                 return response.json();
             }).then(data => {
@@ -45,7 +47,7 @@ const AuthActions = {
         return jsonRes;
     },
     logout: () => {
-        const jsonRes = fetch(`${window.location.href}api/auth/`)
+        const jsonRes = fetch(`${DOMAIN}api/auth/`)
             .then(response => {
                 return response.json();
             }).then(data => {
@@ -72,7 +74,7 @@ const AuthActions = {
             body: jsonPackage,
         }
 
-        const jsonRes = fetch(`${window.location.href}api/create/`, reqOptions)
+        const jsonRes = fetch(`${DOMAIN}api/create/`, reqOptions)
             .then(response => {
                 return response.json();
             }).then(data => {
@@ -99,7 +101,7 @@ const AuthActions = {
         } //GET/HEAD methods cannot have body...
 
         // Fetching Data!
-        const jsonRes = fetch(`${window.location.href}api/`, reqOptions)
+        const jsonRes = fetch(`${DOMAIN}api/`, reqOptions)
             .then(response => {
                 return response.json();
             }).then(data => {
@@ -125,7 +127,7 @@ const AuthActions = {
         } //GET/HEAD methods cannot have body...
 
         // Fetching Data!
-        const jsonRes = fetch(`${window.location.href}api/task-handler/`, reqOptions)
+        const jsonRes = fetch(`${DOMAIN}api/task-handler/`, reqOptions)
             .then(response => {
                 console.log("%cPromise Received!","color:blue");
                 return response.json();
@@ -170,7 +172,7 @@ const AuthActions = {
             body: jsonPackage,
         }
 
-        const jsonRes = fetch(`${window.location.href}api/task-handler/`, reqOptions)
+        const jsonRes = fetch(`${DOMAIN}api/task-handler/`, reqOptions)
             .then(response => {
                 return response.json();
             }).then(data => {
