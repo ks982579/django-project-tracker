@@ -26,7 +26,7 @@ const DeveloperCard = props => {
     if(props.displayState && devctx.projectData.length > 0){
         developerCards = devctx.projectData.map(data => {
             return <ProjectCard data={data} onClick={props.onProjectClick} />
-        })
+        });
     }
     return (
         <Card>

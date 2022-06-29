@@ -23,11 +23,17 @@ const DumbForm = (props) => {
         props.toggleForm();
     }
 
+    //Formatting and making it pretty!
     return(
         <form>
-            <input name="name" type='text' value={props.node}/>
-            <textarea spellCheck="true" name="description" />
-            <input name="endDate" type="datetime-local" />
+            <div className={styles['form-grid']}>
+                <label htmlFor="name">Task Name:</label>
+                <input id="name" name="name" type='text' value={props.node.task_name}/>
+                <label htmlFor="description">Description:</label>
+                <textarea id="description" spellCheck="true" name="description" />
+                <label htmlFor="endDate">End Date:</label>
+                <input id="endDate" name="endDate" type="datetime-local" />
+            </div>
             <div>
                 <input type="submit" />
                 <input type="reset" />

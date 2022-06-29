@@ -2,15 +2,16 @@ import React, { useState } from "react";
 
 import Card from "../ui/Card";
 
-//Taking in Json data object as 'data' and an 'onClick'
+//Taking ProjectNode and an 'onClick'
 const ProjectCard = props => {
     console.log('Rendering <ProjectCard>')
-    let { id, title, sub_title: subTitle, start_date: startDate, end_date: endDate, percent_complete: percentComplete } = props.data
+    let node = props.data;
+    let endDate = node.endDate;
 
     //endDate manipulation
     let endDateStr = 'TBD';
-    if (endDate != null || endDate != '') {
-        endDate = new Date(Date.parse(endDate)); //gets date object
+    if (node.endDate != null || node.endDate != '') {
+        endDate = new Date(Date.parse(node.endDate)); //gets date object
         const dateOptions = {
             month: 'short',
             day: 'numeric',
@@ -26,11 +27,11 @@ const ProjectCard = props => {
     //click comes from DeveloperCard or OwnershipCard
     return (
         <Card onClick={props.onClick} data={props.data}>
-            <input type="hidden" value={id} />
-            <h3>{title}</h3>
-            <h4>{subTitle}</h4>
+            <input type="hidden" value={node.id} />
+            <h3>{node.title}</h3>
+            <h4>{node.subTitle}</h4>
             <p>Due: {endDateStr}</p>
-            <p>Complete: {percentComplete / 100}%</p>
+            <p>Complete: {node.percentComplete / 100}%</p>
         </Card>
     )
 };

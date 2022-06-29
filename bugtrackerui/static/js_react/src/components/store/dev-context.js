@@ -39,13 +39,13 @@ export const DevContextProvider = (props) => {
         // Fetching PROJECTS
         const newProjects = await AuthActions.fetchAllProjects();
         console.log(`fetching Projects -> ${newProjects}`)
-        setProjectData(newProjects);
+        setProjectData(LinkedList.createProjectList(newProjects));
         console.log('Projects Stored');
 
         //Fetching TASKS
         console.log('Fetching Tasks...');
-        const newData = await AuthActions.fetchAllData();
-        setTaskData(newData);
+        const newTasks = await AuthActions.fetchAllData();
+        setTaskData(LinkedList.createTaskList(newTasks));
         console.log('Tasks Stores...')
     }, [runUpdate]);
 

@@ -3,6 +3,8 @@ import React, {useContext, useEffect, useState} from "react";
 import Card from "../ui/Card";
 import ProjectCard from "./ProjectCard";
 
+import LinkedList from "../store/linked-list";
+
 import AuthContext from "../store/auth-context";
 
 // takes in 'onClick' and 'displayState' and 'onProjectClick'
@@ -27,7 +29,7 @@ const OwnershipCard = props => {
                 return response.json();
             }).then(jsonData => {
                 //Set state with the data to properly render Component. 
-                setProjectsData(jsonData); 
+                setProjectsData(LinkedList.createProjectList(jsonData)); 
             })
         }
     },[])

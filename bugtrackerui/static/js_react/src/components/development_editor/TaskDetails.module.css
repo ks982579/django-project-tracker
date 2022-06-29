@@ -2,6 +2,11 @@
     background-color: ivory;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
 .placard {
     display: flex;
     flex-direction: row;
