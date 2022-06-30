@@ -73,7 +73,8 @@ export const DevContextProvider = (props) => {
     // Must Update!
     const newTaskHandler = (newTaskObj) => {
         setTaskData((prevState)=> {
-            return [...prevState, newTaskObj];
+            let newTaskNode = TaskNode.create(newTaskObj);
+            return [...prevState, newTaskNode];
         });
     }
 
