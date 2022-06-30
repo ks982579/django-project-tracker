@@ -11,7 +11,7 @@ import ProjectEditScreen from "./management_editor/ProjectEditScreen";
 import TaskDisplayScreen from "../development_editor/TaskDisplayScreen";
 
 /* Many different Screens can be managed more easily with useReducer. */
-/* That should also ensure components re-render for changes */
+/* That should also ensure components re-render for chadnges */
 // Initial State is everything false!
 
 // Project Selected in <DeveloperCard> must be sent to <TaskDisplayScreen>
@@ -68,8 +68,8 @@ const Dashboard = (props) => {
         setManagerSelected(jsonData);
         setProjectSelected(false);
     }
-    const onDeveloperClickHandler = (event, jsonData) => {
-        setProjectSelected(jsonData);
+    const onDeveloperClickHandler = (event, node) => {
+        setProjectSelected(node);
         setManagerSelected(false);
     }
     

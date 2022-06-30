@@ -7,20 +7,20 @@ import Card from "../ui/Card";
 * Display Tasks to project
 */
 
-// takes in props.selected = project object
-//[id, title, sub_title, start_date, end_date, percent_complete, owner, developers]
+// takes in props.selected = project NOde object
+//[id, title, subTitle, startDate, endDate, percentComplete, owner, developers[]]
 const TaskDisplayScreen = (props) => {
-    let returnedJSX = [];
-    if(props.selected){
-        for(let _e in props.selected){
-            returnedJSX.push(<p>{_e} --> {props.selected[_e]}</p>)
-        }
-    }
+    let returnedJSX = (
+        <>
+            <p>props.selected.title</p>
+            <p>props.selected.subTitle</p>
+        </>
+    )
     return (
         <Card>
-            <sup>&lt;TaskDisplayScreen&gt;</sup>
+            <sup>&lt;TaskDisplayScreen&gt;</sup><br/>
             {returnedJSX}
-            <TaskView parentProject={props.selected.id} parentName={props.selected.title}/>
+            <TaskView parentProject={props.selected.id} parentName={props.selected.title} />
         </Card>
     )
 }

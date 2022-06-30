@@ -22,7 +22,7 @@ const TaskView = (props) => {
         parentID = {parentProject: props.parentProject};
         idCheck = parentID.parentProject;
         for(let _efk of devContext.taskData){
-            if(idCheck == _efk['parent_project']){
+            if(idCheck == _efk.parentProject){
                 returnedJSX.push(<TaskDetails node={_efk}/>);
             }
         }
@@ -30,7 +30,7 @@ const TaskView = (props) => {
         parentID = {parentTask: props.parentTask};
         idCheck = parentID.parentTask;
         for(let _efk of devContext.taskData){
-            if(idCheck == _efk['parent_task']){
+            if(idCheck == _efk.parentTask){
                 returnedJSX.push(<TaskDetails node={_efk}/>);
             }
         }

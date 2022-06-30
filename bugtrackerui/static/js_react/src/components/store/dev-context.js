@@ -2,14 +2,21 @@ import React, { useState, useEffect, useReducer, cloneElement } from "react";
 
 import AuthActions from "../../actions/auth-actions";
 import OwnershipCard from "../projects/OwnershipCard";
-import LinkedList, { ProjectNode, TaskNode } from "./linked-list";
+import { ProjectNode, TaskNode } from "./linked-list";
 
 const DevContext = React.createContext({
     projectData: [],
     taskData: [],
     update: {},
     newTask: {},
+    deleteTask: {},
 });
+
+const Actions = {
+    Create: 'CREATE',
+    Update: 'UPDATE',
+    Delete: 'DELETE',
+}
 
 /*
     Thinking... Create the linked list. Each would need a node. 
@@ -19,6 +26,11 @@ const DevContext = React.createContext({
     > Child Tasks must be linked in ORDER!!! (probably by end-date)
     > Each Task then links Child Tasks, etc...
 */
+// const taskReducer = (prevState, action) => {
+//     if(action.type === Actions.Delete){
+//         console.warn(`deleting ${action.payload}`);
+//     }
+// }
 
 export const DevContextProvider = (props) => {
     const [projectData, setProjectData] = useState([]);
@@ -39,21 +51,38 @@ export const DevContextProvider = (props) => {
         // Fetching PROJECTS
         const newProjects = await AuthActions.fetchAllProjects();
         console.log(`fetching Projects -> ${newProjects}`)
-        setProjectData(LinkedList.createProjectList(newProjects));
+        //created projects Linked List
+        let projectNodeList = newProjects.map(project => {
+            return ProjectNode.create(project);
+        })
+        setProjectData(projectNodeList);
         console.log('Projects Stored');
 
         //Fetching TASKS
         console.log('Fetching Tasks...');
         const newTasks = await AuthActions.fetchAllData();
-        setTaskData(LinkedList.createTaskList(newTasks));
+        //creates LL of all tasks
+        // - But we want each project to have children tasks. 
+        let taskNodeList = newTasks.map(task => {
+            return TaskNode.create(task);
+        })
+        setTaskData(taskNodeList)
         console.log('Tasks Stores...')
     }, [runUpdate]);
 
+    // Must Update!
     const newTaskHandler = (newTaskObj) => {
         setTaskData((prevState)=> {
             return [...prevState, newTaskObj];
         });
     }
+
+    const deleteTaskHandler = (taskID) => {
+        setTaskData((prevState) => {
+            return prevState.filter(taskNode => taskNode.id != taskID);
+        })
+    }
+
 
     //May want to change 'value' to be State / reducer?
 
@@ -63,6 +92,7 @@ export const DevContextProvider = (props) => {
             taskData: taskData,
             update: callAPI,
             newTask: newTaskHandler,
+            deleteTask: deleteTaskHandler,
         }}>
             {props.children}
         </DevContext.Provider>

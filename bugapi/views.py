@@ -208,6 +208,11 @@ class TaskHandler(APIView):
         print(request.data)
         task_id = request.data.get('id')
         # Also Implement Check that user deleting is developer as well.
-        #TaskModel.objects.get(pk=task_id).delete()
-        return Response({'Status': 'Task Deleted'}, status=status.HTTP_204_NO_CONTENT)
+        print('deleting...')
+        #What if can't find object?
+        try:
+            TaskModel.objects.get(pk=task_id).delete()
+        except:
+            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 

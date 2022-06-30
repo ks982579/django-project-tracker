@@ -3,7 +3,7 @@ import React, {useContext, useEffect, useState} from "react";
 import Card from "../ui/Card";
 import ProjectCard from "./ProjectCard";
 
-import LinkedList from "../store/linked-list";
+import {ProjectNode, TaskNode} from "../store/linked-list";
 
 import AuthContext from "../store/auth-context";
 
@@ -29,7 +29,9 @@ const OwnershipCard = props => {
                 return response.json();
             }).then(jsonData => {
                 //Set state with the data to properly render Component. 
-                setProjectsData(LinkedList.createProjectList(jsonData)); 
+                setProjectsData(jsonData.map(data => {
+                    return ProjectNode.create(data);
+                })); 
             })
         }
     },[])

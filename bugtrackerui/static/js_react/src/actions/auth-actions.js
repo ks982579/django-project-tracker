@@ -182,6 +182,38 @@ const AuthActions = {
                 return {error: 'Could not create...'};
             })
         return jsonRes;
+    },
+
+    deleteTask: (parentID, htmlForm) => {
+        //Form Data MUST HAVE CSRF TOKEN
+        // parentID is object -> { project or task : int }
+        let formData = new FormData(htmlForm);
+        let dataObj = {id: parentID};
+        //Construct Request
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+        httpHeader.append('X-CSRFtoken', formData.get('csrftoken'));
+
+        const jsonPackage = JSON.stringify(dataObj);
+
+        const reqOptions = {
+            method: 'DELETE',
+            headers: httpHeader,
+            body: jsonPackage,
+        }
+
+        const jsonRes = fetch(`${DOMAIN}api/task-handler/`, reqOptions)
+            .then(response => {
+                console.log(response)
+                return response.status;
+            }).then(data => {
+                return data
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return {error: 'Could not create...'};
+            })
+        return jsonRes;
     }
 }
 
