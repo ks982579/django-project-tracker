@@ -9,6 +9,7 @@ const DevContext = React.createContext({
     taskData: [],
     update: {},
     newTask: {},
+    updateTask: {},
     deleteTask: {},
 });
 
@@ -78,6 +79,21 @@ export const DevContextProvider = (props) => {
         });
     }
 
+    const updateTaskHandler = taskNode => {
+        //
+        setTaskData((prevState) => {
+            //Making a Copy of state
+            let newState = prevState.map((_task)=>{
+                if(_task.id == taskNode.id){
+                    return taskNode;
+                } else {
+                    return _task;
+                }
+            });
+            return newState;
+        })
+    }
+
     const deleteTaskHandler = (taskID) => {
         setTaskData((prevState) => {
             return prevState.filter(taskNode => taskNode.id != taskID);
@@ -93,6 +109,7 @@ export const DevContextProvider = (props) => {
             taskData: taskData,
             update: callAPI,
             newTask: newTaskHandler,
+            updateTask: updateTaskHandler,
             deleteTask: deleteTaskHandler,
         }}>
             {props.children}

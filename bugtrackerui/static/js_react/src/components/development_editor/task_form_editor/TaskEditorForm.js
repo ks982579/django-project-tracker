@@ -8,6 +8,17 @@ import styles from "../TaskDetails.module.css";
 import InputElm from "./InputElm";
 import RangeElm from "./RangeElm";
 import TextAreaElm from "./TextAreaElm";
+import { TaskNode } from "../../store/linked-list";
+
+const varDump = event => {
+    const format = {
+        "background-color": "black",
+        color: "white",
+    }
+    for(let _e in event){
+        console.log(`%c${_e} --> ${event[_e]}`, format)
+    }
+}
 
 const TaskEditorForm = (props) => {
     let node = props.node;
@@ -41,8 +52,20 @@ const TaskEditorForm = (props) => {
         props.toggleForm(event);
     }
 
-    const submitFormHandler = event => {
+    const submitFormHandler = async event => {
         event.preventDefault();
+
+        //Fetching complete JSON Object from Server
+        let response = await AuthActions.updateTask(node.id, event.target);
+
+        //Transform back into Task Node
+        const updatedTask = TaskNode.create(response);
+
+        //Update Context -> Causes a reRender
+        devContext.updateTask(updatedTask);
+
+        //Close Editor
+        props.toggleForm(event);
     }
 
     //Formatting and making it pretty!
@@ -59,7 +82,6 @@ const TaskEditorForm = (props) => {
             </div>
             <div>
                 <input type="submit" />
-                <input type="reset" />
                 <button onClick={cancelClickHandler}>Cancel</button>
                 <button onClick={deleteClickHandler}>Delete</button>
             </div>
@@ -68,3 +90,4 @@ const TaskEditorForm = (props) => {
 }
 
 export default TaskEditorForm;
+// X --> <TaskDetails>

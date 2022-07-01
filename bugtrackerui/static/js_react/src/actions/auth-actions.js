@@ -214,6 +214,50 @@ const AuthActions = {
                 return {error: 'Could not create...'};
             })
         return jsonRes;
+    },
+
+    updateTask: (taskID, htmlForm) => {
+        //Form Data MUST HAVE CSRF TOKEN
+        // taskID is object -> { project or task : int }
+        let formData = new FormData(htmlForm);
+
+        let endDate = formData.get('endDate')
+        //Either null of local DateTime.
+        endDate = endDate == "" ? null : endDate;
+
+        //Matching to keys in Django Model
+        let dataObj = {
+            id: taskID,
+            "task_name": formData.get('name'),
+            "description": formData.get('description'),
+            "end_date": endDate,
+            "percent_complete": formData.get("percentComplete"),
+        };
+        //Construct Request
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+        httpHeader.append('X-CSRFtoken', formData.get('csrftoken'));
+
+        const jsonPackage = JSON.stringify(dataObj);
+
+        const reqOptions = {
+            method: 'PUT',
+            headers: httpHeader,
+            body: jsonPackage,
+        }
+        
+        const jsonRes = fetch(`${DOMAIN}api/task-handler/`, reqOptions)
+            .then(response => {
+                console.log(response)
+                return response.json();
+            }).then(data => {
+                return data
+            }).catch(error => {
+                console.error(`Failed to update: ${error}`);
+                return {error: 'Could not create...'};
+            })
+        return jsonRes;
     }
 }
 
