@@ -9,8 +9,8 @@ const DOMAIN = 'http://localhost:4000/' //window.location.href;
 const AuthActions = {
     getCSRFToken: (formChildren) => {
         let csrftoken = ''
-        for(let _x = 0; _x < formChildren.length; _x++) {
-            if(formChildren[_x].name == 'csrftoken') {
+        for (let _x = 0; _x < formChildren.length; _x++) {
+            if (formChildren[_x].name == 'csrftoken') {
                 csrftoken = formChildren[_x].value;
                 break;
             }
@@ -60,7 +60,7 @@ const AuthActions = {
         return jsonRes;
     },
     // Once Logged in, we can retrieve projects.
-    
+
     newProject: (jsonPackage, csrfToken) => {
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
@@ -88,8 +88,42 @@ const AuthActions = {
         return jsonRes;
     },
 
+    fetchWhatIOwn: () => {
+        /**
+         * Fetching Projets the user is owner of. 
+         * Converts and returns JSON and JavaScript object. 
+         */
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+
+        // create options
+        const reqOptions = {
+            method: 'GET',
+            headers: httpHeader,
+        } //GET/HEAD methods cannot have body...
+
+        // Fetching Data!
+        const jsonRes = fetch(`${DOMAIN}api/what-i-own/`, reqOptions)
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data)// Now it prints the JSON response :)
+                return data
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return null;
+            });
+        return jsonRes;
+        return null;
+    },
+
     fetchAllProjects: () => {
-        // Gets project data, not tasks
+        /* 
+        ** Gets project data, not tasks
+        ** These are all Projects Developer has permission to Work on
+        ** They may not be Owner of Project though. 
+        */
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
         httpHeader.append('Accept', 'application/json');
@@ -114,7 +148,11 @@ const AuthActions = {
         return jsonRes;
     },
     fetchAllData: () => {
-        console.log("%cfetching [GET, .../api/task-handler/]","color:grey")
+        /**
+         * Fetching Tasks Developer is assigned to.
+         * Tasks are different than projects, they are like children. 
+         */
+        console.log("%cfetching [GET, .../api/task-handler/]", "color:grey")
         // Create Header...
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
@@ -129,7 +167,7 @@ const AuthActions = {
         // Fetching Data!
         const jsonRes = fetch(`${DOMAIN}api/task-handler/`, reqOptions)
             .then(response => {
-                console.log("%cPromise Received!","color:blue");
+                console.log("%cPromise Received!", "color:blue");
                 return response.json();
             }).then(data => {
                 console.log(data)// Now it prints the JSON response :)
@@ -153,9 +191,9 @@ const AuthActions = {
             description: data.get('description'),
         }
         console.log(parentID)
-        if(parentID.parentProject){
+        if (parentID.parentProject) {
             dataObj['parent_project'] = parentID.parentProject;
-        } else if(parentID.parentTask){
+        } else if (parentID.parentTask) {
             dataObj['parent_task'] = parentID.parentTask;
         };
         //Construct Request
@@ -179,7 +217,7 @@ const AuthActions = {
                 return data
             }).catch(error => {
                 console.error(`Failed to fetch: ${error}`);
-                return {error: 'Could not create...'};
+                return { error: 'Could not create...' };
             })
         return jsonRes;
     },
@@ -188,7 +226,7 @@ const AuthActions = {
         //Form Data MUST HAVE CSRF TOKEN
         // parentID is object -> { project or task : int }
         let formData = new FormData(htmlForm);
-        let dataObj = {id: parentID};
+        let dataObj = { id: parentID };
         //Construct Request
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
@@ -211,7 +249,7 @@ const AuthActions = {
                 return data
             }).catch(error => {
                 console.error(`Failed to fetch: ${error}`);
-                return {error: 'Could not create...'};
+                return { error: 'Could not create...' };
             })
         return jsonRes;
     },
@@ -246,7 +284,7 @@ const AuthActions = {
             headers: httpHeader,
             body: jsonPackage,
         }
-        
+
         const jsonRes = fetch(`${DOMAIN}api/task-handler/`, reqOptions)
             .then(response => {
                 console.log(response)
@@ -255,7 +293,7 @@ const AuthActions = {
                 return data
             }).catch(error => {
                 console.error(`Failed to update: ${error}`);
-                return {error: 'Could not create...'};
+                return { error: 'Could not create...' };
             })
         return jsonRes;
     }

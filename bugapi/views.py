@@ -118,6 +118,7 @@ class ProjectViewCreateClass(generics.CreateAPIView):
         currentUser = User.objects.get(pk=request.user.id)
 
         # Must add other required data
+        ## Always Set Creater as Owner and Developer!
         temp_data['owner'] = request.user.id
         temp_data['developers'] = [request.user.id]
         print(temp_data)

@@ -24,6 +24,14 @@ class ProjectModel(models.Model):
     class Meta:
         # Assending by end_date, nulls last.
         ordering = [F('end_date').asc(nulls_last=True)]
+        ## Owner must always be a developer, constraint!
+        # constraints = [models.CheckConstraint(
+        #     name="%(app_label)s_%(class)s_parent_project_or_parent_task",
+        #     check=(
+        #         Q(parent_project__isnull=True, parent_task__isnull=False)
+        #         | Q(parent_project__isnull=False, parent_task__isnull=True)
+        #     )
+        # )]
 
 # The idea is Projects are tied to users, and tasks to projects
 class TaskModel(models.Model):

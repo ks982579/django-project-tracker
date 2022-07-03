@@ -6,6 +6,7 @@ import ProjectCard from "./ProjectCard";
 import {ProjectNode, TaskNode} from "../store/linked-list";
 
 import AuthContext from "../store/auth-context";
+import AuthActions from "../../actions/auth-actions";
 
 // takes in 'onClick' and 'displayState' and 'onProjectClick'
 const OwnershipCard = props => {
@@ -15,25 +16,11 @@ const OwnershipCard = props => {
 
     //setFullDisplay(props.displayState)
 
-    useEffect(()=>{
+    useEffect(async ()=>{
         // TODO: Pull out the fetch()
         console.log("Fetching 'What I Own'")
-        if(ctx.isLoggedIn){
-            fetch('http://localhost:4000/api/what-i-own/', {
-                method: 'GET',
-                headers: {
-                    "Content-type": "application/json",
-                    "Authorization": `Token ${ctx.loginToken}`,
-                }
-            }).then(response => {
-                return response.json();
-            }).then(jsonData => {
-                //Set state with the data to properly render Component. 
-                setProjectsData(jsonData.map(data => {
-                    return ProjectNode.create(data);
-                })); 
-            })
-        }
+        const jsobj = await AuthActions.fetchWhatIOwn();
+        console.log(jsobj);
     },[])
 
     const manageClickHandler = (event) => {

@@ -7,6 +7,9 @@
 [x] - display ownership data
 [x] - display developers data
 
+//https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+We could shift files to in browser database. 
+
 [x] -> Create a Project!
     [x] - Move 'New Project' inside of <Dashboard/>
     [x] - Fixing Django Model to take in all information. 
