@@ -72,3 +72,8 @@ class TaskModel(models.Model):
                 | Q(parent_project__isnull=False, parent_task__isnull=True)
             )
         )]
+
+class DeveloperModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null=False, related_name="user_dev_set")
+    projects = models.ManyToManyField(TaskModel, related_name='dev_project_set')
+    tasks = models.ManyToManyField(TaskModel, related_name='dev_task_set')

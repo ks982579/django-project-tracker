@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from .models import ProjectModel, TaskModel
+from .models import ProjectModel, TaskModel, DeveloperModel
 from .serializers import ProjectSerializer, UserSerializer, TaskSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -80,7 +80,8 @@ class ProjectViewGetAllClass(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        return user.developer_set.all()
+        dev = DeveloperModel.objects.get(user=user)
+        return dev.dev_project_set.all()
 
         #return Response(all_tasks_serialized.data, status=status.HTTP_200_OK)
 
