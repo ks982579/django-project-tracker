@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from .models import ProjectModel, TaskModel, DeveloperModel
-from .serializers import ProjectSerializer, UserSerializer, TaskSerializer
+from .models import TaskModel
+from .serializers import UserSerializer, TaskSerializer
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 import json
@@ -64,92 +64,18 @@ class GetUserInfo(APIView):
             return Response(serialized_data.data)
         return Response({'login status': 'not logged in'})
 
-# localhost:8000/api/
-class ProjectViewGetAllClass(generics.ListAPIView):
-    """
-    Inherits from generics.ListAPIView, which has a 'get' method handler.
-    specify the 'queryset' and 'serializer_class' to return a
-    "Collection of Model Instances".
-    Altered get_queryset(self) so that we get what the developer is currently working on through self.request.user
-    """
-    #def get(self, request):
-    #queryset = ProjectModel.objects.filter(developers__pk=request.user.pk)
-    serializer_class = ProjectSerializer
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
+class NewProjectHandler(generics.CreateAPIView):
+    serializer_class = TaskSerializer
+    authentication_classes = [SessionAuthentication]
     permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        dev = DeveloperModel.objects.get(user=user)
-        return dev.dev_project_set.all()
+    # Slight modification of request data
+    def post(self, request, *args, **kwargs):
+        request_copy = request.copy()
+        setattr(request_copy.data, 'developers', [request.user.id])
+        return self.create(request_copy, *args, **kwargs)
 
-        #return Response(all_tasks_serialized.data, status=status.HTTP_200_OK)
-
-# localhost:9000/api/what-i-own/
-class ProjectViewGetOwnershipClass(generics.ListAPIView):
-    serializer_class = ProjectSerializer
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        print(user.ownership_set.all())
-        return user.ownership_set.all()
-
-# localhost:9000/api/create/
-class ProjectViewCreateClass(generics.CreateAPIView):
-    """
-    Provides 'post' method handler :)
-    The Mixin implements creating and saving new model instance.
-    Returns serialization and 201-created if successful
-    """
-    # Send in correct data and it posts it to database...
-    # It will ignore things it doesn't require.
-    # And reject if it has not what it requires 400 -> Bad Request
-    serializer_class = ProjectSerializer
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-    # Mostly Copied directly from CreateModelMixin
-    def create(self, request, *args, **kwargs):
-        # This will get form data, 'title' and 'sub_title'
-        temp_data = request.data
-
-        # Getting User Proper
-        currentUser = User.objects.get(pk=request.user.id)
-
-        # Must add other required data
-        ## Always Set Creater as Owner and Developer!
-        temp_data['owner'] = request.user.id
-        temp_data['developers'] = [request.user.id]
-        print(temp_data)
-        serializer = self.get_serializer(data=temp_data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-class ProjectViewUpdateClass(generics.UpdateAPIView):
-    """
-    Provides 'Put' and 'Patch' method handlers
-    """
-    lookup_field = 'pk'
-    queryset = ProjectModel.objects.all() #change to only user
-    serializer_class = ProjectSerializer
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
-# localhost:8000/api/destroy/<pk>
-class ProjectViewDestroyClass(generics.DestroyAPIView):
-    """
-    Provides 'Delete' method handler
-    """
-    lookup_field = 'pk'
-    queryset = ProjectModel.objects.all() #change to only user
-    serializer_class = ProjectSerializer
-    authentication_classes = [SessionAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-
+# localhost:4000/api/task-handler/
 class TaskHandler(APIView):
     """
     dispatch handler methods for CRUD operations
@@ -157,20 +83,48 @@ class TaskHandler(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    # localhost:8000/api/task-handler/ GET
+    def looper(self, query_set, serializer, spaces=""):
+        print("Starting looper() method...")
+        #creating function-variable
+        task_list = [] #instantiated this as parameter = messed everything up.
+        # loops through query data structures
+        for _x in query_set: #Extract individual Tasks
+            # Access their task query sets.
+            print(f'{spaces} {_x}')
+            subQuerySet = _x.parent_task_set.all() #Get SubQueries
+            serialized_task = serializer(_x, many=False) #Serialize Task
+            task_data = serialized_task.data.copy()
+
+            if len(subQuerySet) > 0:
+                #Task Object's children is a task list
+                # For some reason, Circular reference was happening unless we switched between json and python
+                task_data['children'] = json.loads(self.looper(subQuerySet, serializer, spaces=(spaces+">")))
+
+            task_list.append(task_data)
+        # Safest to pass String data out of function...
+        return json.dumps(task_list)
+
+    # localhost:8000/api/task-handler/ :: GET
     def get(self, request, format=None):
+        print('GET Started')
         #get user using pk from the request.user.id
         current_user = User.objects.get(pk=request.user.id)
         # Get all of user tasks
-        user_tasks = current_user.user_task_set.all()
-        # Serialize all information
-        serialized_tasks = TaskSerializer(user_tasks, many=True)
-        return Response(data=serialized_tasks.data, status=status.HTTP_200_OK)
+        user_tasks = current_user.user_task_set.all() # Returns Iterable
 
+        szd_tasks = json.loads(self.looper(user_tasks, TaskSerializer))
+        print('Back in GET, below are tasks generated by looper()')
+        return Response(data=szd_tasks, status=status.HTTP_200_OK)
+
+    #Still works as of 2022.07.07
     def post(self, request):
+        """
+        For creating a Task, we will require Parent Task ID
+        request.data.get('parent_task') = id
+        """
         # making TaskModel object.
         taskData = request.data
-        taskData.update({'developers': [request.user.id]})
+        #taskData.update({'developers': [request.user.id]}) #Not for creating a task
         serializer = TaskSerializer(data=taskData)
         if serializer.is_valid():
             serializer.save()
@@ -178,13 +132,9 @@ class TaskHandler(APIView):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return None
-    """
-    {
-        "developers": [1],
-        "parent_task": 3,
-        "task_name": "This is the way"
-    }
-    """
+#{"parent_task": 35, "task_name": "First task", "description": "Child to Second Project to test the Post Method"}
+
+    #Still Works as of 2022.07.07!
     def put(self, request):
         # Extract the data and keys to use
         data = request.data.copy()
@@ -192,6 +142,7 @@ class TaskHandler(APIView):
         # remove the 'id' key so we don't try to update it
         req_keys = data.keys()
         current_task = TaskModel.objects.get(pk=data.get('id'))
+        # Removing 'id' from data so we don't try to update it.
         del data['id']
         for _key in req_keys:
             # Models are objects, not dictionaries...
@@ -206,6 +157,9 @@ class TaskHandler(APIView):
         {"id": 4, "task_name": "I'll figure this out", "description": "", "end_date": null, "percent_complete": 1}
         {"id": 4, "task_name": "I'll figure this out", "description": "Update - try 3", "end_date": null, "percent_complete": 2}
         """
+
+# {"id": 37, "description": "Child to Second Project to test the Post Method; and now the PUT"}
+
     def delete(self, request):
         print(request.data)
         task_id = request.data.get('id')
