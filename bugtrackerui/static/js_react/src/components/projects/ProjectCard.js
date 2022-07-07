@@ -3,15 +3,16 @@ import React, { useState } from "react";
 import Card from "../ui/Card";
 
 //Taking ProjectNode and an 'onClick'
+// data = {id, task_name, description, start_date, ...
+// ... end_date, percent_complete, parent_task, developers, children}
 const ProjectCard = props => {
     console.log('Rendering <ProjectCard>')
-    let node = props.data;
-    let endDate = node.endDate;
+    let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete } = props.data;
 
     //endDate manipulation
     let endDateStr = 'TBD';
-    if (node.endDate != null || node.endDate != '') {
-        endDate = new Date(Date.parse(node.endDate)); //gets date object
+    if (endDate != null && endDate != '') {
+        endDate = new Date(Date.parse(endDate)); //gets date object
         const dateOptions = {
             month: 'short',
             day: 'numeric',
@@ -24,16 +25,16 @@ const ProjectCard = props => {
         }
         endDateStr = `${endDate.toLocaleDateString('en-gb', dateOptions)} @ ${endDate.toLocaleTimeString('en-gb', timeOptions)}`;
     }
-    //click comes from DeveloperCard or OwnershipCard
+    //click comes from DeveloperCard
     return (
         <Card onClick={props.onClick} data={props.data}>
-            <input type="hidden" value={node.id} />
-            <h3>{node.title}</h3>
-            <h4>{node.subTitle}</h4>
+            <input type="hidden" value={id} />
+            <h3>{taskName}</h3>
             <p>Due: {endDateStr}</p>
-            <p>Complete: {node.percentComplete / 100}%</p>
+            <p>Complete: {percentComplete / 100}%</p>
         </Card>
     )
 };
 
 export default ProjectCard;
+// X --> <DeveloperCard>

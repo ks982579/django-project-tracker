@@ -34,7 +34,6 @@ const Actions = {
 // }
 
 export const DevContextProvider = (props) => {
-    const [projectData, setProjectData] = useState([]);
     const [taskData, setTaskData] = useState([]);
     const [runUpdate, setRunUpdate] = useState(0);
     
@@ -53,22 +52,8 @@ export const DevContextProvider = (props) => {
         const newProjects = await AuthActions.fetchAllProjects();
         console.log(`fetching Projects -> ${newProjects}`)
         //created projects Linked List
-        let projectNodeList = newProjects.map(project => {
-            return ProjectNode.create(project);
-        })
-        setProjectData(projectNodeList);
+        setTaskData(newProjects);
         console.log('Projects Stored');
-
-        //Fetching TASKS
-        console.log('Fetching Tasks...');
-        const newTasks = await AuthActions.fetchAllData();
-        //creates LL of all tasks
-        // - But we want each project to have children tasks. 
-        let taskNodeList = newTasks.map(task => {
-            return TaskNode.create(task);
-        })
-        setTaskData(taskNodeList)
-        console.log('Tasks Stores...')
     }, [runUpdate]);
 
     // Must Update!
@@ -105,7 +90,7 @@ export const DevContextProvider = (props) => {
 
     return (
         <DevContext.Provider value={{
-            projectData: projectData,
+            projectData: taskData, // --> <DeveloperCard>
             taskData: taskData,
             update: callAPI,
             newTask: newTaskHandler,

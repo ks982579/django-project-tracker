@@ -1,3 +1,5 @@
+import copy
+
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
@@ -71,9 +73,12 @@ class NewProjectHandler(generics.CreateAPIView):
 
     # Slight modification of request data
     def post(self, request, *args, **kwargs):
-        request_copy = request.copy()
-        setattr(request_copy.data, 'developers', [request.user.id])
-        return self.create(request_copy, *args, **kwargs)
+        request.data._mutable = True
+        # data is QueryDict -> Immutable
+        # https://stackoverflow.com/questions/44717442/this-querydict-instance-is-immutable
+        request.data['developers'] = request.user.id
+        request.data._mutable = False
+        return self.create(request, *args, **kwargs)
 
 # localhost:4000/api/task-handler/
 class TaskHandler(APIView):

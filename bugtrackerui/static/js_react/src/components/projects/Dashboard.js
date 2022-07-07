@@ -3,7 +3,6 @@ import React, { useState, useReducer } from "react";
 //import other modules
 import DeveloperCard from "./DeveloperCard";
 import Card from "../ui/Card";
-import OwnershipCard from "./OwnershipCard";
 
 import styles from './Dashboard.module.css';
 import NewProjectCont from "./create_project/NewProjectCont";
@@ -44,9 +43,6 @@ const quickStyles = {
 const Dashboard = (props) => {
     // Reducer hook
     const [displayState, setDisplayState] = useReducer(displayReducer, initDisplayState)
-    
-    // we can double up on state's use to toggle components too!
-    const [managerSelected, setManagerSelected] = useState(false);
     // we can double up on state's use to toggle components too!
     const [projectSelected, setProjectSelected] = useState(false);
     
@@ -54,23 +50,11 @@ const Dashboard = (props) => {
     const newProjectHandler = event => {
         setDisplayState({type: 'NEW_PROJECT'})
     }
-    const clickManagementHandler = event => {
-        setDisplayState({type: 'MANAGEMENT'})
-        setProjectSelected(false);
-    }
     const clickDevelopmentHandler = event => {
         setDisplayState({type: 'DEVELOPMENT'})
-        setManagerSelected(false);
     }
-
-    //Clicking on internal Project Cards must render information. 
-    const onOwnerClickHandler = (event, jsonData) => {
-        setManagerSelected(jsonData);
-        setProjectSelected(false);
-    }
-    const onDeveloperClickHandler = (event, node) => {
-        setProjectSelected(node);
-        setManagerSelected(false);
+    const onDeveloperClickHandler = (event, data) => {
+        setProjectSelected(data); //OG API data
     }
     
     return (
@@ -86,12 +70,10 @@ const Dashboard = (props) => {
                         <h2 onClick={newProjectHandler}>New Project +</h2>
                         {displayState.newProject && <NewProjectCont/>}
                     </Card>
-                    <OwnershipCard onClick={clickManagementHandler} onProjectClick={onOwnerClickHandler} displayState={displayState.management} />
                     <DeveloperCard onClick={clickDevelopmentHandler} onProjectClick={onDeveloperClickHandler} displayState={displayState.development} />
                 </div>
                 <div>
                     <p>for the actual projects / maybe 'New Project+' form?</p>
-                    {managerSelected && <ProjectEditScreen selected={managerSelected}/>}
                     {projectSelected && <TaskDisplayScreen selected={projectSelected}/>}
                 </div>
             </div>

@@ -13,50 +13,27 @@ import styles from './TaskView.module.css';
 const TaskView = (props) => {
     const devContext = useContext(DevContext);
     // for creating new tasks, must have parent
-    let parentID;
+    let parentID = props.parentID;
     let idCheck;
     let returnedJSX= []
 
-    //Setting ID variables for component
-    if(props.parentProject){
-        parentID = {parentProject: props.parentProject};
-        idCheck = parentID.parentProject;
-        for(let _efk of devContext.taskData){
-            if(idCheck == _efk.parentProject){
-                returnedJSX.push(<TaskDetails node={_efk}/>);
-            }
+    try{
+        for(let _efk of props.kids){
+            console.log(JSON.stringify(_efk))
+            returnedJSX.push(<TaskDetails data={_efk}/>)
         }
-    } else if(props.parentTask) {
-        parentID = {parentTask: props.parentTask};
-        idCheck = parentID.parentTask;
-        for(let _efk of devContext.taskData){
-            if(idCheck == _efk.parentTask){
-                returnedJSX.push(<TaskDetails node={_efk}/>);
-            }
-        }
-    } else {
-        console.error(`<TaskView> received no parent information`);
+    } catch(error) {
+        console.warn(error);
     }
 
-    //For ReRenders, logic at bottom
-    const [parentState, setParentState] = useState(idCheck);
-
-    const createTaskHandler = (jsonObj) => {
-        devContext.newTask(jsonObj);
-        //Should cause rerender!
-    }
-
-    /* if the Parent ID changes, we need to create a new
-    ** Linked List from DevContext.
-    */
-    if(idCheck != parentState) {
-        setParentState(idCheck);
+    const createTaskHandler = () => {
+        console.log('Accidently Deleted this....')
     }
 
     return (
         <Card className={styles['the-view']}>
             <sup>&lt;TaskView&gt;</sup><br/>
-            <b>{props.parentName} Tasks...</b>
+            <b>Tasks...</b>
             {returnedJSX}
             <CreateNewTask parent={parentID} saveNewTask={createTaskHandler} />
         </Card>

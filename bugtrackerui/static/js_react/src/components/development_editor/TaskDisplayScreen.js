@@ -2,6 +2,7 @@ import React from "react";
 
 import TaskView from "./TaskView";
 import Card from "../ui/Card";
+import TaskDetails from "./TaskDetails";
 /* 
 * Get project Information 
 * Display Tasks to project
@@ -10,17 +11,10 @@ import Card from "../ui/Card";
 // takes in props.selected = project NOde object
 //[id, title, subTitle, startDate, endDate, percentComplete, owner, developers[]]
 const TaskDisplayScreen = (props) => {
-    let returnedJSX = (
-        <>
-            <p>props.selected.title</p>
-            <p>props.selected.subTitle</p>
-        </>
-    )
     return (
         <Card>
             <sup>&lt;TaskDisplayScreen&gt;</sup><br/>
-            {returnedJSX}
-            <TaskView parentProject={props.selected.id} parentName={props.selected.title} />
+            <TaskDetails data={props.selected} init={true}/>
         </Card>
     )
 }

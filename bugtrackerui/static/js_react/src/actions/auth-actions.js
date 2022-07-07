@@ -135,7 +135,7 @@ const AuthActions = {
         } //GET/HEAD methods cannot have body...
 
         // Fetching Data!
-        const jsonRes = fetch(`${DOMAIN}api/`, reqOptions)
+        const jsonRes = fetch(`${DOMAIN}api/task-handler/`, reqOptions)
             .then(response => {
                 return response.json();
             }).then(data => {
@@ -146,6 +146,7 @@ const AuthActions = {
                 return null;
             });
         return jsonRes;
+        // X --> dev-context.js
     },
     fetchAllData: () => {
         /**

@@ -14,8 +14,8 @@ const DumbDetails = (props) => {
     return (
         <div className={styles['dumb-details']}>
             <sup>&lt;DumbDetails&gt;</sup><br/>
-            <p>{props.node.description}</p>
-            <TaskView parentTask={props.node.id} parentName={props.node.name}/>
+            <p>{props.data.description}</p>
+            <TaskView parentID={props.data.id} kids={props.data.children}/>
         </div>
     )
 }
@@ -26,9 +26,9 @@ const DumbDetails = (props) => {
 */
 // Perhaps 'expansion' triggers form for updating?
 const TaskDetails = (props) => {
-    const [expansion, setExpansion] = useState(false);
+    const [expansion, setExpansion] = useState(props.init === true ? true : false);
     const [editState, setEditState] = useState(false);
-    let node = props.node
+    let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete } = props.data;
 
     const clickHandler = () => {
         setExpansion(!expansion);
@@ -50,8 +50,8 @@ const TaskDetails = (props) => {
             <div className={styles.placard}>
                 <div>
                     <sup>&lt;TaskDetails&gt;</sup><br/>
-                    <b>{node.name}</b>
-                    <p>{node.percentComplete/100}% complete</p>
+                    <b>{taskName}</b>
+                    <p>{percentComplete/100}% complete</p>
                 </div>
                 <div>
                     <button onClick={editButtonHandler}>
@@ -59,8 +59,8 @@ const TaskDetails = (props) => {
                     </button>
                 </div>
             </div>
-            {editState && <TaskEditorForm node={node} toggleForm={editButtonHandler} />}
-            {expansion && <DumbDetails node={node} />}
+            {editState && <TaskEditorForm data={props.data} toggleForm={editButtonHandler} />}
+            {expansion && <DumbDetails data={props.data} />}
         </Card>
     )
 };
