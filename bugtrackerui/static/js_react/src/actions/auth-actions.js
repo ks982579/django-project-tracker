@@ -188,15 +188,10 @@ const AuthActions = {
         const data = new FormData(rawFormData); //rawFormData = event.target;
 
         const dataObj = {
+            parent_task: parentID,
             task_name: data.get('taskName'),
             description: data.get('description'),
         }
-        console.log(parentID)
-        if (parentID.parentProject) {
-            dataObj['parent_project'] = parentID.parentProject;
-        } else if (parentID.parentTask) {
-            dataObj['parent_task'] = parentID.parentTask;
-        };
         //Construct Request
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
@@ -221,6 +216,7 @@ const AuthActions = {
                 return { error: 'Could not create...' };
             })
         return jsonRes;
+        // X --> <CreateNewTask>
     },
 
     deleteTask: (parentID, htmlForm) => {

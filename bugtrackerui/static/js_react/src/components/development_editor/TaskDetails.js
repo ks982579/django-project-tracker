@@ -1,6 +1,5 @@
 import React, {useState, useContext} from "react";
 import Card from "../ui/Card";
-import {ProjectNode, TaskNode} from "../store/linked-list";
 import TaskView from "./TaskView";
 import AuthActions from "../../actions/auth-actions";
 import TaskEditorForm from "./task_form_editor/TaskEditorForm";
@@ -20,7 +19,7 @@ const DumbDetails = (props) => {
     )
 }
 
-//Takes in props.node = node (TaskNode)
+
 /* {id, name, description, startDate, 
 ** endDate, percentComplete, parentProject, parentTask, developers}
 */

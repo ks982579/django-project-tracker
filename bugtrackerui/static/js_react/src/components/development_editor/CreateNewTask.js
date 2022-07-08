@@ -48,12 +48,13 @@ const CreateNewTask = (props) =>{
     }
 
     const formJSX  = (
-        <form onSubmit={submitHandler} onClick={stopIt} onKeyUp={keyUps}>
+        <form onSubmit={submitHandler} onClick={stopIt}>
             <CookieMonster/>
             <input type='text' placeholder="Task Name..." name="taskName"/>
+            <br/><br/>
             <textarea name="description"
                 placeholder="Description..."
-                rows="5" cols="10"
+                rows="5" cols="50"
                 autoCorrect="off"
                 spellCheck="true" />
             <input type='submit' />

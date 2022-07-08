@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useReducer, cloneElement } from "react";
 
 import AuthActions from "../../actions/auth-actions";
-import OwnershipCard from "../projects/OwnershipCard";
-import { ProjectNode, TaskNode } from "./linked-list";
 
 const DevContext = React.createContext({
     projectData: [],
-    taskData: [],
     update: {},
     newTask: {},
     updateTask: {},
@@ -33,6 +30,34 @@ const Actions = {
 //     }
 // }
 
+// Will return Pointer to correct Object
+const findTask = (taskID, taskTree) => {
+    if(Array.isArray(taskTree)){
+        for(let _efk of taskTree){
+            // if this kid is correct, return it
+            if(_efk.id === taskID){
+                return _efk;
+            // else, if kid has kids, check them
+            } else if(_efk.children != null && _efk.children != undefined){
+                // Pass in the children to search -> Array
+                let _x = findTask(taskID, _efk.children)
+                if(_x !== null){
+                    return _x;
+                }
+            // Else, move to next in list
+            } else {
+                continue;
+            }
+        }
+    } else {
+        if(taskTree.id === taskID){
+            return taskTree;
+        }
+    }
+    // If no kids were picked, return null
+    return null;
+}
+
 export const DevContextProvider = (props) => {
     const [taskData, setTaskData] = useState([]);
     const [runUpdate, setRunUpdate] = useState(0);
@@ -58,9 +83,24 @@ export const DevContextProvider = (props) => {
 
     // Must Update!
     const newTaskHandler = (newTaskObj) => {
-        setTaskData((prevState)=> {
-            let newTaskNode = TaskNode.create(newTaskObj);
-            return [...prevState, newTaskNode];
+        setTaskData((prevState) => {
+            // Copy state via JSON - Other methods created errors
+            const jsonCopy = JSON.stringify(prevState);
+            const stateCopy = JSON.parse(jsonCopy);
+            
+            //Get correct task in copied state. 
+            const foundTask = findTask(newTaskObj.parent_task, stateCopy);
+            
+            if(foundTask){
+                if(foundTask.children){
+                    foundTask.children.push(newTaskObj);
+                } else {
+                    // If first child, we create a new list for children
+                    foundTask.children = [newTaskObj];
+                }
+            }
+            // Return updated Copied State!
+            return stateCopy;
         });
     }
 
@@ -91,7 +131,6 @@ export const DevContextProvider = (props) => {
     return (
         <DevContext.Provider value={{
             projectData: taskData, // --> <DeveloperCard>
-            taskData: taskData,
             update: callAPI,
             newTask: newTaskHandler,
             updateTask: updateTaskHandler,

@@ -129,6 +129,7 @@ class TaskHandler(APIView):
         """
         # making TaskModel object.
         taskData = request.data
+        print(json.dumps(taskData))
         #taskData.update({'developers': [request.user.id]}) #Not for creating a task
         serializer = TaskSerializer(data=taskData)
         if serializer.is_valid():

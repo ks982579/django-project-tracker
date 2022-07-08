@@ -19,21 +19,24 @@ const TaskView = (props) => {
 
     try{
         for(let _efk of props.kids){
-            console.log(JSON.stringify(_efk))
             returnedJSX.push(<TaskDetails data={_efk}/>)
         }
     } catch(error) {
         console.warn(error);
     }
 
-    const createTaskHandler = () => {
-        console.log('Accidently Deleted this....')
+    const createTaskHandler = (newObj) => {
+        devContext.newTask(newObj);
+    }
+    const logContext = () => {
+        console.log(JSON.stringify(devContext.projectData))
     }
 
     return (
         <Card className={styles['the-view']}>
             <sup>&lt;TaskView&gt;</sup><br/>
             <b>Tasks...</b>
+            <button onClick={logContext}>Context</button>
             {returnedJSX}
             <CreateNewTask parent={parentID} saveNewTask={createTaskHandler} />
         </Card>
