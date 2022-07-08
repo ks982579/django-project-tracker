@@ -61,20 +61,26 @@ const AuthActions = {
     },
     // Once Logged in, we can retrieve projects.
 
-    newProject: (jsonPackage, csrfToken) => {
+    newProject: (rawFormData) => {
+        //Extract Data from from
+        const formData = new FormData(rawFormData);
+        const dataObj = {
+            task_name: formData.get('taskName')
+        }
+
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
         httpHeader.append('Accept', 'application/json');
-        httpHeader.append('X-CSRFtoken', csrfToken);
+        httpHeader.append('X-CSRFtoken', formData.get('csrftoken'));
 
         console.log(httpHeader.entries())
         const reqOptions = {
             method: 'POST',
             headers: httpHeader,
-            body: jsonPackage,
+            body: JSON.stringify(dataObj),
         }
 
-        const jsonRes = fetch(`${DOMAIN}api/create/`, reqOptions)
+        const jsonRes = fetch(`${DOMAIN}api/new-project-handler/`, reqOptions)
             .then(response => {
                 return response.json();
             }).then(data => {
@@ -86,6 +92,7 @@ const AuthActions = {
             })
         console.log(typeof jsonRes);
         return jsonRes;
+        // X --> <NewProjectCont>
     },
 
     fetchWhatIOwn: () => {

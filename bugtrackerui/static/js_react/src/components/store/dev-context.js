@@ -5,6 +5,7 @@ import AuthActions from "../../actions/auth-actions";
 const DevContext = React.createContext({
     projectData: [],
     update: {},
+    newProject: {},
     newTask: {},
     updateTask: {},
     deleteTask: {},
@@ -81,7 +82,19 @@ export const DevContextProvider = (props) => {
         console.log('Projects Stored');
     }, [runUpdate]);
 
-    // Must Update!
+    const newProjectHandler = (newProjectData) => {
+        setTaskData((prevState)=>{
+            //Copy
+            const jsonCopy = JSON.stringify(prevState);
+            const stateCopy = JSON.parse(jsonCopy);
+            
+            //Perhaps Sorting by due date later...
+            stateCopy.push(newProjectData);
+            return stateCopy;
+        });
+    }
+
+    // Works as of 2022.07.08
     const newTaskHandler = (newTaskObj) => {
         setTaskData((prevState) => {
             // Copy state via JSON - Other methods created errors
@@ -132,6 +145,7 @@ export const DevContextProvider = (props) => {
         <DevContext.Provider value={{
             projectData: taskData, // --> <DeveloperCard>
             update: callAPI,
+            newProject: newProjectHandler,
             newTask: newTaskHandler,
             updateTask: updateTaskHandler,
             deleteTask: deleteTaskHandler,

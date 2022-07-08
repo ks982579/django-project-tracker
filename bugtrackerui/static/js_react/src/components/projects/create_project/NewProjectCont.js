@@ -1,25 +1,21 @@
-import React from "react";
+import React, {useContext} from "react";
 import ReactDOM from "react-dom";
 import CookieMonster from "../../CookieMonster";
 
 import Card from "../../ui/Card";
 
 import AuthActions from "../../../actions/auth-actions";
+import DevContext from "../../store/dev-context";
 
 const NewProjectCont = () => {
+    const devContext = useContext(DevContext);
     //Submit Handler
     const newProjectSubmitHandler = event => {
         event.preventDefault();
 
-        //create FormData object ---> S/B in AuthActions!
-        const data = new FormData(event.target)
-        const dataObj = {
-            title: data.get('title'),
-            sub_title: data.get('sub_title'),
-        }
-        const jsonObj = JSON.stringify(dataObj)
-        const csrfToken = data.get('csrftoken');
-        AuthActions.newProject(jsonObj, csrfToken);
+        const newProject = AuthActions.newProject(event.target);
+        devContext.newProject(newProject);
+
         //There's no update for components?
     }
 
@@ -30,10 +26,7 @@ const NewProjectCont = () => {
                 <form onSubmit={newProjectSubmitHandler}>
                     <CookieMonster/>
                     <div>
-                        <input type="text" placeholder="Title" name="title" />
-                    </div>
-                    <div>
-                        <input type="text" placeholder="Sub-Title" name="sub_title" />
+                        <input type="text" placeholder="Project Name" name="taskName" />
                     </div>
                     <div>
                         <input type="submit" value='Submit' />
@@ -45,3 +38,4 @@ const NewProjectCont = () => {
 }
 
 export default NewProjectCont;
+// X --> <Dashboard>

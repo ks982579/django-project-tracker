@@ -72,12 +72,24 @@ class NewProjectHandler(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     # Slight modification of request data
+    @method_decorator(requires_csrf_token)
     def post(self, request, *args, **kwargs):
-        request.data._mutable = True
+        # from React request.POST is an empty QueryDict, not from DRF
+        try:
+            request.data._mutable = True
+        except:
+            pass
         # data is QueryDict -> Immutable
         # https://stackoverflow.com/questions/44717442/this-querydict-instance-is-immutable
-        request.data['developers'] = request.user.id
-        request.data._mutable = False
+        request.data['developers'] = [request.user.id]
+        # for the DRF from -> Throws an error it was expecting a pk value
+        # React requires it to be in a list though... ?
+        # https://docs.djangoproject.com/en/4.0/ref/request-response/
+        # Difference is probably posting raw form data
+        try:
+            request.data._mutable = False
+        except:
+            pass
         return self.create(request, *args, **kwargs)
 
 # localhost:4000/api/task-handler/
