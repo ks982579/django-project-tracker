@@ -8,6 +8,7 @@ import DevContext from "../store/dev-context";
 
 // takes in 'onClick' and 'displayState' and 'onProjectClick'
 const DeveloperCard = props => {
+    console.log("<DeveloperCard>")
     const ctx = useContext(AuthContext);
     const devctx = useContext(DevContext);
     //const [projectsData, setProjectsData] = useState([])
@@ -25,7 +26,8 @@ const DeveloperCard = props => {
     //Don't map unless you have data to map too!
     if(props.displayState && devctx.projectData.length > 0){
         developerCards = devctx.projectData.map(data => {
-            return <ProjectCard data={data} onClick={props.onProjectClick} />
+            console.log(`%cCreating Project ID: ${data.id}`, "color:green; font-weight: 800;");
+            return <ProjectCard key={data.id} data={data} onClick={props.onProjectClick} />
         });
     }
     return (

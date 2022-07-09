@@ -14,7 +14,7 @@ const DumbDetails = (props) => {
         <div className={styles['dumb-details']}>
             <sup>&lt;DumbDetails&gt;</sup><br/>
             <p>{props.data.description}</p>
-            <TaskView parentID={props.data.id} kids={props.data.children}/>
+            <TaskView parentID={props.data.id} kids={props.data.children} whichProject={props.whichProject}/>
         </div>
     )
 }
@@ -25,6 +25,7 @@ const DumbDetails = (props) => {
 */
 // Perhaps 'expansion' triggers form for updating?
 const TaskDetails = (props) => {
+    console.log(`%cInit <TaskDetails> ID: ${props.data.id}`, "background-color: lightpink; color: whitesmoke;")
     const [expansion, setExpansion] = useState(props.init === true ? true : false);
     const [editState, setEditState] = useState(false);
     let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete } = props.data;
@@ -58,8 +59,8 @@ const TaskDetails = (props) => {
                     </button>
                 </div>
             </div>
-            {editState && <TaskEditorForm data={props.data} toggleForm={editButtonHandler} />}
-            {expansion && <DumbDetails data={props.data} />}
+            {editState && <TaskEditorForm data={props.data} toggleForm={editButtonHandler} whichProject={props.whichProject}/>}
+            {expansion && <DumbDetails data={props.data} whichProject={props.whichProject}/>}
         </Card>
     )
 };

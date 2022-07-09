@@ -24,7 +24,7 @@ const TaskDisplayScreen = (props) => {
     return (
         <Card>
             <sup>&lt;TaskDisplayScreen&gt;</sup><br/>
-            <TaskDetails data={properData[0]} init={true}/>
+            <TaskDetails data={properData[0]} init={true} whichProject={props.whichProject}/>
         </Card>
     )
 }

@@ -59,6 +59,10 @@ const findTask = (taskID, taskTree) => {
     return null;
 }
 
+function deepCopy(objectToCopy){
+    return JSON.parse(JSON.stringify(objectToCopy));
+}
+
 export const DevContextProvider = (props) => {
     const [taskData, setTaskData] = useState([]);
     const [runUpdate, setRunUpdate] = useState(0);
@@ -117,24 +121,50 @@ export const DevContextProvider = (props) => {
         });
     }
 
-    const updateTaskHandler = taskNode => {
-        //
+    const updateTaskHandler = rawData => {
+        /**
+         * The API has updated the data in the backend
+         * and provided a response.
+         * Now just replace the data here. 
+         */
+        console.log("RAWDATA");
+        console.log(JSON.stringify(rawData));
         setTaskData((prevState) => {
             //Making a Copy of state
-            let newState = prevState.map((_task)=>{
-                if(_task.id == taskNode.id){
-                    return taskNode;
+            let copyState = deepCopy(prevState);
+
+            // Get task -> Pointer to Memory Location?
+            const foundTask = findTask(rawData.id, copyState);
+
+            // Reassign values :) - preserves memory location
+            for(let _y in foundTask){
+                if(_y == "id" || _y == "children"){
+                    continue;
                 } else {
-                    return _task;
+                    foundTask[_y] = rawData[_y];
                 }
-            });
-            return newState;
+            }
+
+            //Return updated state
+            return copyState;
         })
     }
 
-    const deleteTaskHandler = (taskID) => {
+    const deleteTaskHandler = (deleteID, parentID = null) => {
+        console.log(`%cInit Deletion of ${deleteID}`,"background-color: yellow; color: firebrick;")
         setTaskData((prevState) => {
-            return prevState.filter(taskNode => taskNode.id != taskID);
+            const copyState = deepCopy(prevState);
+            if(parentID === null){
+                // Exclude the state - Garbage collection should delete it
+                return copyState.filter(task => task.id != deleteID);
+            } else {
+                // find parent
+                const foundRent = findTask(parentID, copyState);
+                const indexToDel = foundRent.children.findIndex(_efk => _efk.id === deleteID);
+                // Delete the child
+                delete foundRent.children[indexToDel];
+                return copyState;
+            }
         })
     }
 

@@ -14,12 +14,11 @@ const TaskView = (props) => {
     const devContext = useContext(DevContext);
     // for creating new tasks, must have parent
     let parentID = props.parentID;
-    let idCheck;
     let returnedJSX= []
 
     try{
         for(let _efk of props.kids){
-            returnedJSX.push(<TaskDetails data={_efk}/>)
+            returnedJSX.push(<TaskDetails key={_efk.id} data={_efk}/>)
         }
     } catch(error) {
         console.warn(error);

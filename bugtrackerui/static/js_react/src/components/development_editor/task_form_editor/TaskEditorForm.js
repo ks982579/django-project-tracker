@@ -21,7 +21,7 @@ const varDump = event => {
 }
 
 const TaskEditorForm = (props) => {
-    let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete } = props.data;
+    let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete, 'parent_task':parentID } = props.data;
     const devContext = useContext(DevContext);
 
     const stopProp = event => {
@@ -34,14 +34,17 @@ const TaskEditorForm = (props) => {
         props.toggleForm(event);
     }
 
-    const deleteClickHandler = async event => {
+    const deleteClickHandler = async (event) => {
         stopProp(event);
         event.preventDefault();
+        // id is scoped to component (not cleanest)
         const response = await AuthActions.deleteTask(id, event.target.form);
+        console.log(JSON.stringify(response));
         if(response==204){
             //204 = No Content; sent back if everything is OK!
             try{
-                devContext.deleteTask(id);
+                devContext.deleteTask(id, parentID);
+                props.whichProject(false);
             } catch(error){
                 console.error(`Unable to delete Tasks - Frontend error: ${error}`)    
             }
@@ -58,11 +61,8 @@ const TaskEditorForm = (props) => {
         //Fetching complete JSON Object from Server
         let response = await AuthActions.updateTask(id, event.target);
 
-        //Transform back into Task Node
-        const updatedTask = TaskNode.create(response);
-
         //Update Context -> Causes a reRender
-        devContext.updateTask(updatedTask);
+        devContext.updateTask(response);
 
         //Close Editor
         props.toggleForm(event);

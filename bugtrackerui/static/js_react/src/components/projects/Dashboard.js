@@ -74,7 +74,7 @@ const Dashboard = (props) => {
                 </div>
                 <div>
                     <p>for the actual projects / maybe 'New Project+' form?</p>
-                    {projectSelected && <TaskDisplayScreen selected={projectSelected}/>}
+                    {projectSelected && <TaskDisplayScreen selected={projectSelected} whichProject={setProjectSelected}/>}
                 </div>
             </div>
         </Card>
@@ -82,3 +82,7 @@ const Dashboard = (props) => {
 };
 
 export default Dashboard;
+
+/**
+ * passing in setProjectSelected because deleting functionality needs to reset it to false!
+ */
