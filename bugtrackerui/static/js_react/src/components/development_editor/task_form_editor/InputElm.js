@@ -20,7 +20,9 @@ const InputElm = props => {
         setElmVal(prevState =>{
             return event.target.value;
         })
+        console.log(event.target.value);
     }
+    console.log(typeof elmVal);
 
     return (
         <>

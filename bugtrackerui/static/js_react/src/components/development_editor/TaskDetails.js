@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import Card from "../ui/Card";
 import TaskView from "./TaskView";
 import AuthActions from "../../actions/auth-actions";
@@ -12,9 +12,9 @@ import CookieMonster from "../CookieMonster";
 const DumbDetails = (props) => {
     return (
         <div className={styles['dumb-details']}>
-            <sup>&lt;DumbDetails&gt;</sup><br/>
+            <sup>&lt;DumbDetails&gt;</sup><br />
             <p>{props.data.description}</p>
-            <TaskView parentID={props.data.id} kids={props.data.children} whichProject={props.whichProject}/>
+            <TaskView parentID={props.data.id} kids={props.data.children} whichProject={props.whichProject} />
         </div>
     )
 }
@@ -28,7 +28,34 @@ const TaskDetails = (props) => {
     console.log(`%cInit <TaskDetails> ID: ${props.data.id}`, "background-color: lightpink; color: whitesmoke;")
     const [expansion, setExpansion] = useState(props.init === true ? true : false);
     const [editState, setEditState] = useState(false);
-    let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete } = props.data;
+    let { id, 'task_name': taskName, description, 'start_date': startDate, 'end_date': endDate, 'percent_complete': percentComplete } = props.data;
+
+    // Fixing endDate
+    if (endDate == null) {
+        endDate = 'TBA';
+    } else {
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
+        console.log(endDate);
+        endDate = new Date(endDate);
+        let localesFormat = 'en-GB';
+
+        let timeFormatOptions = {
+            timeStyle: 'short'
+        }
+        let timeFormat = new Intl.DateTimeFormat(localesFormat, timeFormatOptions);
+        console.log(endDate)
+        const _time = timeFormat.format(endDate)
+
+        let dateFormatOptions = {
+            dateStyle: 'short'
+        }
+
+        let dateFormat = new Intl.DateTimeFormat(localesFormat, dateFormatOptions)
+
+        let _date = dateFormat.format(endDate)
+
+        endDate = `${_date} @ ${_time}`;
+    }
 
     const clickHandler = () => {
         setExpansion(!expansion);
@@ -36,8 +63,8 @@ const TaskDetails = (props) => {
 
     const editButtonHandler = event => {
         event.stopPropagation();
-        setEditState((prevState)=>{
-            if(prevState){
+        setEditState((prevState) => {
+            if (prevState) {
                 return false;
             } else {
                 return true;
@@ -45,13 +72,19 @@ const TaskDetails = (props) => {
         })
     }
 
-    return(
+    return (
         <Card className={styles['task-details']} onClick={clickHandler}>
             <div className={styles.placard}>
-                <div>
-                    <sup>&lt;TaskDetails&gt;</sup><br/>
-                    <b>{taskName}</b>
-                    <p>{percentComplete/100}% complete</p>
+                <div className={styles.placard}>
+                    <div>
+                        <sup>&lt;TaskDetails&gt;</sup><br />
+                        <b>{taskName}</b>
+                        <p>{percentComplete / 100}% complete</p>
+                    </div>
+                    <div>
+                        <p>Start: {startDate}</p>
+                        <p>Due: {endDate}</p>
+                    </div>
                 </div>
                 <div>
                     <button onClick={editButtonHandler}>
@@ -59,8 +92,8 @@ const TaskDetails = (props) => {
                     </button>
                 </div>
             </div>
-            {editState && <TaskEditorForm data={props.data} toggleForm={editButtonHandler} whichProject={props.whichProject}/>}
-            {expansion && <DumbDetails data={props.data} whichProject={props.whichProject}/>}
+            {editState && <TaskEditorForm data={props.data} toggleForm={editButtonHandler} whichProject={props.whichProject} />}
+            {expansion && <DumbDetails data={props.data} whichProject={props.whichProject} />}
         </Card>
     )
 };

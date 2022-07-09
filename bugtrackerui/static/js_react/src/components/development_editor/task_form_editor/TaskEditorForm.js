@@ -24,6 +24,9 @@ const TaskEditorForm = (props) => {
     let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete, 'parent_task':parentID } = props.data;
     const devContext = useContext(DevContext);
 
+    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local
+    endDate = new Date(endDate);
+    
     const stopProp = event => {
         event.stopPropagation();
     }
@@ -77,7 +80,7 @@ const TaskEditorForm = (props) => {
             <div className={styles['form-grid']}>
                 <InputElm elmID="name" elmType="text" elmVal={taskName}>Task Name:</InputElm>
                 <TextAreaElm elmID="description" elmVal={description}>Description:</TextAreaElm>
-                <InputElm elmID="endDate" elmType="datetime-local" elmVal={endDate}>End Date:</InputElm>
+                <InputElm elmID="endDate" elmType="datetime-local" elmVal={endDate.toISOString()}>End Date:</InputElm>
                 <RangeElm elmID="percentComplete" elmVal={percentComplete}>Complete:</RangeElm>
             </div>
             <div>

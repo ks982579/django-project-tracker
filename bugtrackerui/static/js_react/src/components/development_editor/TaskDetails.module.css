@@ -8,6 +8,8 @@
 }
 
 .placard {
+    width: 100%;
+    padding: 0.25rem;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
