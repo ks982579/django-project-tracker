@@ -24,9 +24,6 @@ const varDump = event => {
 const TaskEditorForm = (props) => {
     let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete, 'parent_task':parentID } = props.data;
     const devContext = useContext(DevContext);
-
-    // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local
-    endDate = new Date(endDate);
     
     const stopProp = event => {
         event.stopPropagation();
