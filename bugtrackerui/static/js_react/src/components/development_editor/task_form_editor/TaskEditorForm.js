@@ -9,6 +9,7 @@ import InputElm from "./InputElm";
 import RangeElm from "./RangeElm";
 import TextAreaElm from "./TextAreaElm";
 import { TaskNode } from "../../store/linked-list";
+import DatetimeElm from "./DatetimeElm";
 
 const varDump = event => {
     const format = {
@@ -80,7 +81,7 @@ const TaskEditorForm = (props) => {
             <div className={styles['form-grid']}>
                 <InputElm elmID="name" elmType="text" elmVal={taskName}>Task Name:</InputElm>
                 <TextAreaElm elmID="description" elmVal={description}>Description:</TextAreaElm>
-                <InputElm elmID="endDate" elmType="datetime-local" elmVal={endDate.toISOString()}>End Date:</InputElm>
+                <DatetimeElm elmID="endDate" elmVal={endDate}>End Date:</DatetimeElm>
                 <RangeElm elmID="percentComplete" elmVal={percentComplete}>Complete:</RangeElm>
             </div>
             <div>

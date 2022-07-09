@@ -87,13 +87,14 @@ export const DevContextProvider = (props) => {
     }, [runUpdate]);
 
     const newProjectHandler = (newProjectData) => {
+        console.log("New Project Handler at work")
         setTaskData((prevState)=>{
-            //Copy
-            const jsonCopy = JSON.stringify(prevState);
-            const stateCopy = JSON.parse(jsonCopy);
+            // Copy
+            const stateCopy = deepCopy(prevState)
             
             //Perhaps Sorting by due date later...
             stateCopy.push(newProjectData);
+
             return stateCopy;
         });
     }

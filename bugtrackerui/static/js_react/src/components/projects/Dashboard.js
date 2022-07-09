@@ -22,7 +22,7 @@ let initDisplayState = {
 
 const displayReducer = (prevState, action) => {
     if (action.type === 'NEW_PROJECT') {
-        return { ...initDisplayState, newProject: true }
+        return { ...initDisplayState, newProject: !prevState.newProject }
     } else if(action.type === 'MANAGEMENT') {
         return {...initDisplayState, management: true}
     } else if(action.type === 'DEVELOPMENT') {
@@ -68,7 +68,7 @@ const Dashboard = (props) => {
                 <div>
                     <Card>
                         <h2 onClick={newProjectHandler}>New Project +</h2>
-                        {displayState.newProject && <NewProjectCont/>}
+                        {displayState.newProject && <NewProjectCont setDisplay={newProjectHandler}/>}
                     </Card>
                     <DeveloperCard onClick={clickDevelopmentHandler} onProjectClick={onDeveloperClickHandler} displayState={displayState.development} />
                 </div>
