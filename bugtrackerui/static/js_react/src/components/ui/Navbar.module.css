@@ -10,6 +10,10 @@
     padding: 0 1rem;
     margin: 0.5rem;
 }
+.layout {
+    display: flex;
+    flex-direction: row;
+}
 .div-buttons {
     cursor: pointer;
     padding: 0.5rem;

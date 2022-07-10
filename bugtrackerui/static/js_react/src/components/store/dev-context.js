@@ -70,9 +70,14 @@ export const DevContextProvider = (props) => {
     // Context Start Now!!!
     console.log('Running DevContextProvider')
 
-    const callAPI = () => {
+    const callAPI = async () => {
         console.log(`%cCalling API...`, "background-color: black; color: red;")
-        setRunUpdate((runUpdate + 1) % 2)
+        //setRunUpdate((runUpdate + 1) % 2)
+        const newProjects = await AuthActions.fetchAllProjects();
+        console.log('projects fetched');
+        setTaskData(newProjects);
+        console.log('Projects Stored');
+        return true;
     }
 
     //Check if user is already logged in
@@ -141,6 +146,9 @@ export const DevContextProvider = (props) => {
             for(let _y in foundTask){
                 if(_y == "id" || _y == "children"){
                     continue;
+                } else if(_y == "end_date"){
+                    let endDate = new Date(rawData[_y]);
+                    foundTask[_y] = endDate.toISOString();
                 } else {
                     foundTask[_y] = rawData[_y];
                 }

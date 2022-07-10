@@ -50,7 +50,6 @@ const DatetimeElm = props => {
         setElmVal(prevState => {
             return event.target.value;
         })
-        console.log(event.target.value);
     }
 
     return (

@@ -8,7 +8,6 @@ import styles from "../TaskDetails.module.css";
 import InputElm from "./InputElm";
 import RangeElm from "./RangeElm";
 import TextAreaElm from "./TextAreaElm";
-import { TaskNode } from "../../store/linked-list";
 import DatetimeElm from "./DatetimeElm";
 
 const varDump = event => {

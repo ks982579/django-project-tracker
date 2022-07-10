@@ -37,22 +37,19 @@ const TaskDetails = (props) => {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
         console.log(endDate);
         endDate = new Date(endDate);
-        let localesFormat = 'en-GB';
-
-        let timeFormatOptions = {
-            timeStyle: 'short'
-        }
-        let timeFormat = new Intl.DateTimeFormat(localesFormat, timeFormatOptions);
         console.log(endDate)
-        const _time = timeFormat.format(endDate)
+        // default locale = []
 
-        let dateFormatOptions = {
-            dateStyle: 'short'
-        }
+        const _time = endDate.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
 
-        let dateFormat = new Intl.DateTimeFormat(localesFormat, dateFormatOptions)
-
-        let _date = dateFormat.format(endDate)
+        let _date = endDate.toLocaleDateString([], {
+            year: 'numeric',
+            month: '2-digit',
+            day:'2-digit'
+        })
 
         endDate = `${_date} @ ${_time}`;
     }

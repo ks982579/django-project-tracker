@@ -1,0 +1,44 @@
+.signup-cont {
+    width: 100%;
+    margin: 0.5rem 0;
+    border: solid black 0.1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.signup-align {
+    width: min(30rem, 90%);
+    border: dashed red 2px;
+}
+.signup-align p {
+    text-align: center;
+}
+
+.the-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.signup-cont input {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border: solid black 1px;
+    transition: box-shadow .5s, border 0.5s;
+    width: 95%;
+}
+
+.signup-cont input:focus {
+    box-shadow: 0 0 0.25rem 0.1rem #00feed;
+    border: solid black 2px;
+}
+
+.buttons-cont {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.buttons-cont input {
+    max-width: 7rem;
+    margin: 0.5rem;
+}

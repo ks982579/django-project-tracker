@@ -18,7 +18,8 @@ const Navbar = (props) => {
     return (
         <nav className={styles.navigation}>
             <div className={styles.padding}>--Project-Tracker--</div>
-            <div className={styles.padding}>
+            <div className={`${styles.padding} ${styles.layout}`}>
+                {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.signupClick}>Sign-up</div>}
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.loginClick}>Login</div>}
                 {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={logoutClickHandler}>Logout</div>}
             </div>
@@ -27,3 +28,4 @@ const Navbar = (props) => {
 }
 
 export default Navbar;
+// X --> <App>
