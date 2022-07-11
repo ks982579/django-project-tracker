@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import AuthenticateUser, GetUserInfo, TaskHandler, NewProjectHandler
+from .views import AuthenticateUser, GetUserInfo, SignupHandler, TaskHandler, NewProjectHandler
 from rest_framework.authtoken.views import obtain_auth_token
 
 # Git note
@@ -12,6 +12,7 @@ urlpatterns = [
     #path('destroy/<int:pk>/', ProjectViewDestroyClass.as_view(), name="project-destroy-view"),
     #path('auth/', obtain_auth_token, name="token-gen"), #For Desktop Applications
     path('auth/', AuthenticateUser.as_view()),
+    path('new-user/', SignupHandler.as_view()),
     path('current-user/', GetUserInfo.as_view()),
     path('new-project-handler/', NewProjectHandler.as_view()),
     path('task-handler/',TaskHandler.as_view()),

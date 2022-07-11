@@ -1,20 +1,23 @@
-import copy
-
-from django.shortcuts import render
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import generics
-from .models import TaskModel
-from .serializers import UserSerializer, TaskSerializer
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
-import json
+# Django Imports
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_protect, requires_csrf_token
 from django.utils.decorators import method_decorator
+
+# Django-Rest-Framework Imports
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+
+# Other imports
+import json
+
+# Custom Imports
+from .models import TaskModel
+from .serializers import UserSerializer, TaskSerializer
 
 
 # https://www.django-rest-framework.org/api-guide/generic-views/
@@ -65,6 +68,18 @@ class GetUserInfo(APIView):
             serialized_data = UserSerializer(request.user)
             return Response(serialized_data.data)
         return Response({'login status': 'not logged in'})
+
+class SignupHandler(APIView):
+    # https://docs.djangoproject.com/en/4.0/topics/auth/default/
+    def post(self, request):
+        print(json.dumps(request.data))
+        user_info = request.data
+        print(user_info.get('username'))
+        print(user_info.get('password'))
+        new_user = authenticate(request, username=user_info.get('username'), password=user_info.get('password')) #email=user_info.get('email'),
+        print(new_user)
+        return Response({'status': 'data received'}, status=status.HTTP_201_CREATED)
+
 
 class NewProjectHandler(generics.CreateAPIView):
     serializer_class = TaskSerializer

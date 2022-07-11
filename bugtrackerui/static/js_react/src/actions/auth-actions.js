@@ -61,6 +61,41 @@ const AuthActions = {
     },
     // Once Logged in, we can retrieve projects.
 
+    signupHandler: (rawFormData) => {
+        const formData = new FormData(rawFormData);
+        const postObj = {
+            username: formData.get('username'),
+            email: formData.get('email'),
+            password: formData.get('password1'),
+        }
+        
+        // Create Header
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+        httpHeader.append('X-CSRFtoken', formData.get('csrftoken'));
+
+        // Create options
+        const reqOptions = {
+            method: 'POST',
+            headers: httpHeader,
+            body: JSON.stringify(postObj),
+        };
+
+        // Send to the Server
+        const jsonRes = fetch(`${DOMAIN}api/new-user/`, reqOptions)
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data)// Now it prints the JSON response :)
+                return data
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return null;
+            })
+        return jsonRes;
+    },
+
     newProject: (rawFormData) => {
         //Extract Data from from
         const formData = new FormData(rawFormData);
@@ -73,7 +108,6 @@ const AuthActions = {
         httpHeader.append('Accept', 'application/json');
         httpHeader.append('X-CSRFtoken', formData.get('csrftoken'));
 
-        console.log(httpHeader.entries())
         const reqOptions = {
             method: 'POST',
             headers: httpHeader,

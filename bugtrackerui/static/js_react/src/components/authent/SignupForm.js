@@ -1,12 +1,16 @@
 import React from "react";
 import CookieMonster from "../CookieMonster";
 
+import AuthActions from "../../actions/auth-actions";
 import styles from "./SignupForm.module.css";
 
 const SignupForm = props => {
 
-    const submitHandler = (event) => {
+    const submitHandler = async (event) => {
         event.preventDefault();
+        //Check Passwords - Not doing it RN
+        const _response = await AuthActions.signupHandler(event.target);
+        console.log(JSON.stringify(_response));
     }
 
     return (
