@@ -72,13 +72,31 @@ class GetUserInfo(APIView):
 class SignupHandler(APIView):
     # https://docs.djangoproject.com/en/4.0/topics/auth/default/
     def post(self, request):
-        print(json.dumps(request.data))
+
         user_info = request.data
-        print(user_info.get('username'))
-        print(user_info.get('password'))
-        new_user = authenticate(request, username=user_info.get('username'), password=user_info.get('password')) #email=user_info.get('email'),
-        print(new_user)
-        return Response({'status': 'data received'}, status=status.HTTP_201_CREATED)
+
+        username_taken = False
+        email_taken = False
+
+        # Checking if credentials are taken...
+        if len(User.objects.filter(username=user_info.get('username'))) > 0:
+            username_taken = True
+        if len(User.objects.filter(username=user_info.get('email'))) > 0:
+            email_taken = True
+
+        # If credentials taken, return error. Else, create new user.
+        if username_taken or email_taken:
+            return Response(data={'error': True, 'username take': username_taken, 'email taken': email_taken}, status=status.HTTP_409_CONFLICT)
+        else:
+            try:
+                new_user = User(username=user_info.get('username'), email=user_info.get('email'), password=user_info.get('password'))
+            except:
+                return Response(data={'status': 'Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            print(new_user)
+            new_user.save()
+            login(request, new_user)
+            serializedUser = UserSerializer(new_user)
+            return Response(data=serializedUser.data, status=status.HTTP_201_CREATED)
 
 
 class NewProjectHandler(generics.CreateAPIView):

@@ -1,16 +1,26 @@
-import React from "react";
+import React, {useContext} from "react";
 import CookieMonster from "../CookieMonster";
 
 import AuthActions from "../../actions/auth-actions";
 import styles from "./SignupForm.module.css";
+import AuthContext from "../store/auth-context";
 
 const SignupForm = props => {
+    // Import Context
+    const authContext = useContext(AuthContext);
 
     const submitHandler = async (event) => {
         event.preventDefault();
         //Check Passwords - Not doing it RN
         const _response = await AuthActions.signupHandler(event.target);
         console.log(JSON.stringify(_response));
+        if(!_response.error){
+            console.log('Status 201 - nice!')
+            authContext.setLogin(true);
+            props.cancelClick();
+        } else {
+            console.log(_response)
+        }
     }
 
     return (
