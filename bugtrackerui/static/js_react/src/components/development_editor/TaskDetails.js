@@ -13,7 +13,7 @@ const DumbDetails = (props) => {
     return (
         <div className={styles['dumb-details']}>
             <sup>&lt;DumbDetails&gt;</sup><br />
-            <p>{props.data.description}</p>
+            <pre>{props.data.description}</pre>
             <TaskView parentID={props.data.id} kids={props.data.children} whichProject={props.whichProject} />
         </div>
     )

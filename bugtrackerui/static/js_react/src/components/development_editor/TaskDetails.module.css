@@ -19,3 +19,11 @@
 .dumb-details {
     padding: 0.25rem;
 }
+.dumb-details pre{
+    padding: 0.5rem;
+    white-space: pre-wrap;
+    word-break: keep-all;
+    border-radius: 0.25rem;
+    background-color: ghostwhite;
+    box-shadow: 0 0 0.25rem inset;
+}

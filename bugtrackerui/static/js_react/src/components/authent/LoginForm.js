@@ -6,6 +6,9 @@ import AuthContext from "../store/auth-context";
 import AuthActions from "../../actions/auth-actions";
 import DevContext from "../store/dev-context";
 
+// CSS Styles
+import styles from "./SignupForm.module.css";
+
 const printout = (mssg) => {
     const myfont = "background-color: LimeGreen; color: thistle;";
     console.log(`%c${mssg}`, myfont);
@@ -20,7 +23,7 @@ const LoginForm = (props) => {
         event.preventDefault()
         printout("<LoginForm> submitHandler")
         // Send request to login
-        const json_data = await AuthActions.login(event.target.children); //waits for this data
+        const json_data = await AuthActions.login(event.target); //waits for this data
         printout("Data acquired");
         printout(JSON.stringify(json_data));
         if (json_data != null && json_data.login == 'successful') {
@@ -32,18 +35,19 @@ const LoginForm = (props) => {
     }
 
     return (
-        <div style={{ 'border': '2px solid black' }}>
-            <h3>Login</h3>
-            <form onSubmit={submitHandler}>
-                <CookieMonster />
-                <input type='text' placeholder="Username..." />
-                <br />
-                <input type='password' placeholder="Password..." />
-                <br />
-                <input type='submit' value='Login' />
-                <input type='button' value='Cancel' onClick={props.cancelClick} />
-            </form>
-
+        <div className={styles['signup-cont']}>
+            <div className={styles['signup-align']}>
+                <p>Login Here!</p>
+                <form className={styles['the-form']} onSubmit={submitHandler}>
+                    <CookieMonster />
+                    <input name="username" type='text' placeholder="Username..." />
+                    <input name="password" type='password' placeholder="Password..." />
+                    <div className={styles['buttons-cont']}>
+                        <input type='submit' value='Login' />
+                        <input type='button' value='Cancel' onClick={props.cancelClick} />
+                    </div>
+                </form>
+            </div>
         </div>
     )
 };

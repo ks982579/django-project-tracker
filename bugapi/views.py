@@ -47,8 +47,6 @@ class AuthenticateUser(APIView):
             print(user)
             login(request, user)
             session_data = request.session
-            print(session_data.keys())
-            print(session_data.items())
             return Response({'login': 'successful'},status=status.HTTP_200_OK)
         return Response({'login': 'unsuccessful'}, status=status.HTTP_400_BAD_REQUEST)
 

@@ -17,20 +17,29 @@ const AuthActions = {
         }
         return csrftoken;
     },
-    login: (formChildren) => {
+    login: (rawFormData) => {
+        const formData = new FormData(rawFormData);
+        const postObj = {
+            username: formData.get('username'),
+            password: formData.get('password'),
+        }
+
+        // TODO: Eventually REMOVE
+        /* -------------------------------------- */
+        postObj.username = DummyDetails.un;
+        postObj.password = DummyDetails.pw;
+        /* -------------------------------------- */
+
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
         httpHeader.append('Accept', 'application/json');
-        httpHeader.append('X-CSRFtoken', AuthActions.getCSRFToken(formChildren));
+        httpHeader.append('X-CSRFtoken', formData.get('csrftoken'));
 
         console.log(httpHeader.entries())
         const reqOptions = {
             method: 'POST',
             headers: httpHeader,
-            body: JSON.stringify({
-                username: DummyDetails.un,
-                password: DummyDetails.pw,
-            })
+            body: JSON.stringify(postObj)
         }
 
         const jsonRes = fetch(`${DOMAIN}api/auth/`, reqOptions)
@@ -43,7 +52,6 @@ const AuthActions = {
                 console.error(`Failed to fetch: ${error}`);
                 return null;
             })
-        console.log(typeof jsonRes);
         return jsonRes;
     },
     logout: () => {
