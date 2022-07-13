@@ -23,6 +23,14 @@ const varDump = event => {
 const TaskEditorForm = (props) => {
     let {id, 'task_name': taskName, description, 'start_date':startDate, 'end_date':endDate, 'percent_complete':percentComplete, 'parent_task':parentID } = props.data;
     const devContext = useContext(DevContext);
+
+    /**
+     * Any update to creat children will cause DevContext to update.
+     * That causes components to rerender,
+     * and this expression will (should) update. 
+    */ 
+   // Not on Delete!
+    let showPC = props.data.children ? false : true;
     
     const stopProp = event => {
         event.stopPropagation();
@@ -78,7 +86,7 @@ const TaskEditorForm = (props) => {
                 <InputElm elmID="name" elmType="text" elmVal={taskName}>Task Name:</InputElm>
                 <TextAreaElm elmID="description" elmVal={description}>Description:</TextAreaElm>
                 <DatetimeElm elmID="endDate" elmVal={endDate}>End Date:</DatetimeElm>
-                <RangeElm elmID="percentComplete" elmVal={percentComplete}>Complete:</RangeElm>
+                {showPC && <RangeElm elmID="percentComplete" elmVal={percentComplete}>Complete:</RangeElm>}
             </div>
             <div>
                 <input type="submit" />

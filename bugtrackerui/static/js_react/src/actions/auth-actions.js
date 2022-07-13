@@ -17,6 +17,7 @@ const AuthActions = {
         }
         return csrftoken;
     },
+
     login: (rawFormData) => {
         const formData = new FormData(rawFormData);
         const postObj = {
@@ -314,7 +315,7 @@ const AuthActions = {
             "task_name": formData.get('name'),
             "description": formData.get('description'),
             "end_date": endDate,
-            "percent_complete": formData.get("percentComplete"),
+            "percent_complete": formData.get("percentComplete"), // may be null
         };
         //Construct Request
         const httpHeader = new Headers();

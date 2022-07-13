@@ -183,7 +183,7 @@ class TaskHandler(APIView):
         return None
 #{"parent_task": 35, "task_name": "First task", "description": "Child to Second Project to test the Post Method"}
 
-    #Still Works as of 2022.07.07!
+    # works again 2022.07.13
     def put(self, request):
         # Extract the data and keys to use
         data = request.data.copy()
@@ -194,6 +194,9 @@ class TaskHandler(APIView):
         # Removing 'id' from data so we don't try to update it.
         del data['id']
         for _key in req_keys:
+            # If target has kids, it may send 'null' for percentComplete.
+            if data.get(_key) == None:
+                continue
             # Models are objects, not dictionaries...
             setattr(current_task, _key, data.get(_key))
         # Save updated data
