@@ -14,7 +14,7 @@ const DumbDetails = (props) => {
         <div className={styles['dumb-details']}>
             <sup>&lt;DumbDetails&gt;</sup><br />
             <pre>{props.data.description}</pre>
-            <TaskView parentID={props.data.id} kids={props.data.children} whichProject={props.whichProject} />
+            <TaskView parentID={props.data.id} kids={props.data.children} whichProject={props.whichProject}/>
         </div>
     )
 }
@@ -89,8 +89,8 @@ const TaskDetails = (props) => {
                     </button>
                 </div>
             </div>
-            {editState && <TaskEditorForm data={props.data} toggleForm={editButtonHandler} whichProject={props.whichProject} />}
-            {expansion && <DumbDetails data={props.data} whichProject={props.whichProject} />}
+            {editState && <TaskEditorForm data={props.data} toggleForm={editButtonHandler} whichProject={props.whichProject}/>}
+            {expansion && <DumbDetails data={props.data} whichProject={props.whichProject}/>}
         </Card>
     )
 };

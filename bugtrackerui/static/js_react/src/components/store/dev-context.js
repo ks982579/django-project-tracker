@@ -4,6 +4,7 @@ import AuthActions from "../../actions/auth-actions";
 
 const DevContext = React.createContext({
     projectData: [],
+    setTopLevel: {},
     update: {},
     newProject: {},
     newTask: {},
@@ -17,19 +18,35 @@ const Actions = {
     Delete: 'DELETE',
 }
 
-/*
-    Thinking... Create the linked list. Each would need a node. 
-    The nodes would link to embedded linked lists. 
-    Each PROJECT begins the LinkedList.
-    > Search through lists to find Child Tasks.
-    > Child Tasks must be linked in ORDER!!! (probably by end-date)
-    > Each Task then links Child Tasks, etc...
-*/
-// const taskReducer = (prevState, action) => {
-//     if(action.type === Actions.Delete){
-//         console.warn(`deleting ${action.payload}`);
-//     }
-// }
+
+/* Missed the Mark */
+// Takes in an updated prevState.
+// gpid is the top level parent id 
+const calcPC = (prevState, gpid) => {
+    
+    const helper = (children) => {
+        let calcRes = [];
+        if(children.children && children.children.length > 0){
+            calcRes.push(helper(children.children));
+        } else {
+            calcRes.push(children.percentComplete);
+        }
+        let mean = 0;
+        for(_x of calcRes){
+            mean += _x;
+        }
+        mean /= calcRes.length;
+        return mean;
+    }
+    for(_efp of prevState){
+        if(_efp.id != gpid){
+            continue;
+        } else {
+            return helper(_efp)
+        }
+    }
+    return null;
+}
 
 // Will return Pointer to correct Object
 const findTask = (taskID, taskTree) => {
@@ -65,10 +82,16 @@ function deepCopy(objectToCopy){
 
 export const DevContextProvider = (props) => {
     const [taskData, setTaskData] = useState([]);
+    const [selectedProject, setSelectedProject] = useState(false);
     const [runUpdate, setRunUpdate] = useState(0);
     
     // Context Start Now!!!
     console.log('Running DevContextProvider')
+    // non State Storage
+
+    const setTopLevel = (parentID) => {
+        setSelectedProject(parentID);
+    }
 
     const callAPI = async () => {
         console.log(`%cCalling API...`, "background-color: black; color: red;")
@@ -154,6 +177,9 @@ export const DevContextProvider = (props) => {
                 }
             }
 
+            //updates percentages 
+            copyState = calcPC(copyState, selectedProject);
+
             //Return updated state
             return copyState;
         })
@@ -183,6 +209,7 @@ export const DevContextProvider = (props) => {
     return (
         <DevContext.Provider value={{
             projectData: taskData, // --> <DeveloperCard>
+            setTopLevel: setTopLevel,
             update: callAPI,
             newProject: newProjectHandler,
             newTask: newTaskHandler,
