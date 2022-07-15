@@ -24,28 +24,42 @@ const Actions = {
 // gpid is the top level parent id 
 const calcPC = (prevState, gpid) => {
     
-    const helper = (children) => {
+    // children should be ARRAY of children nodes
+    const helper = (parent) => {
         let calcRes = [];
-        if(children.children && children.children.length > 0){
-            calcRes.push(helper(children.children));
+        console.log(`Parent = ${parent.task_name}`);
+        // If parent has children, we cannot directly calculate
+        // Must pass children into helper...
+        if(parent.children && parent.children.length > 0){
+            for(let _efk of parent.children){
+                // I think this will reference Object location in memory
+                calcRes.push(helper(_efk));
+            }
         } else {
-            calcRes.push(children.percentComplete);
+            calcRes.push(parent.percent_complete);
         }
         let mean = 0;
-        for(_x of calcRes){
+        for(let _x of calcRes){
             mean += _x;
         }
         mean /= calcRes.length;
+        // Set Parents %Comp
+        // pythonic syntax :(
+        parent.percent_complete = Math.floor(mean);
+        console.log(`${parent.id} =%= ${parent.percent_complete}`);
+        // Floor so no task will accidently appear 100% complete
         return mean;
-    }
-    for(_efp of prevState){
+    };
+    // find the starting point. 
+    for(let _efp of prevState){
         if(_efp.id != gpid){
             continue;
         } else {
-            return helper(_efp)
+            helper(_efp); // no reason to catch any returned value
         }
     }
-    return null;
+    // Changes should be applied to memory
+    return prevState;
 }
 
 // Will return Pointer to correct Object
@@ -90,6 +104,8 @@ export const DevContextProvider = (props) => {
     // non State Storage
 
     const setTopLevel = (parentID) => {
+        console.log(`%cRUNNING setTopLevel()`, "color:red;font-weight:800;font-size:18px;")
+        calcPC(taskData, parentID);
         setSelectedProject(parentID);
     }
 
