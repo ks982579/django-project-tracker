@@ -13,7 +13,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 
 # Other imports
-import json
+import json, math
 
 # Custom Imports
 from .models import TaskModel
@@ -121,7 +121,10 @@ class NewProjectHandler(generics.CreateAPIView):
             request.data._mutable = False
         except:
             pass
-        return self.create(request, *args, **kwargs)
+
+        #Run .create method
+        post_response = self.create(request, *args, **kwargs)
+        return post_response
 
 # localhost:4000/api/task-handler/
 class TaskHandler(APIView):
@@ -131,6 +134,36 @@ class TaskHandler(APIView):
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def set_percent_complete(self, *args, **kwargs):
+        """
+        * Takes in what we just set/corrected.
+        1. It would have to get the Parent object
+        2. Parent gets kids, and calculates mean percentage
+        3. parent then gets it's parent and so on...
+        4. Ends when object has no parent.
+        """
+        this_kid = args[0] # expecting TaskModel object.
+        print(f'Kid passed in {this_kid}')
+        if this_kid.parent_task is not None:
+            # the parent_task from ForeignKey is like the whole object, but not actually it
+            print(f'{this_kid} || Has Parent(s)')
+            this_parent = this_kid.parent_task
+            new_sum = 0
+            denom = 0
+            for _efk in this_parent.parent_task_set.all():
+                new_sum += _efk.percent_complete
+                denom += 1
+            this_parent.percent_complete = math.floor(new_sum/denom)
+            # https://docs.djangoproject.com/en/4.0/ref/models/instances/
+            this_parent.save()
+            # Working way up the chain
+            print(f'New Parent PC = {this_parent.percent_complete}')
+            self.set_percent_complete(this_parent)
+        else:
+            print(f'Child has no parent...')
+            return None
+        return None
+
     def looper(self, query_set, serializer, spaces=""):
         print("Starting looper() method...")
         #creating function-variable
@@ -138,7 +171,7 @@ class TaskHandler(APIView):
         # loops through query data structures
         for _x in query_set: #Extract individual Tasks
             # Access their task query sets.
-            print(f'{spaces} {_x}')
+            # print(f'{spaces} {_x}')
             subQuerySet = _x.parent_task_set.all() #Get SubQueries
             serialized_task = serializer(_x, many=False) #Serialize Task
             task_data = serialized_task.data.copy()
@@ -179,10 +212,13 @@ class TaskHandler(APIView):
         serializer = TaskSerializer(data=taskData)
         if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+            post_response = Response(data=serializer.data, status=status.HTTP_201_CREATED)
+            # We need to update percentages
+            print(f'trying to get {type(serializer.data)}')
+            self.set_percent_complete(TaskModel.objects.get(pk=serializer.data.get('id')))
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return None
+            post_response = Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return post_response
 #{"parent_task": 35, "task_name": "First task", "description": "Child to Second Project to test the Post Method"}
 
     # works again 2022.07.13
