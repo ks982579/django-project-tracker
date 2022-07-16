@@ -239,6 +239,7 @@ class TaskHandler(APIView):
             setattr(current_task, _key, data.get(_key))
         # Save updated data
         current_task.save(update_fields=req_keys)
+        self.set_percent_complete(current_task)
 
         # Serialize and return data
         serialized_task = TaskSerializer(current_task, many=False)
@@ -253,12 +254,22 @@ class TaskHandler(APIView):
     def delete(self, request):
         print(request.data)
         task_id = request.data.get('id')
+        this_task = TaskModel.objects.get(pk=task_id)
+        parent_task = this_task.parent_task
         # Also Implement Check that user deleting is developer as well.
         print('deleting...')
         #What if can't find object?
         try:
-            TaskModel.objects.get(pk=task_id).delete()
+            this_task.delete()
         except:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if parent_task is not None:
+            kids = parent_task.parent_task_set.all()
+            # If parent still has children, recalc %C. Else, reset %C to 1
+            if len(kids) > 0:
+                self.set_percent_complete(kids[0])
+            else:
+                parent_task.percent_complete = 1
+                parent_task.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 

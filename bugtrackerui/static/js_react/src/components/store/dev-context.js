@@ -27,7 +27,6 @@ const calcPC = (prevState, gpid) => {
     // children should be ARRAY of children nodes
     const helper = (parent) => {
         let calcRes = [];
-        console.log(`Parent = ${parent.task_name}`);
         // If parent has children, we cannot directly calculate
         // Must pass children into helper...
         if(parent.children && parent.children.length > 0){
@@ -46,7 +45,7 @@ const calcPC = (prevState, gpid) => {
         // Set Parents %Comp
         // pythonic syntax :(
         parent.percent_complete = Math.floor(mean);
-        console.log(`${parent.id} =%= ${parent.percent_complete}`);
+
         // Floor so no task will accidently appear 100% complete
         return mean;
     };
@@ -105,7 +104,6 @@ export const DevContextProvider = (props) => {
 
     const setTopLevel = (parentID) => {
         console.log(`%cRUNNING setTopLevel()`, "color:red;font-weight:800;font-size:18px;")
-        calcPC(taskData, parentID);
         setSelectedProject(parentID);
     }
 
@@ -125,7 +123,8 @@ export const DevContextProvider = (props) => {
         // Fetching PROJECTS
         const newProjects = await AuthActions.fetchAllProjects();
         console.log(`fetching Projects -> ${newProjects}`)
-        //created projects Linked List
+        // This is calculating PC... hopefully we can remove from here
+        calcPC(newProjects, selectedProject);
         setTaskData(newProjects);
         console.log('Projects Stored');
     }, [runUpdate]);
@@ -161,6 +160,8 @@ export const DevContextProvider = (props) => {
                     foundTask.children = [newTaskObj];
                 }
             }
+            // Update all Percentage Complete. 
+            calcPC(stateCopy, selectedProject);
             // Return updated Copied State!
             return stateCopy;
         });
@@ -172,8 +173,6 @@ export const DevContextProvider = (props) => {
          * and provided a response.
          * Now just replace the data here. 
          */
-        console.log("RAWDATA");
-        console.log(JSON.stringify(rawData));
         setTaskData((prevState) => {
             //Making a Copy of state
             let copyState = deepCopy(prevState);
@@ -202,9 +201,8 @@ export const DevContextProvider = (props) => {
     }
 
     const deleteTaskHandler = (deleteID, parentID = null) => {
-        console.log(`%cInit Deletion of ${deleteID}`,"background-color: yellow; color: firebrick;")
         setTaskData((prevState) => {
-            const copyState = deepCopy(prevState);
+            let copyState = deepCopy(prevState);
             if(parentID === null){
                 // Exclude the state - Garbage collection should delete it
                 return copyState.filter(task => task.id != deleteID);
@@ -212,8 +210,14 @@ export const DevContextProvider = (props) => {
                 // find parent
                 const foundRent = findTask(parentID, copyState);
                 const indexToDel = foundRent.children.findIndex(_efk => _efk.id === deleteID);
-                // Delete the child
-                delete foundRent.children[indexToDel];
+
+                // splice out the child (Using delete leaves 'null')
+                // and .slice does not modify array.
+                foundRent.children.splice(indexToDel, 1);
+
+                //updates percentages 
+                copyState = calcPC(copyState, selectedProject);
+
                 return copyState;
             }
         })
