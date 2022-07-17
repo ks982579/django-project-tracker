@@ -104,6 +104,31 @@ const AuthActions = {
         return jsonRes;
     },
 
+    getUserData: () => {
+        // Create Header
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+
+        // Create options
+        const reqOptions = {
+            method: 'GET',
+            headers: httpHeader,
+        };
+
+        // Send to the Server
+        const jsonRes = fetch(`${DOMAIN}api/current-user/`, reqOptions)
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                return data;
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return null;
+            })
+        return jsonRes;
+    },
+
     newProject: (rawFormData) => {
         //Extract Data from from
         const formData = new FormData(rawFormData);

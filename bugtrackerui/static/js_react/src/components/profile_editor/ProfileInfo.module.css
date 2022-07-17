@@ -1,0 +1,9 @@
+.grid-container {
+    display: grid;
+    width: 100%;
+    padding: 1rem;
+    grid-template-columns: 1fr 2fr;
+}
+.grid-container div:nth-child(even) {
+    border-bottom: 2px dashed grey;
+}
