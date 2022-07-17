@@ -14,6 +14,10 @@ const Navbar = (props) => {
         AuthActions.logout();
         ctx.setLogin(false);
     }
+    const profileClickHandler = event => {
+        console.log('clicked "Profile"')
+        props.onProfileClick();
+    }
 
     return (
         <nav className={styles.navigation}>
@@ -21,6 +25,7 @@ const Navbar = (props) => {
             <div className={`${styles.padding} ${styles.layout}`}>
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.signupClick}>Sign-up</div>}
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.loginClick}>Login</div>}
+                {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={profileClickHandler}>Profile</div>}
                 {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={logoutClickHandler}>Logout</div>}
             </div>
         </nav>

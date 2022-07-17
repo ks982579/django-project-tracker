@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, memo } from "react";
 
 //import other modules
 import DeveloperCard from "./DeveloperCard";
@@ -8,6 +8,7 @@ import styles from './Dashboard.module.css';
 import NewProjectCont from "./create_project/NewProjectCont";
 import ProjectEditScreen from "./management_editor/ProjectEditScreen";
 import TaskDisplayScreen from "../development_editor/TaskDisplayScreen";
+import ProfileContainer from "../profile_editor/ProfileContainer";
 
 /* Many different Screens can be managed more easily with useReducer. */
 /* That should also ensure components re-render for chadnges */
@@ -41,10 +42,22 @@ const quickStyles = {
 // COMPONENT
 // +++++++++++++++++++++++++++++++++++++++++++++
 const Dashboard = (props) => {
+    // props.editProfile
     // Reducer hook
     const [displayState, setDisplayState] = useReducer(displayReducer, initDisplayState)
     // we can double up on state's use to toggle components too!
     const [projectSelected, setProjectSelected] = useState(false);
+    const [profileSelected, setProfileSelected] = useState(false);
+
+    console.log(props.editProfile)
+    if(props.editProfile && profileSelected != props.editProfile) {
+        setProjectSelected(false);
+        setProfileSelected(true);
+    } else if(!props.editProfile && profileSelected != props.editProfile) {
+        setProfileSelected(false);
+    }
+
+    console.log(`Project Selected: ${projectSelected}`);
     
     // New Project Click Handler
     const newProjectHandler = event => {
@@ -54,7 +67,17 @@ const Dashboard = (props) => {
         setDisplayState({type: 'DEVELOPMENT'})
     }
     const onDeveloperClickHandler = (event, data) => {
-        setProjectSelected(data); //OG API data
+        // Some checks to prevent re-rendering of data unnecessarily
+        if(projectSelected){
+            if(projectSelected.id !== data.id){
+                setProjectSelected(data); //OG API data
+            }
+        } else if(!projectSelected){
+            setProjectSelected(data); //OG API data
+        }
+        if(profileSelected){
+            props.setEditProfile();
+        }
     }
     
     return (
@@ -66,6 +89,7 @@ const Dashboard = (props) => {
             </div>
             <div className={styles['dash-grid-container']}>
                 <div>
+                    <Card>Current Sprint</Card>
                     <Card>
                         <h2 onClick={newProjectHandler}>New Project +</h2>
                         {displayState.newProject && <NewProjectCont setDisplay={newProjectHandler}/>}
@@ -74,6 +98,7 @@ const Dashboard = (props) => {
                 </div>
                 <div>
                     <p>for the actual projects / maybe 'New Project+' form?</p>
+                    {profileSelected && <ProfileContainer />}
                     {projectSelected && <TaskDisplayScreen selected={projectSelected} whichProject={setProjectSelected}/>}
                 </div>
             </div>
@@ -81,7 +106,7 @@ const Dashboard = (props) => {
     )
 };
 
-export default Dashboard;
+export default memo(Dashboard);
 
 /**
  * passing in setProjectSelected because deleting functionality needs to reset it to false!

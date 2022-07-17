@@ -13,9 +13,11 @@ import { DevContextProvider } from './components/store/dev-context';
 
 
 function App() {
+    console.log("Render <App/>")
     const ctx = useContext(AuthContext);
     const [wantsToLogin, setWantsToLogin] = useState(false);
     const [wantsToSignup, setWantsToSignup] = useState(false);
+    const [wantsToEditProfile, setWantsToEditProfile] = useState(false);
 
     const loginYes = () => {
         setWantsToLogin(true);
@@ -35,14 +37,21 @@ function App() {
     const signupNo = () => {
         setWantsToSignup(false);
     }
+    const editProfileHandler = () => {
+        if(wantsToEditProfile){
+            setWantsToEditProfile(false);
+        } else {
+            setWantsToEditProfile(true);
+        }
+    }
 
     return (
         <DevContextProvider>
-            <Navbar loginClick={loginYes} signupClick={signupYes} />
+            <Navbar loginClick={loginYes} signupClick={signupYes} onProfileClick={editProfileHandler}/>
             {!wantsToLogin && !wantsToSignup && !ctx.isLoggedIn && <Greeting />}
             {wantsToLogin && !ctx.isLoggedIn && <LoginForm cancelClick={loginNo} />}
             {wantsToSignup && !ctx.isLoggedIn && <SignupForm cancelClick={signupNo} />}
-            {ctx.isLoggedIn && <Dashboard />}
+            {ctx.isLoggedIn && <Dashboard editProfile={wantsToEditProfile} setEditProfile={editProfileHandler}/>}
         </DevContextProvider>
     );
 }
