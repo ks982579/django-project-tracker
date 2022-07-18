@@ -22,6 +22,8 @@ const ProfileInfo = (props) => {
                 <div>{lastName}</div>
                 <div>E-mail:</div>
                 <div>{email}</div>
+                <div>Password:</div>
+                <div>********</div>
             </div>
         </div>
     );

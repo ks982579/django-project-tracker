@@ -1,6 +1,9 @@
 import React from "react";
+import CookieMonster from "../CookieMonster";
 
 import styles from './ProfileInfo.module.css';
+import ProfileEmailInput from "./profile_form_components/ProfileEmailInput";
+import ProfileTextInput from "./profile_form_components/ProfileTextInput";
 
 // props.userInfo = {id:,first_name:,last_name:,username:,email:}
 const ProfileInfoForm = (props) => {
@@ -10,20 +13,24 @@ const ProfileInfoForm = (props) => {
     const lastName = info.last_name ? info.last_name : '';
     const username = info.username ? info.username : '';
     const email = info.email ? info.email : '';
+
+    const formSubmitHandler = (event) => {
+        event.preventDefault();
+        console.log(event.target)
+    }
+
     return (
         <div>
             <h3>Profile Info...</h3>
-            <form>
+            <form onSubmit={formSubmitHandler}>
                 <div className={styles['grid-container']}>
-                    <div>Username:</div>
-                    <div>{username}</div>
-                    <div>First Name:</div>
-                    <div>{firstName}</div>
-                    <div>Last Name:</div>
-                    <div>{lastName}</div>
-                    <div>E-mail:</div>
-                    <div>{email}</div>
+                    <CookieMonster/>
+                    <ProfileTextInput name="username" val={username}>Username:</ProfileTextInput>
+                    <ProfileTextInput name="firstName" val={firstName}>First Name:</ProfileTextInput>
+                    <ProfileTextInput name="lastName" val={lastName}>Last Name:</ProfileTextInput>
+                    <ProfileEmailInput name="email" val={email}>E-mail:</ProfileEmailInput>
                 </div>
+                <input type="submit" value="Save"/>
             </form>
         </div>
     );
