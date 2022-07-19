@@ -1,4 +1,5 @@
 import React from "react";
+import AuthActions from "../../actions/auth-actions";
 import CookieMonster from "../CookieMonster";
 
 import styles from './ProfileInfo.module.css';
@@ -14,9 +15,15 @@ const ProfileInfoForm = (props) => {
     const username = info.username ? info.username : '';
     const email = info.email ? info.email : '';
 
-    const formSubmitHandler = (event) => {
+    //If this is successful, we should switch screens
+    const formSubmitHandler = async (event) => {
         event.preventDefault();
-        console.log(event.target)
+        console.log(event.target);
+        //Sending Form
+        const apiResp = await AuthActions.sendUserUpdate(event.target);
+        console.log(JSON.stringify(apiResp));
+        props.setUserInfo(apiResp);
+        props.toggleForm();
     }
 
     return (
@@ -30,7 +37,8 @@ const ProfileInfoForm = (props) => {
                     <ProfileTextInput name="lastName" val={lastName}>Last Name:</ProfileTextInput>
                     <ProfileEmailInput name="email" val={email}>E-mail:</ProfileEmailInput>
                 </div>
-                <input type="submit" value="Save"/>
+                <input type="submit" value="Save" />
+                <input type="button" value="Cancel" onClick={props.toggleForm}/>
             </form>
         </div>
     );

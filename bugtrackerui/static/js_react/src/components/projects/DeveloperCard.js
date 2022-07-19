@@ -26,7 +26,6 @@ const DeveloperCard = props => {
     //Don't map unless you have data to map too!
     if(props.displayState && devctx.projectData.length > 0){
         developerCards = devctx.projectData.map(data => {
-            console.log(`%cCreating Project ID: ${data.id}`, "color:green; font-weight: 800;");
             return <ProjectCard key={data.id} data={data} onClick={props.onProjectClick} />
         });
     }

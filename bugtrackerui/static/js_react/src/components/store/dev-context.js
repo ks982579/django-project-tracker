@@ -122,11 +122,9 @@ export const DevContextProvider = (props) => {
         console.log('DevContextProvider useEffect')
         // Fetching PROJECTS
         const newProjects = await AuthActions.fetchAllProjects();
-        console.log(`fetching Projects -> ${newProjects}`)
         // This is calculating PC... hopefully we can remove from here
         calcPC(newProjects, selectedProject);
         setTaskData(newProjects);
-        console.log('Projects Stored');
     }, [runUpdate]);
 
     const newProjectHandler = (newProjectData) => {

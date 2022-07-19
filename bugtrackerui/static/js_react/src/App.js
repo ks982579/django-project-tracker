@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useReducer } from 'react';
 import './App.css';
 
 import Navbar from './components/ui/Navbar';
@@ -10,7 +10,19 @@ import AuthContext from './components/store/auth-context';
 import Greeting from './components/projects/Greeting';
 import { DevContextProvider } from './components/store/dev-context';
 
+let initReducerState = {
+    toEditProfile: false,
+    isProjectSelected: false,
+    selectedProject: {},
+}
+const Actions = {
+    Profile: 'Profile',
+    Project: 'Project',
+}
 
+const reducerFunction = (prevState, action) => {
+    return prevState;
+}
 
 function App() {
     console.log("Render <App/>")
@@ -18,6 +30,7 @@ function App() {
     const [wantsToLogin, setWantsToLogin] = useState(false);
     const [wantsToSignup, setWantsToSignup] = useState(false);
     const [wantsToEditProfile, setWantsToEditProfile] = useState(false);
+    const [projectSelected, setProjectSelected] = useState(false)
 
     const loginYes = () => {
         setWantsToLogin(true);
@@ -37,10 +50,13 @@ function App() {
     const signupNo = () => {
         setWantsToSignup(false);
     }
+    //Toggle Edit Profile
     const editProfileHandler = () => {
         if(wantsToEditProfile){
+            console.log('setting Profile Edit to false')
             setWantsToEditProfile(false);
         } else {
+            setProjectSelected(false);
             setWantsToEditProfile(true);
         }
     }
@@ -51,7 +67,11 @@ function App() {
             {!wantsToLogin && !wantsToSignup && !ctx.isLoggedIn && <Greeting />}
             {wantsToLogin && !ctx.isLoggedIn && <LoginForm cancelClick={loginNo} />}
             {wantsToSignup && !ctx.isLoggedIn && <SignupForm cancelClick={signupNo} />}
-            {ctx.isLoggedIn && <Dashboard editProfile={wantsToEditProfile} setEditProfile={editProfileHandler}/>}
+            {ctx.isLoggedIn && <Dashboard 
+                editProfile={wantsToEditProfile} 
+                setEditProfile={editProfileHandler}
+                projectSelected={projectSelected}
+                setProjectSelected={setProjectSelected}/>}
         </DevContextProvider>
     );
 }

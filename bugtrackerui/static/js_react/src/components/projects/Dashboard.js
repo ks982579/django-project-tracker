@@ -42,28 +42,23 @@ const quickStyles = {
 // COMPONENT
 // +++++++++++++++++++++++++++++++++++++++++++++
 const Dashboard = (props) => {
+    console.log('%c<Dashboard>',"color:green; font-weight:700;")
     // props.editProfile
     // Reducer hook
     const [displayState, setDisplayState] = useReducer(displayReducer, initDisplayState)
     // we can double up on state's use to toggle components too!
-    const [projectSelected, setProjectSelected] = useState(false);
-    const [profileSelected, setProfileSelected] = useState(false);
-
-    console.log(props.editProfile)
-    if(props.editProfile && profileSelected != props.editProfile) {
-        setProjectSelected(false);
-        setProfileSelected(true);
-    } else if(!props.editProfile && profileSelected != props.editProfile) {
-        setProfileSelected(false);
-    }
-
-    console.log(`Project Selected: ${projectSelected}`);
+    const projectSelected = props.projectSelected;
+    const setProjectSelected = props.setProjectSelected;
     
     // New Project Click Handler
     const newProjectHandler = event => {
         setDisplayState({type: 'NEW_PROJECT'})
     }
     const clickDevelopmentHandler = event => {
+        if(props.editProfile){
+            // toggle off if it is on
+            props.setEditProfile();
+        }
         setDisplayState({type: 'DEVELOPMENT'})
     }
     const onDeveloperClickHandler = (event, data) => {
@@ -75,11 +70,18 @@ const Dashboard = (props) => {
         } else if(!projectSelected){
             setProjectSelected(data); //OG API data
         }
-        if(profileSelected){
+        if(props.editProfile){
             props.setEditProfile();
         }
     }
     
+    console.log(`%cRender ProfileContainer? ${props.editProfile}`, "color:red;font-size:18px;")
+    console.log(`%cRender Project? ${projectSelected}`, "color:red;font-size:18px;")
+    let editProfileJSX = '';
+    if(props.editProfile){
+        editProfileJSX = <ProfileContainer/>
+    }
+
     return (
         <Card>
             <div style={quickStyles}>
@@ -98,15 +100,18 @@ const Dashboard = (props) => {
                 </div>
                 <div>
                     <p>for the actual projects / maybe 'New Project+' form?</p>
-                    {profileSelected && <ProfileContainer />}
-                    {projectSelected && <TaskDisplayScreen selected={projectSelected} whichProject={setProjectSelected}/>}
+                    
+                    {projectSelected && !props.editProfile && <TaskDisplayScreen selected={projectSelected} whichProject={setProjectSelected}/>}
+                    {editProfileJSX}
                 </div>
             </div>
         </Card>
     )
 };
 
-export default memo(Dashboard);
+//
+
+export default Dashboard;
 
 /**
  * passing in setProjectSelected because deleting functionality needs to reset it to false!

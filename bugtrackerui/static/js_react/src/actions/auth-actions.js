@@ -77,7 +77,7 @@ const AuthActions = {
             email: formData.get('email'),
             password: formData.get('password1'),
         }
-        
+
         // Create Header
         const httpHeader = new Headers();
         httpHeader.append('Content-type', 'application/json');
@@ -114,6 +114,41 @@ const AuthActions = {
         const reqOptions = {
             method: 'GET',
             headers: httpHeader,
+        };
+
+        // Send to the Server
+        const jsonRes = fetch(`${DOMAIN}api/current-user/`, reqOptions)
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                return data;
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return null;
+            })
+        return jsonRes;
+    },
+    sendUserUpdate: (rawFormData) => {
+        const formData = new FormData(rawFormData);
+        //Check if same, only send changes!
+        const postObj = {
+            username: formData.get('username'),
+            first_name: formData.get('firstName'),
+            last_name: formData.get('lastName'),
+            email: formData.get('email'),
+        }
+
+        // Create Header
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+        httpHeader.append('X-CSRFtoken', formData.get('csrftoken'));
+
+        // Create options
+        const reqOptions = {
+            method: 'PUT',
+            headers: httpHeader,
+            body: JSON.stringify(postObj),
         };
 
         // Send to the Server

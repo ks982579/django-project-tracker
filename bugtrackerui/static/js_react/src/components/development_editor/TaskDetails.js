@@ -35,9 +35,9 @@ const TaskDetails = (props) => {
         endDate = 'TBA';
     } else {
         // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
-        console.log(endDate);
+        //console.log(endDate);
         endDate = new Date(endDate);
-        console.log(endDate)
+        //console.log(endDate)
         // default locale = []
 
         const _time = endDate.toLocaleTimeString([], {
