@@ -54,7 +54,7 @@ const TaskEditorForm = (props) => {
                 devContext.deleteTask(id, parentID);
                 // We only want this to be set False if it is Parent project. 
                 if(props.whichProject){
-                    props.whichProject(false);
+                    props.whichProject();
                 }
             } catch(error){
                 console.error(`Unable to delete Tasks - Frontend error: ${error}`)    

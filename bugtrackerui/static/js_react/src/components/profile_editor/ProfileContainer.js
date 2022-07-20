@@ -9,9 +9,10 @@ import styles from './ProfileContainer.module.css';
 
 // If the container is rendered, let's call information from the API
 // {id:,first_name:,last_name:,username:,email:}
-const ProfileContainer = () => {
+const ProfileContainer = (props) => {
+    console.log(`<ProfileContainer> = ${props.bool}`);
     console.log('<ProfileContainer> 1')
-    const [userInfo, setUserInfo] = useState({});
+    const [userInfo, setUserInfo] = useState('');
     console.log('<ProfileContainer> 1.5')
     const [editInfo, setEditInfo] = useState(false);
 

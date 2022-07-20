@@ -11,6 +11,7 @@ const Card = props => {
 
     // Pass in data if we have any
     const onClickHandler = event => {
+        console.log('<Card> click')
         if (props.onClick) {
             if (props.data) {
                 console.log('We Have Data')

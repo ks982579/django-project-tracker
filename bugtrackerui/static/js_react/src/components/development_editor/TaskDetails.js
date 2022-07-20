@@ -25,7 +25,7 @@ const DumbDetails = (props) => {
 */
 // Perhaps 'expansion' triggers form for updating?
 const TaskDetails = (props) => {
-    console.log(`%cInit <TaskDetails> ID: ${props.data.id}`, "background-color: lightpink; color: whitesmoke;")
+    // console.log(`%cInit <TaskDetails> ID: ${props.data.id}`, "background-color: lightpink; color: whitesmoke;")
     const [expansion, setExpansion] = useState(props.init === true ? true : false);
     const [editState, setEditState] = useState(false);
     let { id, 'task_name': taskName, description, 'start_date': startDate, 'end_date': endDate, 'percent_complete': percentComplete } = props.data;

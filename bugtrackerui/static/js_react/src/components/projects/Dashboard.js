@@ -38,6 +38,21 @@ const quickStyles = {
     alignItems: 'center',
 }
 
+const DumbTest = (props) => {
+    console.log(props.bool);
+    let answer = "FALSE";
+    if(props.bool){
+        answer = "TRUE";
+    } else {
+        answer = "FALSE";
+    }
+    return (
+        <div>
+            <p>Profile container == {answer}</p>
+        </div>
+    )
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++
 // COMPONENT
 // +++++++++++++++++++++++++++++++++++++++++++++
@@ -47,7 +62,10 @@ const Dashboard = (props) => {
     // Reducer hook
     const [displayState, setDisplayState] = useReducer(displayReducer, initDisplayState)
     // we can double up on state's use to toggle components too!
+    const boolProfile = props.boolProfile;
+    const setEditProfile = props.setEditProfile;
     const projectSelected = props.projectSelected;
+    const boolProject = props.boolProject;
     const setProjectSelected = props.setProjectSelected;
     
     // New Project Click Handler
@@ -63,24 +81,20 @@ const Dashboard = (props) => {
     }
     const onDeveloperClickHandler = (event, data) => {
         // Some checks to prevent re-rendering of data unnecessarily
-        if(projectSelected){
-            if(projectSelected.id !== data.id){
-                setProjectSelected(data); //OG API data
-            }
-        } else if(!projectSelected){
-            setProjectSelected(data); //OG API data
-        }
-        if(props.editProfile){
-            props.setEditProfile();
-        }
+        // if(boolProject){
+        //     if(projectSelected.id !== data.id){
+        //         setProjectSelected(data); //OG API data
+        //     }
+        // } else if(!boolProject){
+        //     setProjectSelected(data); //OG API data
+        // }
+        // console.log(JSON.stringify(data));
+        console.log("2.) In Developer Click Handler")
+        setProjectSelected(data);
     }
     
-    console.log(`%cRender ProfileContainer? ${props.editProfile}`, "color:red;font-size:18px;")
-    console.log(`%cRender Project? ${projectSelected}`, "color:red;font-size:18px;")
-    let editProfileJSX = '';
-    if(props.editProfile){
-        editProfileJSX = <ProfileContainer/>
-    }
+    console.log(`%cRender ProfileContainer? ${boolProfile}`, "color:red;font-size:18px;")
+    console.log(`%cRender Project? ${boolProject}`, "color:red;font-size:18px;")
 
     return (
         <Card>
@@ -98,18 +112,16 @@ const Dashboard = (props) => {
                     </Card>
                     <DeveloperCard onClick={clickDevelopmentHandler} onProjectClick={onDeveloperClickHandler} displayState={displayState.development} />
                 </div>
-                <div>
-                    <p>for the actual projects / maybe 'New Project+' form?</p>
-                    
-                    {projectSelected && !props.editProfile && <TaskDisplayScreen selected={projectSelected} whichProject={setProjectSelected}/>}
-                    {editProfileJSX}
+                <div>                    
+                    {boolProject && <TaskDisplayScreen selected={projectSelected} whichProject={props.resetProject}/>}
+                    {boolProfile && <DumbTest bool={boolProfile}/>}
                 </div>
             </div>
         </Card>
     )
 };
 
-//
+//{boolProfile && <ProfileContainer bool={boolProfile}/>}
 
 export default Dashboard;
 
