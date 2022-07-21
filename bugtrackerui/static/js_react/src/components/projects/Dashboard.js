@@ -114,7 +114,7 @@ const Dashboard = (props) => {
                 </div>
                 <div>                    
                     {boolProject && <TaskDisplayScreen selected={projectSelected} whichProject={props.resetProject}/>}
-                    {boolProfile && <DumbTest bool={boolProfile}/>}
+                    {boolProfile && <ProfileContainer/>}
                 </div>
             </div>
         </Card>
