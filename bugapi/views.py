@@ -77,7 +77,7 @@ class GetUserInfo(APIView):
         for _key in req_keys:
             setattr(current_user, _key, new_data.get(_key))
 
-        #current_user.save(update_fields=req_keys)
+        current_user.save(update_fields=req_keys)
         serialized_user = UserSerializer(current_user, many=False)
         return Response(data=serialized_user.data, status=status.HTTP_200_OK)
 # {"id": 1, "first_name": "Kevin", "last_name": "Sullivan", "username": "kevin_sullivan", "email": ""}

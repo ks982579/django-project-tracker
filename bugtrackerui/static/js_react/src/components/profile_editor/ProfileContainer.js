@@ -16,6 +16,7 @@ const ProfileContainer = (props) => {
     useEffect(() => {
         // Get user data from API
         let isSubscribed = true;
+        // This structure is necessary for when component unmounts
         (async () => {
             if(isSubscribed){
                 let apiResponse = await AuthActions.getUserData();
