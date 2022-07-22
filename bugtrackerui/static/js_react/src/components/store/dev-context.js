@@ -118,13 +118,16 @@ export const DevContextProvider = (props) => {
     }
 
     //Check if user is already logged in
-    useEffect(async () => {
-        console.log('DevContextProvider useEffect')
+    // useEffect doesn't want a Promise returned. 
+    useEffect(() => {
+        //console.log('DevContextProvider useEffect')
         // Fetching PROJECTS
-        const newProjects = await AuthActions.fetchAllProjects();
-        // This is calculating PC... hopefully we can remove from here
-        calcPC(newProjects, selectedProject);
-        setTaskData(newProjects);
+        (async () => {
+            const newProjects = await AuthActions.fetchAllProjects();
+            // This is calculating PC... hopefully we can remove from here
+            calcPC(newProjects, selectedProject);
+            setTaskData(newProjects);    
+        })();
     }, [runUpdate]);
 
     const newProjectHandler = (newProjectData) => {

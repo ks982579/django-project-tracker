@@ -4,6 +4,19 @@ import AuthContext from "../store/auth-context";
 
 import styles from './Navbar.module.css';
 import AuthActions from "../../actions/auth-actions";
+import letterImg from "../../images/letter.png";
+
+// This is just the message button
+const MessageButton = () => {
+    const messagesClickHandler = event => {
+        console.log('Clicked Letter.')
+    }
+    return (
+        <div className={styles['div-buttons']} onClick={messagesClickHandler}>
+            <img className={styles["letter-img"]} src={letterImg} />
+        </div>
+    )
+}
 
 const Navbar = (props) => {
     //Import context, whether user is or isn't logged in. 
@@ -15,7 +28,6 @@ const Navbar = (props) => {
         ctx.setLogin(false);
     }
     const profileClickHandler = event => {
-        console.log('clicked "Profile"')
         props.onProfileClick();
     }
 
@@ -23,8 +35,10 @@ const Navbar = (props) => {
         <nav className={styles.navigation}>
             <div className={styles.padding}>--Project-Tracker--</div>
             <div className={`${styles.padding} ${styles.layout}`}>
+                
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.signupClick}>Sign-up</div>}
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.loginClick}>Login</div>}
+                {ctx.isLoggedIn && <MessageButton />}
                 {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={profileClickHandler}>Profile</div>}
                 {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={logoutClickHandler}>Logout</div>}
             </div>
