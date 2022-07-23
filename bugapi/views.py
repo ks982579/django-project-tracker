@@ -16,8 +16,8 @@ from rest_framework.permissions import IsAuthenticated
 import json, math
 
 # Custom Imports
-from .models import TaskModel
-from .serializers import UserSerializer, TaskSerializer
+from .models import TaskModel, MessagesModel
+from .serializers import UserSerializer, TaskSerializer, MessagesSerializer
 
 
 # https://www.django-rest-framework.org/api-guide/generic-views/
@@ -288,3 +288,37 @@ class TaskHandler(APIView):
                 parent_task.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+# ++++++++++++++++++++++++++++++++++++++++++++
+# Messages View
+# ++++++++++++++++++++++++++++++++++++++++++++
+class MessageHandler(APIView):
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        actual_user = User.objects.get(pk=request.user.id)
+        to_user = actual_user.to_set.all()
+        print(to_user)
+        to_user_serialized = MessagesSerializer(data=to_user, many=True)
+        to_user_serialized.is_valid()
+        return Response(data=to_user_serialized.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        pass
+    def put(self, request): #Perhaps for drafts - future?
+        pass
+    def delete(self, request):
+        pass
+
+class MessageHandler2(generics.GenericAPIView):
+    # https://docs.djangoproject.com/en/4.0/topics/db/queries/
+    queryset = MessagesModel.objects.all()
+    serializer_class = MessagesSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self, request):
+        to_set = MessagesModel.objects.filter()
+
+    def list(self, request):
+        queryset = self.get_queryset(request)
