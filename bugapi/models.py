@@ -29,3 +29,29 @@ class TaskModel(models.Model):
     class Meta:
         # Assending by end_date, nulls last.
         ordering = [F('end_date').asc(nulls_last=True)]
+
+class MessagesModel(models.Model):
+    sent_date = models.DateTimeField(auto_now_add=True) #when sent
+    from_user = models.ForeignKey(User, related_name='from_set', on_delete=models.PROTECT) #Can't be blank
+
+    # To and CC will require 'limit_choices_to' property
+    # https://docs.djangoproject.com/en/4.0/ref/models/fields/#django.db.models.ForeignKey.limit_choices_to
+    # https://docs.djangoproject.com/en/4.0/topics/db/queries/#complex-lookups-with-q
+    send_to = models.ManyToManyField(User, related_name='to_set') #Can't be blank
+    # ['__call__', '__class__', '__class_getitem__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__slotnames__', '__str__', '__subclasshook__', '__weakref__', '_add_items', '_apply_rel_filters', '_build_remove_filters', '_constructor_args', '_create_user', '_db', '_get_add_plan', '_get_missing_target_ids', '_get_queryset_methods', '_get_target_ids', '_hints', '_insert', '_queryset_class', '_remove_items', '_remove_prefetched_objects', '_set_creation_counter', '_update', 'add', 'aggregate', 'alias', 'all', 'annotate', 'auto_created', 'bulk_create', 'bulk_update', 'check', 'clear', 'complex_filter', 'contains', 'contribute_to_class', 'core_filters', 'count', 'create', 'create_superuser', 'create_user', 'creation_counter', 'dates', 'datetimes', 'db', 'db_manager', 'deconstruct', 'defer', 'difference', 'distinct', 'do_not_call_in_templates', 'earliest', 'exclude', 'exists', 'explain', 'extra', 'filter', 'first', 'from_queryset', 'get', 'get_by_natural_key', 'get_or_create', 'get_prefetch_queryset', 'get_queryset', 'in_bulk', 'instance', 'intersection', 'iterator', 'last', 'latest', 'make_random_password', 'model', 'name', 'none', 'normalize_email', 'only', 'order_by', 'pk_field_names', 'prefetch_cache_name', 'prefetch_related', 'query_field_name', 'raw', 'related_val', 'remove', 'reverse', 'select_for_update', 'select_related', 'set', 'source_field', 'source_field_name', 'symmetrical', 'target_field', 'target_field_name', 'through', 'union', 'update', 'update_or_create', 'use_in_migrations', 'using', 'values', 'values_list', 'with_perm']
+    cc_to = models.ManyToManyField(User, related_name='cc_set', blank=True)
+    subject = models.CharField(max_length=255, blank=False)
+    body = models.TextField(blank=False)
+
+    def __str__(self):
+        to_users = ''
+        for _eu in self.send_to.all():
+            if to_users == '':
+                to_users = f'{_eu.username}'
+            else:
+                to_users += f', {_eu.username}'
+        return f'from: {self.from_user}\nto: {to_users}\nsubject: {self.subject}'
+
+    class Meta:
+        # https://docs.djangoproject.com/en/4.0/ref/models/expressions/#f-expressions
+        ordering = [F('sent_date').desc()]
