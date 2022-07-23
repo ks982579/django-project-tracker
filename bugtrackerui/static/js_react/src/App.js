@@ -11,11 +11,13 @@ import Greeting from './components/projects/Greeting';
 import { DevContextProvider } from './components/store/dev-context';
 
 let initReducerState = {
+    toMessages: false,
     toEditProfile: false,
     isProjectSelected: false,
     selectedProject: {},
 }
 const Actions = {
+    Messages: 'Messages',
     Profile: 'Profile',
     Project: 'Project',
     Reset: 'Reset',
@@ -23,9 +25,16 @@ const Actions = {
 
 const reducerFunction = (prevState, action) => {
     // clicking on a project comes with project info
-    if(action.type == Actions.Project){
-        console.log("4.) Dispatch Function Setting payload")
+    if(action.type == Actions.Messages){
         return {
+            toMessages: true,
+            toEditProfile: false,
+            isProjectSelected: false,
+        }
+    }
+    if(action.type == Actions.Project){
+        return {
+            toMessages: false,
             toEditProfile: false,
             isProjectSelected: true,
             selectedProject: action.payload,
@@ -33,6 +42,7 @@ const reducerFunction = (prevState, action) => {
     }
     if(action.type == Actions.Profile){
         return {
+            toMessages: false,
             toEditProfile: true,
             isProjectSelected: false,
         }
@@ -48,8 +58,6 @@ function App() {
     const ctx = useContext(AuthContext);
     const [wantsToLogin, setWantsToLogin] = useState(false);
     const [wantsToSignup, setWantsToSignup] = useState(false);
-    // const [wantsToEditProfile, setWantsToEditProfile] = useState(false);
-    // const [projectSelected, setProjectSelected] = useState(false)
 
     const [reducerState, dispatchFn] = useReducer(reducerFunction, initReducerState);
 
@@ -85,16 +93,21 @@ function App() {
         dispatchFn({type: Actions.Reset});
     }
 
+    const checkMessages = () => {
+        dispatchFn({type: Actions.Messages})
+    }
+
     console.log('<App/> done...')
     console.log(`profile = ${reducerState.toEditProfile}`);
     console.log(`project = ${reducerState.isProjectSelected}`);
     return (
         <DevContextProvider>
-            <Navbar loginClick={loginYes} signupClick={signupYes} onProfileClick={editProfileHandler}/>
+            <Navbar loginClick={loginYes} signupClick={signupYes} onProfileClick={editProfileHandler} onMessagesClick={checkMessages}/>
             {!wantsToLogin && !wantsToSignup && !ctx.isLoggedIn && <Greeting />}
             {wantsToLogin && !ctx.isLoggedIn && <LoginForm cancelClick={loginNo} />}
             {wantsToSignup && !ctx.isLoggedIn && <SignupForm cancelClick={signupNo} />}
             {ctx.isLoggedIn && <Dashboard 
+                boolMessages ={reducerState.toMessages}
                 boolProfile={reducerState.toEditProfile} 
                 setEditProfile={editProfileHandler}
                 boolProject={reducerState.isProjectSelected}

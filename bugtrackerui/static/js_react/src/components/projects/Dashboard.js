@@ -9,6 +9,7 @@ import NewProjectCont from "./create_project/NewProjectCont";
 import ProjectEditScreen from "./management_editor/ProjectEditScreen";
 import TaskDisplayScreen from "../development_editor/TaskDisplayScreen";
 import ProfileContainer from "../profile_editor/ProfileContainer";
+import MessagesDashboard from "../messages/MessagesDashboard";
 
 /* Many different Screens can be managed more easily with useReducer. */
 /* That should also ensure components re-render for chadnges */
@@ -62,6 +63,7 @@ const Dashboard = (props) => {
     // Reducer hook
     const [displayState, setDisplayState] = useReducer(displayReducer, initDisplayState)
     // we can double up on state's use to toggle components too!
+    const boolMessages = props.boolMessages;
     const boolProfile = props.boolProfile;
     const setEditProfile = props.setEditProfile;
     const projectSelected = props.projectSelected;
@@ -115,6 +117,7 @@ const Dashboard = (props) => {
                 <div>                    
                     {boolProject && <TaskDisplayScreen selected={projectSelected} whichProject={props.resetProject}/>}
                     {boolProfile && <ProfileContainer/>}
+                    {boolMessages && <MessagesDashboard />}
                 </div>
             </div>
         </Card>

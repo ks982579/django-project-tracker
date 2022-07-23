@@ -7,9 +7,9 @@ import AuthActions from "../../actions/auth-actions";
 import letterImg from "../../images/letter.png";
 
 // This is just the message button
-const MessageButton = () => {
+const MessageButton = (props) => {
     const messagesClickHandler = event => {
-        console.log('Clicked Letter.')
+        props.onClick();
     }
     return (
         <div className={styles['div-buttons']} onClick={messagesClickHandler}>
@@ -38,7 +38,7 @@ const Navbar = (props) => {
                 
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.signupClick}>Sign-up</div>}
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.loginClick}>Login</div>}
-                {ctx.isLoggedIn && <MessageButton />}
+                {ctx.isLoggedIn && <MessageButton onClick={props.onMessagesClick} />}
                 {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={profileClickHandler}>Profile</div>}
                 {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={logoutClickHandler}>Logout</div>}
             </div>
