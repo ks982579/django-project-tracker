@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import AuthActions from "../../actions/auth-actions";
 import Card from "../ui/Card";
+import MessagesNavbar from "./MessagesNavbar";
 
 class Mail {
     constructor(pyObj){
@@ -59,11 +60,17 @@ const MessagesDashboard = props => {
         mailbox.push(<Letter key={_em.key} content={_em}/>);
     }
 
+    let lilStyle = {
+        fontWeight: 800,
+        border: "2px dashed red",
+    }
+
     return (
-        <div>
-            <p>Messages Dashboard</p>
+        <Card>
+            <p style={lilStyle}>&lt;Messages Dashboard/&gt;</p>
+            <MessagesNavbar />
             {mailbox}
-        </div>
+        </Card>
     );
 };
 
