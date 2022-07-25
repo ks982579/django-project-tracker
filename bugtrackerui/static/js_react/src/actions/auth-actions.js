@@ -4,7 +4,7 @@
 */
 import DummyDetails from "./secrets";
 
-const DOMAIN = 'http://localhost:4000/' //window.location.href;
+const DOMAIN = window.location.href;
 
 const AuthActions = {
     getCSRFToken: (formChildren) => {

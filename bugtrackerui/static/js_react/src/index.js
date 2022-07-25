@@ -11,3 +11,9 @@ root.render(
         <App />
     </AuthContextProvider>
 );
+
+// https://create-react-app.dev/docs/adding-a-sass-stylesheet/
+/**
+ * npm install sass
+ * seems to work
+ */

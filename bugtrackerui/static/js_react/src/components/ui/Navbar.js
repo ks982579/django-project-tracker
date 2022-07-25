@@ -31,6 +31,10 @@ const Navbar = (props) => {
         props.onProfileClick();
     }
 
+    const teamClickHandler = () => {
+        console.info("Clicked 'Team' button.")
+    }
+
     return (
         <nav className={styles.navigation}>
             <div className={styles.padding}>--Project-Tracker--</div>
@@ -39,6 +43,7 @@ const Navbar = (props) => {
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.signupClick}>Sign-up</div>}
                 {!ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={props.loginClick}>Login</div>}
                 {ctx.isLoggedIn && <MessageButton onClick={props.onMessagesClick} />}
+                {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={teamClickHandler}>Team</div>}
                 {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={profileClickHandler}>Profile</div>}
                 {ctx.isLoggedIn && <div className={styles['div-buttons']} onClick={logoutClickHandler}>Logout</div>}
             </div>

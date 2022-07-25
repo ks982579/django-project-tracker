@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import AuthActions from "../../actions/auth-actions";
 import Card from "../ui/Card";
+import MessagesModal from "./MessagesModal";
 import MessagesNavbar from "./MessagesNavbar";
 
 class Mail {
@@ -20,8 +21,13 @@ class Mail {
 }
 
 const Letter = (props) =>{
+    const [displayLetter, setDisplayLetter] = useState(false);
+    const letterClickHandler = (event, data) => {
+        setDisplayLetter(true);
+    }
     return (
-        <Card>
+        <Card onClick={letterClickHandler} data={props.content}>
+            {displayLetter && <MessagesModal />}
             <h3>Letter</h3>
             <p>{props.content.from}</p>
             <p>{props.content.date}</p>
