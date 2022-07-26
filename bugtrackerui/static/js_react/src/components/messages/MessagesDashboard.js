@@ -25,9 +25,14 @@ const Letter = (props) =>{
     const letterClickHandler = (event, data) => {
         setDisplayLetter(true);
     }
+    const overlayClickHandler = (event) => {
+        event.stopPropagation();
+        setDisplayLetter(false);
+    }
+
     return (
         <Card onClick={letterClickHandler} data={props.content}>
-            {displayLetter && <MessagesModal />}
+            {displayLetter && <MessagesModal overlayClick={overlayClickHandler} content={props.content}/>}
             <h3>Letter</h3>
             <p>{props.content.from}</p>
             <p>{props.content.date}</p>
@@ -81,3 +86,4 @@ const MessagesDashboard = props => {
 };
 
 export default MessagesDashboard;
+// X --> <Dashboard>

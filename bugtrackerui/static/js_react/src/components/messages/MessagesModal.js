@@ -3,14 +3,20 @@ import ReactDOM from "react-dom";
 
 import styles from './MessagesModal.module.scss';
 
-const {createPortal} = ReactDOM;
+const { createPortal } = ReactDOM;
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // Backdrop
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 const Backdrop = props => {
+    const scrollHandler = event => {
+        event.stopPropagation();
+    }
     return (
-        <div className={styles.backdrop}></div>
+        <div
+            className={styles.backdrop}
+            onClick={props.onClick}
+            onScroll={scrollHandler}></div>
     );
 }
 
@@ -18,11 +24,24 @@ const Backdrop = props => {
 // Overlay
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 const Overlay = props => {
+    /**
+     * props.content = {date, from, to, cc, subject, body} -> the 'Mail' object
+     */
+    const mail = props.content;
     return (
-        <div>
-            <h3>Subject line</h3>
-            <p>This is like the body of the paragraph.</p>
-            <input type="button" value="Click Me!" />
+        <div className={styles.overlay}>
+            <p>from: mail.from</p>
+            <h3>Subject: {mail.subject}</h3>
+            <small>sent: {mail.date}</small>
+            <div>
+                <pre>
+                    {mail.body}
+                </pre>
+            </div>
+            <div className={styles['button-row']}>
+                <input type="button" value="Reply" onClick={props.cancelClick} />
+                <input type="button" value="Close" onClick={props.cancelClick} />
+            </div>
         </div>
     )
 }
@@ -35,11 +54,11 @@ const MessagesModal = props => {
         <>
             <p>Messages Modal</p>
             {createPortal(
-                <Backdrop />,
+                <Backdrop onClick={props.overlayClick} />,
                 document.getElementById('backdrop-root')
             )}
             {createPortal(
-                <Overlay />,
+                <Overlay content={props.content} cancelClick={props.overlayClick} />,
                 document.getElementById('modal-root')
             )}
         </>
@@ -47,3 +66,4 @@ const MessagesModal = props => {
 };
 
 export default MessagesModal;
+// X --> <Letter> --> <MessagesDashboard>
