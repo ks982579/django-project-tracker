@@ -47,7 +47,7 @@ const AuthActions = {
             .then(response => {
                 return response.json();
             }).then(data => {
-                console.log(data)// Now it prtins teh JSON response :)
+                console.log(data)// Now it prints the JSON response :)
                 return data
             }).catch(error => {
                 console.error(`Failed to fetch: ${error}`);

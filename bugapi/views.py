@@ -293,18 +293,22 @@ class TaskHandler(APIView):
 # Messages View
 # ++++++++++++++++++++++++++++++++++++++++++++
 class MessageHandler(APIView):
+    # Should we only save/fetch messages for 30 days?
     authentication_classes = [SessionAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        # fetch user from Database
         actual_user = User.objects.get(pk=request.user.id)
+        # fetch messages 'to' the user
         to_user = actual_user.to_set.all()
-        print(to_user)
+        # Serialize
         to_user_serialized = MessagesSerializer(data=to_user, many=True)
         to_user_serialized.is_valid()
         return Response(data=to_user_serialized.data, status=status.HTTP_200_OK)
 
     def post(self, request):
+
         pass
     def put(self, request): #Perhaps for drafts - future?
         pass

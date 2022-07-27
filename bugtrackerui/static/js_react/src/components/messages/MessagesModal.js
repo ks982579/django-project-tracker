@@ -23,14 +23,14 @@ const Backdrop = props => {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // Overlay
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
-const Overlay = props => {
+const ReadOverlay = props => {
     /**
      * props.content = {date, from, to, cc, subject, body} -> the 'Mail' object
      */
     const mail = props.content;
     return (
         <div className={styles.overlay}>
-            <p>from: mail.from</p>
+            <p>from: {mail.from}</p>
             <h3>Subject: {mail.subject}</h3>
             <small>sent: {mail.date}</small>
             <div>
@@ -46,10 +46,45 @@ const Overlay = props => {
     )
 }
 
+const ReplyOverlay = props => {
+    /**
+     * props.content = {date, from, to, cc, subject, body} -> the 'Mail' object
+     */
+    const submitHandler = event => {
+        event.preventDefault();
+    }
+    return (
+        <div className={styles.overlay}>
+            <form onSubmit={submitHandler}>
+                <p>from: <input type="text" name="from" /></p>
+                <h3>Subject: <input type="text" name="subject" /></h3>
+                <div>
+                    <textarea name="body" width="100%" />
+                </div>
+                <div className={styles['button-row']}>
+                    <input type="submit" value="Send" />
+                    <input type="button" value="Close" onClick={props.cancelClick} />
+                </div>
+            </form>
+        </div>
+    )
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // Message Modal
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 const MessagesModal = props => {
+    const writeMode = props.writeMode ? true : false;
+
+    const portaling = ((writeMode) => {
+        console.log(`WriteMode: ${writeMode}`)
+        if (writeMode) {
+            return <ReplyOverlay cancelClick={props.overlayClick} />
+        } else {
+            return <ReadOverlay content={props.content} cancelClick={props.overlayClick} />
+        }
+    })(writeMode);
+
     return (
         <>
             <p>Messages Modal</p>
@@ -58,7 +93,7 @@ const MessagesModal = props => {
                 document.getElementById('backdrop-root')
             )}
             {createPortal(
-                <Overlay content={props.content} cancelClick={props.overlayClick} />,
+                portaling,
                 document.getElementById('modal-root')
             )}
         </>

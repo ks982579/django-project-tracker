@@ -43,6 +43,14 @@ const Letter = (props) =>{
 
 const MessagesDashboard = props => {
     const [userMail, setUserMail] = useState([]);
+    const [newMessage, setNewMessage] = useState(false);
+
+    const createNewMessage = (event) => {
+        setNewMessage(true);
+    }
+    const cancelCreateMessage = event => {
+        setNewMessage(false);
+    }
 
     useEffect(() => {
         let isSubscribed = true;
@@ -79,8 +87,9 @@ const MessagesDashboard = props => {
     return (
         <Card>
             <p style={lilStyle}>&lt;Messages Dashboard/&gt;</p>
-            <MessagesNavbar />
+            <MessagesNavbar onNewMessageClick={createNewMessage}/>
             {mailbox}
+            {newMessage && <MessagesModal writeMode={newMessage} overlayClick={cancelCreateMessage}/>}
         </Card>
     );
 };

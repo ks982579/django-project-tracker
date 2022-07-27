@@ -24,6 +24,8 @@ $modal-background-colour: rgba(255, 0, 0, 0.687);
     div {
         pre {
             white-space: pre-wrap;
+            max-height: 50%;
+            overflow-y: auto;
         }
     }
 
