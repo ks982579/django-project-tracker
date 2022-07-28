@@ -55,3 +55,19 @@ class MessagesModel(models.Model):
     class Meta:
         # https://docs.djangoproject.com/en/4.0/ref/models/expressions/#f-expressions
         ordering = [F('sent_date').desc()]
+
+class SudoUserModel(models.Model):
+    """
+    Each user *should have SudoUser entry.
+    This will store other information like Messages and Team Members
+    """
+    # The user
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='real_user')
+    # Messages
+    inbox = models.ManyToManyField(MessagesModel, related_name='inbox', blank=True)
+    outbox = models.ManyToManyField(MessagesModel, related_name='outbox', blank=True)
+    # Team Members
+    team_members = models.ManyToManyField(User, related_name='team_members', blank=True)
+
+    def __str__(self):
+        return f'SudoUser: {self.user.username}'

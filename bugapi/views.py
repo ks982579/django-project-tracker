@@ -17,7 +17,7 @@ import json, math
 import smtplib
 
 # Custom Imports
-from .models import TaskModel, MessagesModel
+from .models import TaskModel, MessagesModel, SudoUserModel
 from .serializers import UserSerializer, TaskSerializer, MessagesSerializer
 
 
@@ -108,6 +108,8 @@ class SignupHandler(APIView):
                 return Response(data={'status': 'Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             print(new_user)
             new_user.save()
+            # create the SudoUser
+            SudoUserModel.objects.create(user=new_user)
             login(request, new_user)
             serializedUser = UserSerializer(new_user)
             return Response(data=serializedUser.data, status=status.HTTP_201_CREATED)
