@@ -53,13 +53,16 @@ const ReplyOverlay = props => {
     const submitHandler = event => {
         event.preventDefault();
     }
+    //I think CC will be some complicated logic, multiple to's.
     return (
         <div className={styles.overlay}>
             <form onSubmit={submitHandler}>
-                <p>from: <input type="text" name="from" /></p>
-                <h3>Subject: <input type="text" name="subject" /></h3>
                 <div>
-                    <textarea name="body" width="100%" />
+                    <p>To: <input type="text" name="from" /></p>
+                    <p>Subject: <input type="text" name="subject" /></p>
+                </div>
+                <div className={styles['body-container']}>
+                    <textarea name="body" spellCheck="true" placeholder="Message..."></textarea>
                 </div>
                 <div className={styles['button-row']}>
                     <input type="submit" value="Send" />
