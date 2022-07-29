@@ -432,6 +432,36 @@ const AuthActions = {
             })
         //console.log(typeof jsonRes);
         return jsonRes;
+    },
+
+    /******************************
+     * Team Members
+     *******************************/
+    fetchTeamMembers: () => {
+        const httpHeader = new Headers();
+        httpHeader.append('Content-type', 'application/json');
+        httpHeader.append('Accept', 'application/json');
+
+        // create options
+        const reqOptions = {
+            method: 'GET',
+            headers: httpHeader,
+        } //GET/HEAD methods cannot have body...
+
+        // Fetching Data!
+        const jsonRes = fetch(`${DOMAIN}api/team-members-handler/`, reqOptions)
+            .then(response => {
+                console.log("%cPromise Received!", "color:blue");
+                return response.json();
+            }).then(data => {
+                console.log(data)// Now it prints the JSON response :)
+                return data
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return null;
+            })
+        //console.log(typeof jsonRes);
+        return jsonRes;
     }
 }
 

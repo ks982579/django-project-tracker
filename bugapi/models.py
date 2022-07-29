@@ -66,6 +66,7 @@ class SudoUserModel(models.Model):
     # Messages
     inbox = models.ManyToManyField(MessagesModel, related_name='inbox', blank=True)
     outbox = models.ManyToManyField(MessagesModel, related_name='outbox', blank=True)
+    draftbox = models.ManyToManyField(MessagesModel, related_name='draftbox', blank=True)
     # Team Members
     team_members = models.ManyToManyField(User, related_name='team_members', blank=True)
 

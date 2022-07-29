@@ -310,7 +310,7 @@ class MessageHandler(APIView):
         return Response(data=to_user_serialized.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-
+        # Create a Message and store to SudoUser
         pass
     def put(self, request): #Perhaps for drafts - future?
         pass
@@ -329,3 +329,30 @@ class MessageHandler2(generics.GenericAPIView):
 
     def list(self, request):
         queryset = self.get_queryset(request)
+
+# ++++++++++++++++++++++++++++++++++++++++++++
+# Team View
+# ++++++++++++++++++++++++++++++++++++++++++++
+class SudoUser:
+    """
+    Extracting some of the logic from TeamMembersView.get()
+    """
+    def __init__(self, user_id):
+        self.sudo = SudoUserModel.objects.get(user=User.objects.get(pk=user_id))
+        self.team = self.sudo.team_members.all()
+
+class TeamMembersView(APIView):
+    def get(self, request):
+        """
+        Getting team members for user. User's id must be passed in through request object.
+        :param request:
+        :return DRF.Response = json:
+        """
+        sudo_user = SudoUser(request.user.id)
+        searlized_team = UserSerializer(sudo_user.team, many=True)
+        return Response(data=searlized_team.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        pass
+    def delete(self, request):
+        pass

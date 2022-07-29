@@ -44,7 +44,15 @@ const Letter = (props) =>{
 const MessagesDashboard = props => {
     const [userMail, setUserMail] = useState([]);
     const [newMessage, setNewMessage] = useState(false);
+    const [teamMembers, setTeamMembers] = useState([])
 
+    useEffect(()=>{
+        (async()=>{
+            const members = await AuthActions.fetchTeamMembers();
+            console.log(JSON.stringify(members));
+        })();
+    },[]);
+    
     const createNewMessage = (event) => {
         setNewMessage(true);
     }
