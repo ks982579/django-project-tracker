@@ -49,10 +49,11 @@ const MessagesDashboard = props => {
     useEffect(()=>{
         (async()=>{
             const members = await AuthActions.fetchTeamMembers();
-            console.log(JSON.stringify(members));
+            console.log(members)
+            setTeamMembers(members);
         })();
     },[]);
-    
+
     const createNewMessage = (event) => {
         setNewMessage(true);
     }
@@ -97,7 +98,7 @@ const MessagesDashboard = props => {
             <p style={lilStyle}>&lt;Messages Dashboard/&gt;</p>
             <MessagesNavbar onNewMessageClick={createNewMessage}/>
             {mailbox}
-            {newMessage && <MessagesModal writeMode={newMessage} overlayClick={cancelCreateMessage}/>}
+            {newMessage && <MessagesModal writeMode={newMessage} overlayClick={cancelCreateMessage} contacts={teamMembers}/>}
         </Card>
     );
 };

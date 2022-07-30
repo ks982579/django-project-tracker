@@ -6,6 +6,57 @@ import DummyDetails from "./secrets";
 
 const DOMAIN = window.location.href;
 
+// There's actually a Request Class already. 
+// https://developer.mozilla.org/en-US/docs/Web/API/Request
+class RequestOptions {
+    constructor(method = "GET", csrftoken = null, body = null) {
+        this.className = 'RequestOptions';
+        this.purpose = "Create the options to pass into the fetch() API";
+        this.method = method;
+        this.httpHeader = new Headers();
+        this.httpHeader.append('Content-type', 'application/json');
+        this.httpHeader.append('Accept', 'application/json');
+
+        if(csrftoken !== null){
+            this.httpHeader.append('X-CSRFtoken', csrftoken);
+        }
+        this.payload = body;
+    }
+    get options() {
+        if(this.payload !== null){
+            return ({
+                method: this.method,
+                headers: this.httpHeader,
+                body: JSON.stringify(this.payload),
+            });
+        } else {
+            return ({
+                method: this.method,
+                headers: this.httpHeader,
+            });
+        }
+    }
+    static create(method = "GET", csrftoken = null, body = null){
+        return new RequestOptions(method, csrftoken, body);
+    }
+    call(fullDomain){
+        const jsonRes = fetch(fullDomain, this.options)
+            .then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data)// Now it prints the JSON response :)
+                return data
+            }).catch(error => {
+                console.error(`Failed to fetch: ${error}`);
+                return null;
+            })
+        return jsonRes;
+    }
+}
+
+// ++++++++++++++++++++++++++++++++++++++++++++++++
+// AuthActions helper functions
+// ++++++++++++++++++++++++++++++++++++++++++++++++
 const AuthActions = {
     getCSRFToken: (formChildren) => {
         let csrftoken = ''
@@ -31,30 +82,15 @@ const AuthActions = {
         postObj.password = DummyDetails.pw;
         /* -------------------------------------- */
 
-        const httpHeader = new Headers();
-        httpHeader.append('Content-type', 'application/json');
-        httpHeader.append('Accept', 'application/json');
-        httpHeader.append('X-CSRFtoken', formData.get('csrftoken'));
+        //Create RequestOptions object
+        const options = RequestOptions.create('POST', formData.get('csrftoken'), postObj);
 
-        console.log(httpHeader.entries())
-        const reqOptions = {
-            method: 'POST',
-            headers: httpHeader,
-            body: JSON.stringify(postObj)
-        }
+        // Call the server with request
+        const jsonRes = options.call(`${DOMAIN}api/auth/`);
 
-        const jsonRes = fetch(`${DOMAIN}api/auth/`, reqOptions)
-            .then(response => {
-                return response.json();
-            }).then(data => {
-                console.log(data)// Now it prints the JSON response :)
-                return data
-            }).catch(error => {
-                console.error(`Failed to fetch: ${error}`);
-                return null;
-            })
         return jsonRes;
     },
+
     logout: () => {
         const jsonRes = fetch(`${DOMAIN}api/auth/`)
             .then(response => {
@@ -438,30 +474,12 @@ const AuthActions = {
      * Team Members
      *******************************/
     fetchTeamMembers: () => {
-        const httpHeader = new Headers();
-        httpHeader.append('Content-type', 'application/json');
-        httpHeader.append('Accept', 'application/json');
+        // create Requestion
+        const driver = RequestOptions.create();
+        // Call API
+        const jsonResponse = driver.call(`${DOMAIN}api/team-members-handler/`);
 
-        // create options
-        const reqOptions = {
-            method: 'GET',
-            headers: httpHeader,
-        } //GET/HEAD methods cannot have body...
-
-        // Fetching Data!
-        const jsonRes = fetch(`${DOMAIN}api/team-members-handler/`, reqOptions)
-            .then(response => {
-                console.log("%cPromise Received!", "color:blue");
-                return response.json();
-            }).then(data => {
-                console.log(data)// Now it prints the JSON response :)
-                return data
-            }).catch(error => {
-                console.error(`Failed to fetch: ${error}`);
-                return null;
-            })
-        //console.log(typeof jsonRes);
-        return jsonRes;
+        return jsonResponse;
     }
 }
 

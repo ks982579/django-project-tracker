@@ -78,6 +78,7 @@ const ReplyOverlay = props => {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 const MessagesModal = props => {
     const writeMode = props.writeMode ? true : false;
+    const contacts = props.contacts; //User's teamMembers;
 
     const portaling = ((writeMode) => {
         console.log(`WriteMode: ${writeMode}`)
