@@ -470,6 +470,24 @@ const AuthActions = {
         return jsonRes;
     },
 
+    sendMessage: (rawFormData) => {
+        // https://developer.mozilla.org/en-US/docs/Web/API/FormData
+        const formData = new FormData(rawFormData);
+
+        // Create package from form data. 
+        const jsonPackage = {
+            "send_to": formData.get('sendTo'),
+            "subject": formData.get('subject'),
+            "body": formData.get('body'),
+        }
+
+        // create the request-options object
+        const driver = RequestOptions.create("POST", formData.get('csrftoken'), jsonPackage);
+        // call the backend API
+        let jsonResponse = driver.call(`${DOMAIN}api/message-handler/`);
+        return jsonResponse;
+    },
+
     /******************************
      * Team Members
      *******************************/

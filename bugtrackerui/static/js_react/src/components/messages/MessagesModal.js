@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import styles from './MessagesModal.module.scss';
+import AuthActions from "../../actions/auth-actions";
+import CookieMonster from "../CookieMonster";
 
 const { createPortal } = ReactDOM;
 
@@ -50,16 +52,25 @@ const ReplyOverlay = props => {
     /**
      * props.content = {date, from, to, cc, subject, body} -> the 'Mail' object
      */
+    const contacts = props.contacts;
     const submitHandler = event => {
         event.preventDefault();
+        const resp = AuthActions.sendMessage(event.target);
+        console.log(resp);
+        props.cancelClick();
+        
     }
     //I think CC will be some complicated logic, multiple to's.
     return (
         <div className={styles.overlay}>
             <form onSubmit={submitHandler}>
+                <CookieMonster />
                 <div>
-                    <p>To: <input type="text" name="from" /></p>
-                    <p>Subject: <input type="text" name="subject" /></p>
+                    <datalist id="contacts">
+                        {contacts.map((choice) => <option key={choice.id} value={choice.username}/>)}
+                    </datalist>
+                    <p>To: <input type="text" name="sendTo" list="contacts"/></p>
+                    <p>Subject: <input type="text" name="subject" autoComplete="off"/></p>
                 </div>
                 <div className={styles['body-container']}>
                     <textarea name="body" spellCheck="true" placeholder="Message..."></textarea>
@@ -72,6 +83,10 @@ const ReplyOverlay = props => {
         </div>
     )
 }
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#list
+ * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist#specifications
+ */
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 // Message Modal
@@ -83,7 +98,7 @@ const MessagesModal = props => {
     const portaling = ((writeMode) => {
         console.log(`WriteMode: ${writeMode}`)
         if (writeMode) {
-            return <ReplyOverlay cancelClick={props.overlayClick} />
+            return <ReplyOverlay cancelClick={props.overlayClick} contacts={contacts}/>
         } else {
             return <ReadOverlay content={props.content} cancelClick={props.overlayClick} />
         }

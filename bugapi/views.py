@@ -26,6 +26,15 @@ from .serializers import UserSerializer, TaskSerializer, MessagesSerializer
 ## at 2:16 - 2:45 covers permissions and custom permission -> users, members, staff...
 ## 2:46 - Token Authentication
 
+class Convenience:
+    """
+    I prefer dot notation instead of [] of the dictionaries.
+    https://docs.python.org/3.10/library/functions.html?highlight=property#property
+    https://docs.python.org/3.10/reference/datamodel.html?highlight=__setattr__#object.__setattr__
+    """
+    def __init__(self):
+        pass
+
 # localhost:8000/api/auth/
 class AuthenticateUser(APIView):
     """
@@ -310,8 +319,23 @@ class MessageHandler(APIView):
         return Response(data=to_user_serialized.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        # Create a Message and store to SudoUser
-        pass
+        current_message = Convenience()
+        current_message._from = User.objects.get(pk=request.user.id)
+        current_message._to = User.objects.get(username=request.data['send_to'])
+        current_message._subject = request.data['subject']
+        current_message._body = request.data['body']
+
+        # https://docs.djangoproject.com/en/4.0/topics/db/examples/many_to_many/
+        new_message = MessagesModel(
+            from_user = current_message._from,
+            subject = current_message._subject,
+            body = current_message._body
+        )
+        print(new_message)
+        #new_message.save()
+        #new_message.send_to.set(current_message._to)
+        return Response(data={'success': 'True'}, status=status.HTTP_201_CREATED)
+
     def put(self, request): #Perhaps for drafts - future?
         pass
     def delete(self, request):
