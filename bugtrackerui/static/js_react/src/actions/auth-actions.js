@@ -260,7 +260,6 @@ const AuthActions = {
                 return null;
             });
         return jsonRes;
-        return null;
     },
 
     fetchAllProjects: () => {
@@ -402,15 +401,24 @@ const AuthActions = {
         let formData = new FormData(htmlForm);
 
         let endDate = formData.get('endDate')
+        
+        // https://www.tutorialsandyou.com/javascript/how-to-get-the-timezone-in-javascript-136.html
+        let browserTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        let dateOptions = {
+            timeZone: browserTimeZone,
+            timeZoneName: 'short',
+        }
+        let sudoTime = new Date(endDate);
+        
         //Either null of local DateTime.
-        endDate = endDate == "" ? null : endDate;
+        endDate = endDate == "" ? null : endDate;//`${endDate}[${shortTimeZone}]`;
 
         //Matching to keys in Django Model
         let dataObj = {
             id: taskID,
             "task_name": formData.get('name'),
             "description": formData.get('description'),
-            "end_date": endDate,
+            "end_date": sudoTime.toISOString(),
             "percent_complete": formData.get("percentComplete"), // may be null
         };
         //Construct Request

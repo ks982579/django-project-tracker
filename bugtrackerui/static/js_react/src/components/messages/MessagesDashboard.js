@@ -32,7 +32,7 @@ const Letter = (props) =>{
 
     return (
         <Card onClick={letterClickHandler} data={props.content}>
-            {displayLetter && <MessagesModal overlayClick={overlayClickHandler} content={props.content}/>}
+            {displayLetter && <MessagesModal overlayClick={overlayClickHandler} content={props.content} newMessage={props.newMessage}/>}
             <h3>Letter</h3>
             <p>{props.content.from}</p>
             <p>{props.content.date}</p>
@@ -57,6 +57,9 @@ const MessagesDashboard = props => {
     const createNewMessage = (event) => {
         setNewMessage(true);
     }
+
+    
+
     const cancelCreateMessage = event => {
         setNewMessage(false);
     }
@@ -85,7 +88,7 @@ const MessagesDashboard = props => {
     let mailbox = []
 
     for(let _em of userMail){
-        mailbox.push(<Letter key={_em.key} content={_em}/>);
+        mailbox.push(<Letter key={_em.key} content={_em} newMessage={createNewMessage}/>);
     }
 
     let lilStyle = {

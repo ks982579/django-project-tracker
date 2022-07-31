@@ -14,6 +14,7 @@ let initReducerState = {
     toMessages: false,
     toEditProfile: false,
     isProjectSelected: false,
+    toTeam: false,
     selectedProject: {},
 }
 const Actions = {
@@ -21,33 +22,43 @@ const Actions = {
     Profile: 'Profile',
     Project: 'Project',
     Reset: 'Reset',
+    Team: 'Team',
 }
 
 const reducerFunction = (prevState, action) => {
     // clicking on a project comes with project info
-    if(action.type == Actions.Messages){
+    if (action.type == Actions.Messages) {
         return {
             toMessages: true,
             toEditProfile: false,
             isProjectSelected: false,
+            toTeam: false,
         }
     }
-    if(action.type == Actions.Project){
+    if (action.type == Actions.Project) {
         return {
             toMessages: false,
             toEditProfile: false,
             isProjectSelected: true,
+            toTeam: false,
             selectedProject: action.payload,
         }
     }
-    if(action.type == Actions.Profile){
+    if (action.type == Actions.Profile) {
         return {
             toMessages: false,
             toEditProfile: true,
             isProjectSelected: false,
+            toTeam: false,
         }
     }
-    if(action.type == Actions.Reset){
+    if (action.type == Actions.Team) {
+        return {
+            ...initReducerState,
+            toTeam: true,
+        }
+    }
+    if (action.type == Actions.Reset) {
         return initReducerState;
     }
     return prevState;
@@ -63,7 +74,7 @@ function App() {
 
     const loginYes = () => {
         setWantsToLogin(true);
-        if(wantsToSignup) {
+        if (wantsToSignup) {
             setWantsToSignup(false);
         }
     }
@@ -72,7 +83,7 @@ function App() {
     }
     const signupYes = () => {
         setWantsToSignup(true);
-        if(wantsToLogin){
+        if (wantsToLogin) {
             setWantsToLogin(false);
         }
     }
@@ -81,20 +92,23 @@ function App() {
     }
     //Toggle Edit Profile
     const editProfileHandler = () => {
-        if(!reducerState.toEditProfile){
-            dispatchFn({type: Actions.Profile});
+        if (!reducerState.toEditProfile) {
+            dispatchFn({ type: Actions.Profile });
         }
     }
-    const selectProjectHandler = (data) =>{
+    const selectProjectHandler = (data) => {
         console.log("3.) selectProjectHandler")
-        dispatchFn({type: Actions.Project, payload: data});
+        dispatchFn({ type: Actions.Project, payload: data });
     }
-    const projectResetHandler = () =>{
-        dispatchFn({type: Actions.Reset});
+    const projectResetHandler = () => {
+        dispatchFn({ type: Actions.Reset });
     }
 
     const checkMessages = () => {
-        dispatchFn({type: Actions.Messages})
+        dispatchFn({ type: Actions.Messages })
+    }
+    const teamClickHandler = () => {
+        dispatchFn({type: Actions.Team});
     }
 
     console.log('<App/> done...')
@@ -102,18 +116,23 @@ function App() {
     console.log(`project = ${reducerState.isProjectSelected}`);
     return (
         <DevContextProvider>
-            <Navbar loginClick={loginYes} signupClick={signupYes} onProfileClick={editProfileHandler} onMessagesClick={checkMessages}/>
+            <Navbar loginClick={loginYes}
+                signupClick={signupYes}
+                onProfileClick={editProfileHandler}
+                onMessagesClick={checkMessages}
+                onTeamClick={teamClickHandler}/>
             {!wantsToLogin && !wantsToSignup && !ctx.isLoggedIn && <Greeting />}
             {wantsToLogin && !ctx.isLoggedIn && <LoginForm cancelClick={loginNo} />}
             {wantsToSignup && !ctx.isLoggedIn && <SignupForm cancelClick={signupNo} />}
-            {ctx.isLoggedIn && <Dashboard 
-                boolMessages ={reducerState.toMessages}
-                boolProfile={reducerState.toEditProfile} 
+            {ctx.isLoggedIn && <Dashboard
+                boolMessages={reducerState.toMessages}
+                boolProfile={reducerState.toEditProfile}
                 setEditProfile={editProfileHandler}
                 boolProject={reducerState.isProjectSelected}
+                boolTeam={reducerState.toTeam}
                 projectSelected={reducerState.selectedProject}
                 setProjectSelected={selectProjectHandler}
-                resetProject={projectResetHandler}/>}
+                resetProject={projectResetHandler} />}
         </DevContextProvider>
     );
 }

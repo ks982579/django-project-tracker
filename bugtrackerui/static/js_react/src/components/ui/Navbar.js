@@ -32,6 +32,7 @@ const Navbar = (props) => {
     }
 
     const teamClickHandler = () => {
+        props.teamClickHandler();
         console.info("Clicked 'Team' button.")
     }
 

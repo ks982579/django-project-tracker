@@ -21,7 +21,7 @@ const TaskView = (props) => {
             returnedJSX.push(<TaskDetails key={_efk.id} data={_efk}/>)
         }
     } catch(error) {
-        console.warn(error);
+        //console.warn(error);
     }
 
     const createTaskHandler = (newObj) => {

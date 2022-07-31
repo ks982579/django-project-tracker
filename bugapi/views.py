@@ -192,7 +192,7 @@ class TaskHandler(APIView):
         return None
 
     def looper(self, query_set, serializer, spaces=""):
-        print("Starting looper() method...")
+        #print("Starting looper() method...")
         #creating function-variable
         task_list = [] #instantiated this as parameter = messed everything up.
         # loops through query data structures
@@ -258,6 +258,7 @@ class TaskHandler(APIView):
         current_task = TaskModel.objects.get(pk=data.get('id'))
         # Removing 'id' from data so we don't try to update it.
         del data['id']
+        print(data['end_date'])
         for _key in req_keys:
             # If target has kids, it may send 'null' for percentComplete.
             if data.get(_key) == None:
@@ -326,15 +327,35 @@ class MessageHandler(APIView):
         current_message._body = request.data['body']
 
         # https://docs.djangoproject.com/en/4.0/topics/db/examples/many_to_many/
-        new_message = MessagesModel(
-            from_user = current_message._from,
-            subject = current_message._subject,
-            body = current_message._body
-        )
-        print(new_message)
-        #new_message.save()
-        #new_message.send_to.set(current_message._to)
-        return Response(data={'success': 'True'}, status=status.HTTP_201_CREATED)
+        # You have to .save() and then .set() or .add() many2many field
+        try:
+            print('1. Creating new message')
+            new_message = MessagesModel.objects.create(
+                from_user = current_message._from,
+                subject = current_message._subject,
+                body = current_message._body
+            )
+            print(f'NEW MESSAGE\n{new_message}\n{"-"*20}')
+
+            #new_message.save()
+            print(f'2. setting "send to" -> {current_message._to.username}')
+            new_message.send_to.add(current_message._to)
+
+            # Probably extract this eventually -> is this necessary?
+            print(f'3. Getting send\'s sudo account -> {current_message._from.username}')
+            sudo_sender = SudoUserModel.objects.get(user=current_message._from)
+            print(f'4. Storing message in send\'s outbox -> {sudo_sender}')
+            sudo_sender.outbox.add(new_message)
+
+            print(f'5. Getting receiver\'s sudo account -> {current_message._to.username}')
+            sudo_receiver = SudoUserModel.objects.get(user=current_message._to)
+            print(f'6. Storing message in receivers\'s outbox -> {sudo_receiver}')
+            sudo_receiver.inbox.add(new_message)
+            return Response(data={'success': 'True'}, status=status.HTTP_201_CREATED)
+
+        except Exception as exc:
+            print(f'FAILURE -> {exc}')
+            return Response(data={'success': 'False'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def put(self, request): #Perhaps for drafts - future?
         pass

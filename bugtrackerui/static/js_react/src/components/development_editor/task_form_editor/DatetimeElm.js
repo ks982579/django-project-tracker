@@ -27,6 +27,9 @@ const DatetimeElm = props => {
         // create Date Object
         const endDate = new Date(props.elmVal);
         // Get into nearly correct format
+        
+        endDate.setMinutes(endDate.getMinutes()-endDate.getTimezoneOffset());
+
         stringDate = endDate.toISOString();
 
         // Pop off the Z if it's there. It has been throwing off the preset...

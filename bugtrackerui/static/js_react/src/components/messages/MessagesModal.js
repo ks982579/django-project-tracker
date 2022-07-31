@@ -30,6 +30,11 @@ const ReadOverlay = props => {
      * props.content = {date, from, to, cc, subject, body} -> the 'Mail' object
      */
     const mail = props.content;
+
+    const replyHandler = event => {
+        props.cancelClick(event);
+        props.onReplyClick();
+    }
     return (
         <div className={styles.overlay}>
             <p>from: {mail.from}</p>
@@ -41,7 +46,7 @@ const ReadOverlay = props => {
                 </pre>
             </div>
             <div className={styles['button-row']}>
-                <input type="button" value="Reply" onClick={props.cancelClick} />
+                <input type="button" value="Reply" onClick={replyHandler} />
                 <input type="button" value="Close" onClick={props.cancelClick} />
             </div>
         </div>
@@ -61,6 +66,7 @@ const ReplyOverlay = props => {
         
     }
     //I think CC will be some complicated logic, multiple to's.
+    // perhaps the comma ',' could be listened for to determine if something should be stored.
     return (
         <div className={styles.overlay}>
             <form onSubmit={submitHandler}>
@@ -94,13 +100,18 @@ const ReplyOverlay = props => {
 const MessagesModal = props => {
     const writeMode = props.writeMode ? true : false;
     const contacts = props.contacts; //User's teamMembers;
+    const newMessage = props.newMessage; //function to set state of new message to True
+
+    const switchToWriteMode = () => {
+        
+    }
 
     const portaling = ((writeMode) => {
         console.log(`WriteMode: ${writeMode}`)
         if (writeMode) {
             return <ReplyOverlay cancelClick={props.overlayClick} contacts={contacts}/>
         } else {
-            return <ReadOverlay content={props.content} cancelClick={props.overlayClick} />
+            return <ReadOverlay content={props.content} cancelClick={props.overlayClick} onReplyClick={newMessage}/>
         }
     })(writeMode);
 
