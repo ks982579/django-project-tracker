@@ -35,7 +35,10 @@ class Convenience:
     def __init__(self):
         pass
 
+# ++++++++++++++++++++++++++++++
+# User Login and Logout
 # localhost:8000/api/auth/
+# ++++++++++++++++++++++++++++++
 class AuthenticateUser(APIView):
     """
     Posting username and password will attempt to login user.
@@ -60,7 +63,10 @@ class AuthenticateUser(APIView):
             return Response({'login': 'successful'},status=status.HTTP_200_OK)
         return Response({'login': 'unsuccessful'}, status=status.HTTP_400_BAD_REQUEST)
 
+# ++++++++++++++++++++++++++++++
+# Fetch and Edit User Information
 # localhost:8000/api/current-user/
+# ++++++++++++++++++++++++++++++
 class GetUserInfo(APIView):
     """
     retrieves user's information if logged in.
@@ -92,6 +98,60 @@ class GetUserInfo(APIView):
         return Response(data=serialized_user.data, status=status.HTTP_200_OK)
 # {"id": 1, "first_name": "Kevin", "last_name": "Sullivan", "username": "kevin_sullivan", "email": ""}
 
+# ++++++++++++++++++++++++++++++
+# Change / Update Password
+# I'm trying here
+# ++++++++++++++++++++++++++++++
+class PasswordChangeHandler(generics.UpdateAPIView):
+    """
+    This view simply defines put and patch for us to run the .update() and
+    .partial_update() functions
+    """
+    #https://www.django-rest-framework.org/api-guide/generic-views/#genericapiview
+    #queryset = User.objects.all()
+    serializer_class = UserSerializer
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, *args, **kwargs):
+        return Response(data={'Method': "PUT"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def patch(self, request, *args, **kwargs):
+        """
+        For updating the password, the serializer doesn't return that information.
+        So, updating it is a little more tricky.
+        request.data = {"old_password": String, "password1": String, "password2": String};
+        https://docs.djangoproject.com/en/4.0/ref/contrib/auth/#django.contrib.auth.models.User.password
+        """
+        password_input = request.data.get("old_password")
+        current_user = User.objects.get(pk=request.user.id)
+
+        # If the user entered their current password
+        if current_user.check_password(password_input):
+            print('Correct password')
+            pw1 = request.data.get("password1")
+            pw2 = request.data.get("password2")
+
+            if pw1 == pw2:
+                # If the passwords are the same
+                # Set new password. This method
+                current_user.set_password(pw1)
+                current_user.save()
+                return Response({"error": False}, status=status.HTTP_204_NO_CONTENT)
+            else:
+                return Response({"error": True, "reason": "New passwords did not match."}, status=status.HTTP_400_BAD_REQUEST)
+        # else, the user didn't enter their current password
+        else:
+            return Response({"error": True, "reason": "Incorrect password."}, status=status.HTTP_400_BAD_REQUEST)
+
+        serialized_user = UserSerializer(current_user, many=False)
+        return Response(data=serialized_user.data, status=status.HTTP_418_IM_A_TEAPOT)
+
+
+
+# ++++++++++++++++++++++++++++++
+# New User Creator
+# ++++++++++++++++++++++++++++++
 class SignupHandler(APIView):
     # https://docs.djangoproject.com/en/4.0/topics/auth/default/
     def post(self, request):

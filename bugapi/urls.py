@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import AuthenticateUser, GetUserInfo, SignupHandler, TaskHandler, NewProjectHandler, MessageHandler, TeamMembersView
+from .views import AuthenticateUser, GetUserInfo, SignupHandler, TaskHandler, NewProjectHandler, MessageHandler, TeamMembersView, PasswordChangeHandler
 from rest_framework.authtoken.views import obtain_auth_token
 
 # Git note
@@ -14,6 +14,7 @@ urlpatterns = [
     path('auth/', AuthenticateUser.as_view()),
     path('new-user/', SignupHandler.as_view()),
     path('current-user/', GetUserInfo.as_view()),
+    path('password-change-handler/', PasswordChangeHandler.as_view()),
     path('new-project-handler/', NewProjectHandler.as_view()),
     path('task-handler/',TaskHandler.as_view()),
     path('message-handler/',MessageHandler.as_view()),
