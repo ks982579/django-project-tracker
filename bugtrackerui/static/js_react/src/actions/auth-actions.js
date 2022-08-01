@@ -78,8 +78,8 @@ const AuthActions = {
 
         // TODO: Eventually REMOVE
         /* -------------------------------------- */
-        postObj.username = DummyDetails.un;
-        postObj.password = DummyDetails.pw;
+        // postObj.username = DummyDetails.un;
+        // postObj.password = DummyDetails.pw;
         /* -------------------------------------- */
 
         //Create RequestOptions object

@@ -1,6 +1,6 @@
 import React from "react";
 
-import styles from './ProfileInfo.module.css';
+import styles from './ProfileInfo.module.scss';
 
 // props.userInfo = {id:,first_name:,last_name:,username:,email:}
 const ProfileInfo = (props) => {

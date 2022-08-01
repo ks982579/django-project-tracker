@@ -5,6 +5,7 @@ import styles from './MessagesModal.module.scss';
 import AuthActions from "../../actions/auth-actions";
 import CookieMonster from "../CookieMonster";
 
+// extracting portal method
 const { createPortal } = ReactDOM;
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -103,7 +104,7 @@ const MessagesModal = props => {
     const newMessage = props.newMessage; //function to set state of new message to True
 
     const switchToWriteMode = () => {
-        
+        return null
     }
 
     const portaling = ((writeMode) => {
