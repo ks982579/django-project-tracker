@@ -200,6 +200,18 @@ const AuthActions = {
         return jsonRes;
     },
 
+    updatePassword: (rawFormData) => {
+        const formData = new FormData(rawFormData);
+        const dataObj = {
+            old_password: formData.get('oldPassword'),
+            password1: formData.get('password1'),
+            password2: formData.get('password2'),
+        }
+        const driver = RequestOptions.create('Patch', formData.get('csrftoken'), dataObj);
+        const jsonResponse = driver.call(`${DOMAIN}api/password-change-handler/`);
+        return jsonResponse;
+    },
+
     newProject: (rawFormData) => {
         //Extract Data from from
         const formData = new FormData(rawFormData);

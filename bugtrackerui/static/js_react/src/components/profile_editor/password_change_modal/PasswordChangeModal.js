@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
 import styles from './PasswordChangeModal.module.scss';
@@ -27,18 +27,30 @@ const Backdrop = props => {
 // Overlay
 // +++++++++++++++++++++++++++++++++++++++++++++++++++
 const PasswordOverlay = props => {
+    const [errorState, setErrorState] = useState({ error: false });
     const onSubmitClick = event => {
         event.stopPropagation();
         event.preventDefault();
-        console.log(event.target);
+        (async () => {
+            const apiResponse = await AuthActions.updatePassword(event.target)
+
+            console.log(apiResponse);
+            if (apiResponse.error) {
+                setErrorState(apiResponse);
+            } else {
+                props.closeForm();
+            }
+        })();
     }
+
     return (
         <div className={styles.overlay}>
-            <form onSubmit={onSubmitClick}>
+            {errorState.error && <p>{errorState.reason}</p>}
+            <form onSubmit={onSubmitClick} className={styles["password-change-form"]}>
                 <CookieMonster />
-                <input type="password" placeholder="Old password..." name="oldPassword"/>
-                <input type="password" placeholder="New password..." name="password1"/>
-                <input type="password" placeholder="Retype New password..." name="password2"/>
+                <input type="password" placeholder="Old password..." name="oldPassword" />
+                <input type="password" placeholder="New password..." name="password1" />
+                <input type="password" placeholder="Retype New password..." name="password2" />
                 <input type="submit" value="Save" />
                 <input type="button" value="Cancel" onClick={props.closeForm} />
             </form>
@@ -61,7 +73,7 @@ const PasswordChangeModal = props => {
                 document.getElementById('backdrop-root')
             )}
             {createPortal(
-                <PasswordOverlay closeForm={cancelChange}/>,
+                <PasswordOverlay closeForm={cancelChange} />,
                 document.getElementById('modal-root')
             )}
         </>

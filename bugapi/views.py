@@ -137,7 +137,9 @@ class PasswordChangeHandler(generics.UpdateAPIView):
                 # Set new password. This method
                 current_user.set_password(pw1)
                 current_user.save()
-                return Response({"error": False}, status=status.HTTP_204_NO_CONTENT)
+                login(request, current_user)
+                print("returning information.")
+                return Response(data={"error": False, "reason": "none"}, status=status.HTTP_200_OK)
             else:
                 return Response({"error": True, "reason": "New passwords did not match."}, status=status.HTTP_400_BAD_REQUEST)
         # else, the user didn't enter their current password
