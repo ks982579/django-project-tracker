@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-from core.secrets import SecretKey
+import core.secrets as my_secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = SecretKey
+SECRET_KEY = my_secrets.SecretKey
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -128,6 +128,14 @@ TIME_ZONE = 'GMT'
 USE_I18N = True
 
 USE_TZ = True
+
+# Email Backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = my_secrets.server
+EMAIL_PORT = my_secrets.SMTP_port
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = my_secrets.un
+EMAIL_HOST_PASSWORD = my_secrets.pw
 
 
 # Static files (CSS, JavaScript, Images)

@@ -150,7 +150,6 @@ class PasswordChangeHandler(generics.UpdateAPIView):
         return Response(data=serialized_user.data, status=status.HTTP_418_IM_A_TEAPOT)
 
 
-
 # ++++++++++++++++++++++++++++++
 # New User Creator
 # ++++++++++++++++++++++++++++++
