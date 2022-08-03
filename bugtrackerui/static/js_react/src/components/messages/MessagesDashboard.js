@@ -4,9 +4,13 @@ import AuthActions from "../../actions/auth-actions";
 import Card from "../ui/Card";
 import MessagesModal from "./MessagesModal";
 import MessagesNavbar from "./MessagesNavbar";
+import Mailbox from "./Mailbox";
+
+// Context
+import PostOffice, { DeliveryPerson } from "../store/post-office";
 
 class Mail {
-    constructor(pyObj){
+    constructor(pyObj) {
         this.key = pyObj.id;
         this.date = pyObj.sent_date;
         this.from = pyObj.from_user;
@@ -15,12 +19,12 @@ class Mail {
         this.subject = pyObj.subject;
         this.body = pyObj.body;
     }
-    static create(pyObj){
+    static create(pyObj) {
         return new Mail(pyObj);
     }
 }
 
-const Letter = (props) =>{
+const Letter = (props) => {
     const [displayLetter, setDisplayLetter] = useState(false);
     const letterClickHandler = (event, data) => {
         setDisplayLetter(true);
@@ -32,7 +36,7 @@ const Letter = (props) =>{
 
     return (
         <Card onClick={letterClickHandler} data={props.content}>
-            {displayLetter && <MessagesModal overlayClick={overlayClickHandler} content={props.content} newMessage={props.newMessage}/>}
+            {displayLetter && <MessagesModal overlayClick={overlayClickHandler} content={props.content} newMessage={props.newMessage} />}
             <h3>Letter</h3>
             <p>{props.content.from}</p>
             <p>{props.content.date}</p>
@@ -46,49 +50,19 @@ const MessagesDashboard = props => {
     const [newMessage, setNewMessage] = useState(false);
     const [teamMembers, setTeamMembers] = useState([])
 
-    useEffect(()=>{
-        (async()=>{
+    useEffect(() => {
+        (async () => {
             const members = await AuthActions.fetchTeamMembers();
             console.log(members)
             setTeamMembers(members);
         })();
-    },[]);
+    }, []);
 
     const createNewMessage = (event) => {
         setNewMessage(true);
     }
-
-    
-
     const cancelCreateMessage = event => {
         setNewMessage(false);
-    }
-
-    useEffect(() => {
-        let isSubscribed = true;
-        (async () => {
-            if (isSubscribed) {
-                const inbox = await AuthActions.fetchMessages();
-                if (Array.isArray(inbox)) {
-                    let _ary = [];
-                    for(let _em of inbox){
-                        _ary.push(Mail.create(_em));
-                    }
-                    setUserMail(_ary);
-                } else {
-                    console.warn(`Messages not array - Type = {${typeof inbox}}`);
-                }
-            } else {
-                console.log('Not Subscribed');
-            }
-        })();
-        return (() => isSubscribed = false);
-    }, [])
-
-    let mailbox = []
-
-    for(let _em of userMail){
-        mailbox.push(<Letter key={_em.key} content={_em} newMessage={createNewMessage}/>);
     }
 
     let lilStyle = {
@@ -99,9 +73,11 @@ const MessagesDashboard = props => {
     return (
         <Card>
             <p style={lilStyle}>&lt;Messages Dashboard/&gt;</p>
-            <MessagesNavbar onNewMessageClick={createNewMessage}/>
-            {mailbox}
-            {newMessage && <MessagesModal writeMode={newMessage} overlayClick={cancelCreateMessage} contacts={teamMembers}/>}
+            <DeliveryPerson>
+                <MessagesNavbar onNewMessageClick={createNewMessage} />
+                <Mailbox onReplyClick={createNewMessage}/>
+            </DeliveryPerson>
+            {newMessage && <MessagesModal writeMode={newMessage} overlayClick={cancelCreateMessage} contacts={teamMembers} />}
         </Card>
     );
 };
