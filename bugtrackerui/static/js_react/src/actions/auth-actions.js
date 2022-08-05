@@ -518,6 +518,24 @@ const AuthActions = {
         const jsonResponse = driver.call(`${DOMAIN}api/team-members-handler/`);
 
         return jsonResponse;
+    },
+    addTeamMember: (rawFormData) => {
+        console.log('beginning request')
+        const formData = new FormData(rawFormData);
+
+        // Validity
+        let reqName = formData.get("memberRequest").trim()
+
+        const payload = {
+            username: reqName,
+        }
+
+        // create Requestion
+        const driver = RequestOptions.create('POST',formData.get('csrftoken'),payload);
+        // Call API
+        const jsonResponse = driver.call(`${DOMAIN}api/team-members-handler/`);
+
+        return jsonResponse;
     }
 }
 

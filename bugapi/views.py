@@ -459,6 +459,8 @@ class TeamMembersView(APIView):
         return Response(data=searlized_team.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        pass
+        print(request.data)
+        return Response(data={"success": True}, status=status.HTTP_200_OK)
+
     def delete(self, request):
         pass
