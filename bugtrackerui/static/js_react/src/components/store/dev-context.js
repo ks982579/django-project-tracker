@@ -2,6 +2,8 @@ import React, { useState, useEffect, useReducer, cloneElement } from "react";
 
 import AuthActions from "../../actions/auth-actions";
 
+import Helpers from "../../helpers/helpers";
+
 const DevContext = React.createContext({
     projectData: [],
     setTopLevel: {},
@@ -89,10 +91,6 @@ const findTask = (taskID, taskTree) => {
     return null;
 }
 
-function deepCopy(objectToCopy){
-    return JSON.parse(JSON.stringify(objectToCopy));
-}
-
 export const DevContextProvider = (props) => {
     const [taskData, setTaskData] = useState([]);
     const [selectedProject, setSelectedProject] = useState(false);
@@ -134,7 +132,7 @@ export const DevContextProvider = (props) => {
         console.log("New Project Handler at work")
         setTaskData((prevState)=>{
             // Copy
-            const stateCopy = deepCopy(prevState)
+            const stateCopy = Helpers.deepCopy(prevState)
             
             //Perhaps Sorting by due date later...
             stateCopy.push(newProjectData);
@@ -163,6 +161,7 @@ export const DevContextProvider = (props) => {
             }
             // Update all Percentage Complete. 
             calcPC(stateCopy, selectedProject);
+            Helpers.graphSort(stateCopy, "end_date", "children");
             // Return updated Copied State!
             return stateCopy;
         });
@@ -176,7 +175,7 @@ export const DevContextProvider = (props) => {
          */
         setTaskData((prevState) => {
             //Making a Copy of state
-            let copyState = deepCopy(prevState);
+            let copyState = Helpers.deepCopy(prevState);
 
             // Get task -> Pointer to Memory Location?
             const foundTask = findTask(rawData.id, copyState);
@@ -195,6 +194,7 @@ export const DevContextProvider = (props) => {
 
             //updates percentages 
             copyState = calcPC(copyState, selectedProject);
+            Helpers.graphSort(copyState, "end_date", "children");
 
             //Return updated state
             return copyState;
@@ -203,7 +203,7 @@ export const DevContextProvider = (props) => {
 
     const deleteTaskHandler = (deleteID, parentID = null) => {
         setTaskData((prevState) => {
-            let copyState = deepCopy(prevState);
+            let copyState = Helpers.deepCopy(prevState);
             if(parentID === null){
                 // Exclude the state - Garbage collection should delete it
                 return copyState.filter(task => task.id != deleteID);
@@ -218,6 +218,7 @@ export const DevContextProvider = (props) => {
 
                 //updates percentages 
                 copyState = calcPC(copyState, selectedProject);
+                Helpers.graphSort(copyState, "end_date", "children");
 
                 return copyState;
             }
