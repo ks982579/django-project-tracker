@@ -12,6 +12,12 @@ from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+# Django Email
+# https://www.sitepoint.com/django-send-email/
+# https://docs.djangoproject.com/en/4.1/topics/email/
+from django.core.mail import send_mail
+from django.conf import settings
+
 # Other imports
 import json, math
 import smtplib
@@ -182,7 +188,29 @@ class SignupHandler(APIView):
             SudoUserModel.objects.create(user=new_user)
             login(request, new_user)
             serializedUser = UserSerializer(new_user)
+            self.send_welcome_letter(new_user)
             return Response(data=serializedUser.data, status=status.HTTP_201_CREATED)
+
+    @staticmethod
+    def send_welcome_letter(user):
+        subject = "Welcome to KSullDev's Project Tracker"
+        sender = settings.EMAIL_HOST_USER
+        receiver = [user.email]
+        content = f"""Welcome {user.username},
+
+Thanks for signing up for this Awesome Project Tracker! \
+We hope that you find it helpful during all of your software development projects. \
+The project is still a bit of a work-in-progress itself, so don't mind the bugs if you see any.
+
+Please feel free to provide feedback through the appropriate channels not yet provided on the website.
+
+Sincerely,
+KSullDev Team"""
+
+        send_mail(subject=subject,
+                  message=content,
+                  from_email=sender,
+                  recipient_list=receiver)
 
 
 class NewProjectHandler(generics.CreateAPIView):
