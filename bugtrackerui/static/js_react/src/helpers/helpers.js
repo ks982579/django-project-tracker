@@ -119,6 +119,21 @@ const biggerThan = (_list, _field, _currentPos, _checkedPos) => {
     // }
 }
 
+Helpers.insertionSort = (mixedList, field) => {
+    // Go thru list starting at second element
+    for(let _i = 1; _i < mixedList.length; _i++){
+        // If the current is less than previous value
+        if(mixedList[_i][field] < mixedList[_i-1][field]){
+            //Switch the values
+            [mixedList[_i], mixedList[_i-1]] = [mixedList[_i-1], mixedList[_i]];
+            //move index back to check previous values
+            _i = Math.max(0, _i-2);
+            // It will move up +1 at end of loop
+        }
+    }
+    console.log(mixedList)
+}
+
 // splice(index, #_to_remove, ...[insert]) out and then in
 Helpers.quickSort = (list, field, ascend=true) => {
     console.log('Testing...')
@@ -134,6 +149,7 @@ Helpers.quickSort = (list, field, ascend=true) => {
     return sortedGraph = 0;
 };
 
-Helpers.quickSort(mockData, 'date')
+//Helpers.quickSort(mockData, 'date')
+Helpers.insertionSort([{val: 5},{val: 6},{val: 2},{val: 3},{val: 1},{val: 0}], "val")
 
 //export default Helpers;
