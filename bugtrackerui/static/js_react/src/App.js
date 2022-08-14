@@ -9,24 +9,37 @@ import Dashboard from './components/projects/Dashboard';
 import AuthContext from './components/store/auth-context';
 import Greeting from './components/projects/Greeting';
 import { DevContextProvider } from './components/store/dev-context';
+import PasswordResetForm from './components/authent/password_reset/PasswordResetForm';
 
 let initReducerState = {
+    toSignup: false,
+    toLogin: false,
     toMessages: false,
     toEditProfile: false,
     isProjectSelected: false,
     toTeam: false,
+    toResetPassword: false,
     selectedProject: {},
 }
 const Actions = {
+    Signup: 'Signup',
+    Login: 'Login',
     Messages: 'Messages',
     Profile: 'Profile',
     Project: 'Project',
-    Reset: 'Reset',
+    ResetPassword: 'ResetPassword',
+    ResetAll: 'ResetAll',
     Team: 'Team',
 }
 
 const reducerFunction = (prevState, action) => {
     // clicking on a project comes with project info
+    if (action.type == Actions.Signup) {
+        return {...initReducerState, toSignup: true};
+    }
+    if (action.type == Actions.Login) {
+        return {...initReducerState, toLogin: true};
+    }
     if (action.type == Actions.Messages) {
         return {
             toMessages: true,
@@ -58,7 +71,10 @@ const reducerFunction = (prevState, action) => {
             toTeam: true,
         }
     }
-    if (action.type == Actions.Reset) {
+    if (action.type == Actions.ResetPassword) {
+        return {...initReducerState, toResetPassword: true};
+    }
+    if (action.type == Actions.ResetAll) {
         return initReducerState;
     }
     return prevState;
@@ -72,24 +88,22 @@ function App() {
 
     const [reducerState, dispatchFn] = useReducer(reducerFunction, initReducerState);
 
+    // Login Functions
     const loginYes = () => {
-        setWantsToLogin(true);
-        if (wantsToSignup) {
-            setWantsToSignup(false);
-        }
+        dispatchFn({type: Actions.Login})
     }
     const loginNo = () => {
-        setWantsToLogin(false);
+        dispatchFn({ type: Actions.ResetAll });
     }
+
+    // Signup functions
     const signupYes = () => {
-        setWantsToSignup(true);
-        if (wantsToLogin) {
-            setWantsToLogin(false);
-        }
+        dispatchFn({type: Actions.Signup})
     }
     const signupNo = () => {
-        setWantsToSignup(false);
+        dispatchFn({ type: Actions.ResetAll });
     }
+
     //Toggle Edit Profile
     const editProfileHandler = () => {
         if (!reducerState.toEditProfile) {
@@ -101,8 +115,12 @@ function App() {
         dispatchFn({ type: Actions.Project, payload: data });
     }
     const projectResetHandler = () => {
-        dispatchFn({ type: Actions.Reset });
+        dispatchFn({ type: Actions.ResetAll });
     }
+
+    const forgotPasswordHandler = () => {
+        dispatchFn({ type: Actions.ResetPassword })
+    };
 
     const checkMessages = () => {
         dispatchFn({ type: Actions.Messages })
@@ -122,8 +140,9 @@ function App() {
                 onMessagesClick={checkMessages}
                 onTeamClick={teamClickHandler}/>
             {!wantsToLogin && !wantsToSignup && !ctx.isLoggedIn && <Greeting />}
-            {wantsToLogin && !ctx.isLoggedIn && <LoginForm cancelClick={loginNo} />}
-            {wantsToSignup && !ctx.isLoggedIn && <SignupForm cancelClick={signupNo} />}
+            {reducerState.toLogin && !ctx.isLoggedIn && <LoginForm cancelClick={loginNo} forgotPassword={forgotPasswordHandler}/>}
+            {reducerState.toSignup && !ctx.isLoggedIn && <SignupForm cancelClick={signupNo} />}
+            {reducerState.toResetPassword && !ctx.isLoggedIn && <PasswordResetForm />}
             {ctx.isLoggedIn && <Dashboard
                 boolMessages={reducerState.toMessages}
                 boolProfile={reducerState.toEditProfile}

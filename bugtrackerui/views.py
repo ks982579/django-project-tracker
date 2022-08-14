@@ -14,6 +14,10 @@ def home_page(request):
     Context = {'react_file': the_react_file, 'style_file': the_style_file}
     return render(request, os.path.join('bugtrackerui','homepage.html'), Context)
 
+def password_reset_view(request):
+    Context = {}
+    return render(request, os.path.join('bugtrackerui','password_reset.html'), Context)
+
 
 def login_page(request):
     if request.method == "POST":

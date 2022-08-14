@@ -19,6 +19,8 @@ const LoginForm = (props) => {
     const ctx = useContext(AuthContext);
     const devCtx = useContext(DevContext);
 
+    const {forgotPassword} = props //This sets this form up
+
     const submitHandler = async (event) => {
         event.preventDefault()
         printout("<LoginForm> submitHandler")
@@ -46,6 +48,7 @@ const LoginForm = (props) => {
                         <input type='submit' value='Login' />
                         <input type='button' value='Cancel' onClick={props.cancelClick} />
                     </div>
+                    <input type="button" value="Forgot Password" onClick={forgotPassword}/>
                 </form>
             </div>
         </div>

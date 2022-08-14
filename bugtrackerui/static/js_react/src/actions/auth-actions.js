@@ -4,7 +4,17 @@
 */
 import DummyDetails from "./secrets";
 
-const DOMAIN = window.location.href;
+let DOMAIN = window.location.href;
+
+console.log(`href: ${window.location.href}`)
+console.log(`Port: ${window.location.port}`)
+console.log(`Test: ${typeof window.location.port}`)
+
+if(window.location.port == 3000) {
+    DOMAIN = "http://localhost:8000/";
+    console.log(`Domain set to: ${DOMAIN}`)
+}
+
 
 // There's actually a Request Class already. 
 // https://developer.mozilla.org/en-US/docs/Web/API/Request
