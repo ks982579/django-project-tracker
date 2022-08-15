@@ -12,6 +12,7 @@ def home_page(request):
     js_files = os.listdir(path=os.path.join(".", "bugtrackerui", "static", "js_react", "build", "static", "css"))
     the_style_file = [x for x in js_files if x.endswith('.css')][0]
     Context = {'react_file': the_react_file, 'style_file': the_style_file}
+    request.session.set_test_cookie()
     return render(request, os.path.join('bugtrackerui','homepage.html'), Context)
 
 def password_reset_view(request):

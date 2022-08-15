@@ -66,6 +66,13 @@ CORS_ALLOW_CREDENTIALS = True
 #     r'^/api/.*', #regular expressions
 # ]
 
+# https://stackoverflow.com/questions/63576338/django-check-cookiess-samesite-attribute
+# https://docs.djangoproject.com/en/4.1/ref/settings/#session-cookie-samesite
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [

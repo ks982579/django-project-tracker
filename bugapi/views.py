@@ -58,6 +58,10 @@ class AuthenticateUser(APIView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request):
+        if request.session.test_cookie_worked():
+            request.session.delete_test_cookie()
+        else:
+            return Response({'Test Cookie':'Failed'}, status=status.HTTP_412_PRECONDITION_FAILED)
         user_data = request.data
         UN = user_data['username']
         PW = user_data['password']

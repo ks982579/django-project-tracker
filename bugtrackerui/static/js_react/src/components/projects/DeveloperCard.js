@@ -14,6 +14,7 @@ const DeveloperCard = props => {
     //const [projectsData, setProjectsData] = useState([])
 
     const manageClickHandler = (event) => {
+        console.log(devctx);
         if(props.displayState){
             return
         } else {
