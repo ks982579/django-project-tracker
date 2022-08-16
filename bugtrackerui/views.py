@@ -1,9 +1,18 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
+from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth.models import User
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+#from rest_framework.generics import CreateAPIView
 
 import os
+
+from .helpers import *
 
 @ensure_csrf_cookie
 def home_page(request):
@@ -14,6 +23,25 @@ def home_page(request):
     Context = {'react_file': the_react_file, 'style_file': the_style_file}
     request.session.set_test_cookie()
     return render(request, os.path.join('bugtrackerui','homepage.html'), Context)
+
+# {"email":"ksullivanx23@outlook.com"}
+# Set for anoymous users but require CSRF token?
+class PasswordResetView(APIView):
+    def post(self, request):
+        print(request.data)
+        # if email is truthy
+        if(request.data['email']):
+            try:
+                current_user = User.objects.get(email=request.data['email'])
+                print(current_user)
+                Helpers.send_password_reset_email(current_user)
+            except Exception as err:
+                print(err)
+                return Response({'response': 'Email not in system'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'response':'Error'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'response':'ok'}, status=status.HTTP_200_OK)
+
 
 def password_reset_view(request):
     Context = {}

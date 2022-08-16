@@ -3,6 +3,6 @@ from .views import *
 
 urlpatterns = [
     path('', home_page, name="fake-home-page"),
-    path('login/', login_page, name="fake-login-page"),
+    path('password-reset/', PasswordResetView.as_view(), name="password-reset"),
     path('forgot-password/', password_reset_view, name="forgot-password-page"),
 ]
