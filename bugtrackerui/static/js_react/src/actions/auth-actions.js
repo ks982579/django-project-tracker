@@ -23,6 +23,7 @@ class RequestOptions {
         this.className = 'RequestOptions';
         this.purpose = "Create the options to pass into the fetch() API";
         this.method = method;
+        this.credentials = 'same-origin'; //'include'
         this.httpHeader = new Headers();
         this.httpHeader.append('Content-type', 'application/json');
         this.httpHeader.append('Accept', 'application/json');
@@ -37,6 +38,7 @@ class RequestOptions {
             return ({
                 method: this.method,
                 headers: this.httpHeader,
+                credentials: this.credentials,
                 body: JSON.stringify(this.payload),
             });
         } else {

@@ -68,10 +68,13 @@ CORS_ALLOW_CREDENTIALS = True
 
 # https://stackoverflow.com/questions/63576338/django-check-cookiess-samesite-attribute
 # https://docs.djangoproject.com/en/4.1/ref/settings/#session-cookie-samesite
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
+# https://testdriven.io/blog/django-spa-auth/
+#CSRF_COOKIE_SECURE = False #Only allows cookies sent over HTTPS
+#SESSION_COOKIE_SECURE = False
+#CSRF_COOKIE_SAMESITE = "None"#'Strict' #'None' -> prevents CSRF tokens from being sent to external requests.
+#SESSION_COOKIE_SAMESITE = "None"#'Strict'#'None'
+#CSRF_COOKIE_HTTPONLY = True # block client-side JS from accessing CSRF and Session Cookies
+#SESSION_COOKIE_HTTPONLY = True
 
 ROOT_URLCONF = 'core.urls'
 
