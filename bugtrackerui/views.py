@@ -34,7 +34,7 @@ class PasswordResetView(APIView):
             try:
                 current_user = User.objects.get(email=request.data['email'])
                 print(current_user)
-                Helpers.send_password_reset_email(current_user)
+                Helpers.send_password_reset_email(current_user, request)
             except Exception as err:
                 print(err)
                 return Response({'response': 'Email not in system'}, status=status.HTTP_400_BAD_REQUEST)
