@@ -12,8 +12,9 @@ from rest_framework import status
 #from rest_framework.generics import CreateAPIView
 
 import os
-
+import uuid
 from .helpers import *
+from .forms import *
 
 @ensure_csrf_cookie
 def home_page(request):
@@ -27,7 +28,7 @@ def home_page(request):
 
 # {"email":"ksullivanx23@outlook.com"}
 # Set for anoymous users but require CSRF token?
-class PasswordResetView(APIView):
+class PasswordResetEmailView(APIView):
     def post(self, request):
         print(request.data)
         # if email is truthy
@@ -47,6 +48,28 @@ class PasswordResetView(APIView):
         else:
             return Response({'response':'Error'}, status=status.HTTP_400_BAD_REQUEST)
         return Response({'response':'ok'}, status=status.HTTP_200_OK)
+
+class PasswordResetView(View):
+    template_name = os.path.join('bugtrackerui','password_reset.html')
+
+    def get(self, request, user_token: uuid.UUID):
+        context = {}
+        # If Token is valid - give form
+        if user_token:
+            pass
+        # Else - Link to homepage and suggest new token
+        return render(request, self.template_name, context=context)
+        pass
+    def post(self, request, user_token: uuid.UUID):
+        the_form = PasswordResetForm(request.POST)
+        if the_form.is_valid():
+            pw1 = the_form.cleaned_data['password1']
+            pw2 = the_form.cleaned_data['password2']
+            print(pw1, pw2)
+        else:
+            print('Not Valid...')
+            print(the_form)
+        return redirect("home-page")
 
 
 def password_reset_view(request):

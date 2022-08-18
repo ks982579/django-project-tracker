@@ -50,8 +50,6 @@ class Helpers:
         Then a template that takes in Token and resets user's password based on token
         Only renders template if toke IS NOT Expired
         If user requests a new token, delete old one first?
-
-
         :param user:
         :return:
         """
@@ -71,10 +69,10 @@ class Helpers:
         subject = "KSullDev Project Tracker - Forgotten Password"
         sender = settings.EMAIL_HOST_USER
         receiver = [user.email]
-        # email_status = send_mail(subject=subject,
-        #           message= cls.soupify(html_message),
-        #           from_email=sender,
-        #           recipient_list=receiver,
-        #           html_message=html_message)
-        # print(email_status)
+        email_status = send_mail(subject=subject,
+                  message= cls.soupify(html_message),
+                  from_email=sender,
+                  recipient_list=receiver,
+                  html_message=html_message)
+        print(email_status)
         return 0
