@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.sites.shortcuts import get_current_site
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.models import User
 
@@ -34,6 +35,11 @@ class PasswordResetView(APIView):
             try:
                 current_user = User.objects.get(email=request.data['email'])
                 print(current_user)
+                # print(request.META) -> Wow, the data in this!
+                print(request.scheme)
+                print(request.get_host())
+                # print(request.build_absolute_uri(location=''))
+
                 Helpers.send_password_reset_email(current_user, request)
             except Exception as err:
                 print(err)
