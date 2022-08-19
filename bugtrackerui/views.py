@@ -62,13 +62,23 @@ class PasswordResetView(View):
         pass
     def post(self, request, user_token: uuid.UUID):
         the_form = PasswordResetForm(request.POST)
+        print(request.POST)
+        print(the_form._errors)
         if the_form.is_valid():
+            """
+            I had an issue where the 'name' from the import wasn't the same as the Form, and so it wasn't validating.
+            """
+            # Also must destroy Token!
+            print("It's Valid!")
             pw1 = the_form.cleaned_data['password1']
             pw2 = the_form.cleaned_data['password2']
-            print(pw1, pw2)
+            if(pw1 == pw2):
+                print('They are equal')
+            else:
+                print(pw1, pw2)
         else:
             print('Not Valid...')
-            print(the_form)
+            #print(the_form)
         return redirect("home-page")
 
 
