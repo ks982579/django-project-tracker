@@ -14,15 +14,14 @@ class PasswordResetModel(models.Model):
     def is_valid(self):
         print(type(self.password_token_created))
         print(self.password_token_created)
-        expiry = self.password_token_created + timedelta(minutes=15)
+        expiry = self.password_token_created + timedelta(days=0, minutes=15)
         print(expiry)
         print(expiry.tzinfo)
         # https://www.jquery-az.com/python-datetime-now/
         #print(datetime.utcnow())
         #help(self.password_token_created)
-        print(datetime.now(tz=expiry.tzinfo))
-        print(datetime.now(tz=expiry.tzinfo) < expiry)
-        return True
+        # print(datetime.now(tz=expiry.tzinfo))
+        return datetime.now(tz=expiry.tzinfo) < expiry
 
     def __str__(self):
         user_string = str(self.user)

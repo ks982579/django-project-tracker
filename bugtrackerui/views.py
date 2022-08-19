@@ -53,22 +53,27 @@ class PasswordResetEmailView(APIView):
 class PasswordResetView(View):
     template_name = os.path.join('bugtrackerui','password_reset.html')
 
-    def get(self, request, user_token: uuid.UUID):
+    def get(self, request, user_token: str):
         context = {}
         # If Token is valid - give form
-        real_token = PasswordResetModel.tokens.get(password_token=user_token)
+        try:
+            uuid_token = uuid.UUID(user_token)
+            real_token = PasswordResetModel.tokens.get(password_token=uuid_token)
+        except PasswordResetModel.DoesNotExist as DNE:
+            return HttpResponse("<h1>Token does not Exist...</h1>")
+        except Exception as error:
+            return HttpResponse("<h1>Invalid Token Provided</h1>")
         print(real_token)
-        print(real_token.is_valid())
-        if user_token:
+
+        if real_token.is_valid():
             pass
+        else:
+            return HttpResponse("<h1>Token is Invalid/Expired</h1>")
         # Else - Link to homepage and suggest new token
         return render(request, self.template_name, context=context)
-        pass
 
     def post(self, request, user_token: uuid.UUID):
         the_form = PasswordResetForm(request.POST)
-        print(request.POST)
-        print(the_form._errors)
         if the_form.is_valid():
             """
             I had an issue where the 'name' from the import wasn't the same as the Form, and so it wasn't validating.
@@ -77,8 +82,15 @@ class PasswordResetView(View):
             print("It's Valid!")
             pw1 = the_form.cleaned_data['password1']
             pw2 = the_form.cleaned_data['password2']
+
+            # Are Passwords the same?
             if(pw1 == pw2):
                 print('They are equal')
+                #current_user.set_password(pw1)
+                #current_user.save()
+
+                # And here we would remove token
+                return HttpResponse("<h1>Password Updated</h1>")
             else:
                 print(pw1, pw2)
         else:
