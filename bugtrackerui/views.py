@@ -13,6 +13,7 @@ from rest_framework import status
 
 import os
 import uuid
+from .models import *
 from .helpers import *
 from .forms import *
 
@@ -55,11 +56,15 @@ class PasswordResetView(View):
     def get(self, request, user_token: uuid.UUID):
         context = {}
         # If Token is valid - give form
+        real_token = PasswordResetModel.tokens.get(password_token=user_token)
+        print(real_token)
+        print(real_token.is_valid())
         if user_token:
             pass
         # Else - Link to homepage and suggest new token
         return render(request, self.template_name, context=context)
         pass
+
     def post(self, request, user_token: uuid.UUID):
         the_form = PasswordResetForm(request.POST)
         print(request.POST)

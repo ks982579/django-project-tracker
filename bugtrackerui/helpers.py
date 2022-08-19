@@ -23,12 +23,12 @@ class Helpers:
         Model.objects.get_or_create() didn't work because of timestamp.
         """
         try:
-            old_token = PasswordResetModel.objects.get(user=user)
+            old_token = PasswordResetModel.tokens.get(user=user)
             old_token.delete()
         except PasswordResetModel.DoesNotExist as DNE:
             print(DNE)
             pass
-        new_token = PasswordResetModel.objects.create(user=user)
+        new_token = PasswordResetModel.tokens.create(user=user)
         return new_token
 
     @staticmethod
