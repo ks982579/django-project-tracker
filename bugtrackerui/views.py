@@ -14,7 +14,7 @@ from rest_framework import status
 import os
 import uuid
 from .models import *
-from .helpers import *
+from .helpers import Helpers
 from .forms import *
 
 @ensure_csrf_cookie

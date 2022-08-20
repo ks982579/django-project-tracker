@@ -8,9 +8,37 @@ from django.contrib.auth.models import User
 
 # https://pypi.org/project/beautifulsoup4/
 from bs4 import BeautifulSoup
-import http
+from html.parser import HTMLParser
 
 from .models import *
+
+
+class CustomHTMLParser(HTMLParser):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.__prepend = {}
+        self.__postpend = {}
+        self.__message = []
+
+    def convert(self, html: str):
+        return self.feed(html)
+
+    def handle_starttag(self, tag: str, attrs: list) -> None:
+        print(f'Start tag: {tag}')
+        return super().handle_starttag(tag, attrs)
+
+    def handle_data(self, data: str) -> None:
+        data.strip('\t\n ')
+        return super().handle_data(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        print(f'End: {tag}')
+        return super().handle_endtag(tag)
+
+    def handle_startendtag(self, tag: str, attrs: list) -> None:
+        print(f'Start/End: {tag}')
+        return super().handle_startendtag(tag, attrs)
+
 
 class Helpers:
     @classmethod
