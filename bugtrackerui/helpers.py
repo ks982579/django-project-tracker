@@ -19,29 +19,53 @@ class CustomHTMLParser(HTMLParser):
         self.__prepend = {}
         self.__postpend = {}
         self.__message = []
+        self.__tags = []
 
     def convert(self, html: str):
         html_string = ''
-        for each_line in html.split('\n'):
+        _lines = len(html.split('\n'))
+        for index, each_line in enumerate(html.split('\n')):
             each_line = each_line.strip('\t\n ')
-            html_string += each_line
+            if index < _lines - 1:
+                html_string += each_line
+            else:
+                html_string += each_line
         print(html_string)
         return self.feed(html_string)
 
     def handle_starttag(self, tag: str, attrs: list) -> None:
+        # Set current Tag
+        self.__tags.append(tag)
         # if we have a prepend rule, append to message
         if self.__prepend.get(tag, None) != None:
             self.__message.append(self.__prepend.get(tag))
+        if tag == 'a':
+            # attrs: list[tuples]
+            quickionary = dict(attrs)  # {x[0]: x[1] for x in attrs}
+            if quickionary.get('href', None) != None:
+                self.__message.append(quickionary.get('href'))
 
     def handle_data(self, data: str) -> None:
-        self.__message.append(data)
+        # Add data to message IIF it's not an <a>... for that we add href
+        print(self.__tags)
+        if self.__tags[-1] == 'a':
+            pass
+        else:
+            self.__message.append(data.replace('.', '. '))
+        # return super().handle_data(data)
 
     def handle_endtag(self, tag: str) -> None:
+        # print(f'End: {tag}')
         # if we have a prepend rule, append to message
         if self.__postpend.get(tag, None) != None:
             self.__message.append(self.__postpend.get(tag))
+        if self.__tags[-1] == tag:
+            self.__tags.pop()
+        else:
+            raise TypeError(f'HTML Syntax Error: </{tag}>')
 
     def handle_startendtag(self, tag: str, attrs: list) -> None:
+        # print(f'Start/End: {tag}')
         if tag == 'br':
             self.__message.append('\n')
 
