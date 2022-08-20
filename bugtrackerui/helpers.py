@@ -21,23 +21,47 @@ class CustomHTMLParser(HTMLParser):
         self.__message = []
 
     def convert(self, html: str):
-        return self.feed(html)
+        html_string = ''
+        for each_line in html.split('\n'):
+            each_line = each_line.strip('\t\n ')
+            html_string += each_line
+        print(html_string)
+        return self.feed(html_string)
 
     def handle_starttag(self, tag: str, attrs: list) -> None:
-        print(f'Start tag: {tag}')
-        return super().handle_starttag(tag, attrs)
+        # if we have a prepend rule, append to message
+        if self.__prepend.get(tag, None) != None:
+            self.__message.append(self.__prepend.get(tag))
 
     def handle_data(self, data: str) -> None:
-        data.strip('\t\n ')
-        return super().handle_data(data)
+        self.__message.append(data)
 
     def handle_endtag(self, tag: str) -> None:
-        print(f'End: {tag}')
-        return super().handle_endtag(tag)
+        # if we have a prepend rule, append to message
+        if self.__postpend.get(tag, None) != None:
+            self.__message.append(self.__postpend.get(tag))
 
     def handle_startendtag(self, tag: str, attrs: list) -> None:
-        print(f'Start/End: {tag}')
-        return super().handle_startendtag(tag, attrs)
+        if tag == 'br':
+            self.__message.append('\n')
+
+    def add_prepend_rule(self, tag: str, rule: str):
+        try:
+            self.__prepend[tag] = rule
+        except Exception as error:
+            print(f'Could not add rule: {error}')
+
+    def add_postpend_rule(self, tag: str, rule: str):
+        try:
+            self.__postpend[tag] = rule
+        except Exception as error:
+            print(f'Could not add rule: {error}')
+
+    @property
+    def message(self):
+        for efk in self.__message:
+            print(efk)
+        return ''.join(self.__message)
 
 
 class Helpers:
