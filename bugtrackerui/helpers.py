@@ -7,7 +7,7 @@ from django.template import Template, loader
 from django.contrib.auth.models import User
 
 # https://pypi.org/project/beautifulsoup4/
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 
 from .models import *
@@ -30,7 +30,6 @@ class CustomHTMLParser(HTMLParser):
                 html_string += each_line
             else:
                 html_string += each_line
-        print(html_string)
         return self.feed(html_string)
 
     def handle_starttag(self, tag: str, attrs: list) -> None:
@@ -47,7 +46,6 @@ class CustomHTMLParser(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         # Add data to message IIF it's not an <a>... for that we add href
-        print(self.__tags)
         if self.__tags[-1] == 'a':
             pass
         else:
@@ -83,8 +81,6 @@ class CustomHTMLParser(HTMLParser):
 
     @property
     def message(self):
-        for efk in self.__message:
-            print(efk)
         return ''.join(self.__message)
 
 
@@ -111,13 +107,15 @@ class Helpers:
     def soupify(html_package):
         """
         HTML into Text
-        It doesn't remove \n or \t inside of message.
-        perhaps a custom parser one day?
+        Beautiful Soup relacement is here!!
         :param html_package:
         :return:
         """
-        soup = BeautifulSoup(html_package, features="html.parser")
-        return soup.get_text()
+        soup = CustomHTMLParser()
+        soup.add_prepend_rule('a', ' ')
+        soup.add_postpend_rule('p', '\n\n')
+        soup.convert(html_package)
+        return soup.message
 
     @classmethod
     def send_password_reset_email(cls, user: User, request: HttpRequest):
@@ -145,6 +143,7 @@ class Helpers:
         subject = "KSullDev Project Tracker - Forgotten Password"
         sender = settings.EMAIL_HOST_USER
         receiver = [user.email]
+
         email_status = send_mail(subject=subject,
                   message= cls.soupify(html_message),
                   from_email=sender,
