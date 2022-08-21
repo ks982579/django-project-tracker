@@ -14,7 +14,7 @@ class PasswordResetModel(models.Model):
     def is_valid(self):
         print(type(self.password_token_created))
         print(self.password_token_created)
-        expiry = self.password_token_created + timedelta(days=0, minutes=15)
+        expiry = self.password_token_created + timedelta(days=30, minutes=15)
         print(expiry)
         print(expiry.tzinfo)
         # https://www.jquery-az.com/python-datetime-now/

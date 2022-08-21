@@ -53,18 +53,33 @@ class PasswordResetEmailView(APIView):
 class PasswordResetView(View):
     template_name = os.path.join('bugtrackerui','password_reset.html')
 
+    @staticmethod
+    def check_token(user_token):
+        state = False
+        _return = {}
+        try:
+            uuid_token = uuid.UUID(user_token)
+            _return['payload'] = PasswordResetModel.tokens.get(password_token=uuid_token)
+            state = True
+        except PasswordResetModel.DoesNotExist as DNE:
+            _return['http_response'] = HttpResponse("<h1>Token does not Exist...</h1>")
+        except Exception as error:
+            _return['http_response'] = HttpResponse("<h1>Invalid Token Provided</h1>")
+        _return['status'] = state
+        return _return
+
     def get(self, request, user_token: str):
         context = {}
         # If Token is valid - give form
-        try:
-            uuid_token = uuid.UUID(user_token)
-            real_token = PasswordResetModel.tokens.get(password_token=uuid_token)
-        except PasswordResetModel.DoesNotExist as DNE:
-            return HttpResponse("<h1>Token does not Exist...</h1>")
-        except Exception as error:
-            return HttpResponse("<h1>Invalid Token Provided</h1>")
-        print(real_token)
+        _results = self.check_token(user_token)
+        print(_results['status'])
+        if not _results["status"]:
+            # if token failed the check, return an HTTP response here
+            return _results['http_response']
 
+        real_token = _results['payload']
+
+        # Check Token Expiry
         if real_token.is_valid():
             pass
         else:
@@ -72,7 +87,18 @@ class PasswordResetView(View):
         # Else - Link to homepage and suggest new token
         return render(request, self.template_name, context=context)
 
-    def post(self, request, user_token: uuid.UUID):
+    def post(self, request, user_token: str):
+        # Make sure Token is still OK
+        _results = self.check_token(user_token)
+        if not _results["status"]:
+            # if token failed the check, return an HTTP response here
+            return _results['http_response']
+
+        real_token = _results['payload']
+        print(type(real_token.user))
+        print(real_token.user)
+        current_user = real_token.user
+
         the_form = PasswordResetForm(request.POST)
         if the_form.is_valid():
             """
@@ -84,19 +110,24 @@ class PasswordResetView(View):
             pw2 = the_form.cleaned_data['password2']
 
             # Are Passwords the same?
-            if(pw1 == pw2):
+            if(pw1 == pw2 and len(pw1) > 1):
                 print('They are equal')
-                #current_user.set_password(pw1)
-                #current_user.save()
-
+                current_user.set_password(pw1)
+                try:
+                    current_user.save()
+                except:
+                    return HttpResponse('<h1>Error 500: Internal Server Error</h1>')
                 # And here we would remove token
-                return HttpResponse("<h1>Password Updated</h1>")
+                real_token.delete()
+                return HttpResponse('<h1>Password Updated</h1><a href="#">Try it out!</a>')
             else:
                 print(pw1, pw2)
+                return HttpResponse('<h1>Passwords did not match</h1>')
         else:
             print('Not Valid...')
             #print(the_form)
-        return redirect("home-page")
+            return HttpResponse('<h1>Form was invalid</h1>')
+        return HttpResponse('<h1>Something went wrong!</h1>') #redirect("home-page")
 
 
 def password_reset_view(request):
