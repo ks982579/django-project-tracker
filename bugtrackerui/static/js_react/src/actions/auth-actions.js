@@ -18,7 +18,7 @@ if(window.location.port == 3000) {
 
 // There's actually a Request Class already. 
 // https://developer.mozilla.org/en-US/docs/Web/API/Request
-class RequestOptions {
+export class RequestOptions {
     constructor(method = "GET", csrftoken = null, body = null) {
         this.className = 'RequestOptions';
         this.purpose = "Create the options to pass into the fetch() API";
@@ -51,6 +51,7 @@ class RequestOptions {
     static create(method = "GET", csrftoken = null, body = null){
         return new RequestOptions(method, csrftoken, body);
     }
+    
     call(fullDomain){
         const jsonRes = fetch(fullDomain, this.options)
             .then(response => {
