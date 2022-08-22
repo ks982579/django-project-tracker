@@ -21,7 +21,12 @@ const TeamMembersNavBar = props => {
         event.stopPropagation();
         event.preventDefault();
         console.log("Searching for Frie-... Team Member");
-
+        /**
+         * Search for team member. 
+         * if they exist, send them a message.
+         * if not, show an error {sticky/fixed}
+         * Maybe animate coming up from the bottom, and sinking back down. 
+         */
         (async (rawFormData) => {
             console.log('passing info to helper')
             // passing form data into helper function to call API

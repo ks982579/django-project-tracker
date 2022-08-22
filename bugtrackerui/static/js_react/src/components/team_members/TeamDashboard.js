@@ -5,6 +5,9 @@ import AuthActions from "../../actions/auth-actions";
 import Card from "../ui/Card";
 import TeamMembersNavBar from "./TeamMembersNavBar";
 
+// Get Sassy
+import sassy from './TeamDashboard.module.scss';
+
 const TeamDashboard = () => {
     const [members, setMembers] = useState([]);
 
@@ -18,7 +21,12 @@ const TeamDashboard = () => {
     let membersList = []
     for (let _efk of members) {
         console.log(_efk.username)
-        membersList.push(<Card>{_efk.username}</Card>)
+        membersList.push(
+            <Card className={sassy['membership-card']}>
+                {_efk.username}
+                <input type='button' name='delete' value='Delete?'/>
+            </Card>
+        )
     }
 
     return (
