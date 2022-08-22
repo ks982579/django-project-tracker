@@ -492,6 +492,15 @@ class TeamMembersView(APIView):
 
     def post(self, request):
         print(request.data)
+        sudo_user = SudoUserModel.objects.get(user=request.user)
+        print(sudo_user)
+        try:
+            requested_user = User.objects.get(username=request.data.get('username'))
+        except:
+            return Response(data={"success": False}, status=status.HTTP_404_NOT_FOUND)
+        print(sudo_user.team_members)
+        if requested_user in list(sudo_user.team_members):
+            print('already a Team Member')
         return Response(data={"success": True}, status=status.HTTP_200_OK)
 
     def delete(self, request):
