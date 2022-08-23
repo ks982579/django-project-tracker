@@ -69,6 +69,8 @@ class SudoUserModel(models.Model):
     draftbox = models.ManyToManyField(MessagesModel, related_name='draftbox', blank=True)
     # Team Members
     team_members = models.ManyToManyField(User, related_name='team_members', blank=True)
+    requested_by = models.ManyToManyField(User, related_name='requested_by_set', blank=True)
+    requesting = models.ManyToManyField(User, related_name='requesting_set', blank=True)
 
     def __str__(self):
         return f'SudoUser: {self.user.username}'

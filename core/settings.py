@@ -76,6 +76,23 @@ CORS_ALLOW_CREDENTIALS = True
 #CSRF_COOKIE_HTTPONLY = True # block client-side JS from accessing CSRF and Session Cookies
 #SESSION_COOKIE_HTTPONLY = True
 
+## https://stackoverflow.com/questions/62947329/session-not-storing-on-browser-in-django
+SESSION_ENGINE = "django.contrib.sessions.backends.signed_cookies"
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_NAME = "sessioninfo"
+SESSION_COOKIE_SAMESITE = 'None'
+
+# CORS_ORIGIN_WHITELIST = [ "http://localhost:5000" ]
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+#CORS_ALLOW_METHODS = ["GET","POST"]
+#CORS_ALLOW_HEADERS = [ "accept", "accept-encoding", "authorization", "content-type", "dnt", "origin", "user-agent", "x-csrftoken", "x-requested-with" ]
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = True
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [

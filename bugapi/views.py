@@ -58,10 +58,10 @@ class AuthenticateUser(APIView):
 
     @method_decorator(requires_csrf_token)
     def post(self, request):
-        if request.session.test_cookie_worked():
-            request.session.delete_test_cookie()
-        else:
-            return Response({'Test Cookie':'Failed'}, status=status.HTTP_412_PRECONDITION_FAILED)
+        # if request.session.test_cookie_worked():
+        #     request.session.delete_test_cookie()
+        # else:
+        #     return Response({'Test Cookie':'Failed'}, status=status.HTTP_412_PRECONDITION_FAILED)
         user_data = request.data
         UN = user_data['username']
         PW = user_data['password']
@@ -487,20 +487,22 @@ class TeamMembersView(APIView):
         :return DRF.Response = json:
         """
         sudo_user = SudoUser(request.user.id)
+        print(sudo_user.team)
+        print(request.user.requested_by.all())
         searlized_team = UserSerializer(sudo_user.team, many=True)
         return Response(data=searlized_team.data, status=status.HTTP_200_OK)
 
     def post(self, request):
-        print(request.data)
-        sudo_user = SudoUserModel.objects.get(user=request.user)
-        print(sudo_user)
+        # Getting requested team member
         try:
             requested_user = User.objects.get(username=request.data.get('username'))
         except:
             return Response(data={"success": False}, status=status.HTTP_404_NOT_FOUND)
-        print(sudo_user.team_members)
-        if requested_user in list(sudo_user.team_members):
+        # If already linked
+        if requested_user in request.user.team_members.all():
             print('already a Team Member')
+        else:
+            print("Send Request")
         return Response(data={"success": True}, status=status.HTTP_200_OK)
 
     def delete(self, request):
