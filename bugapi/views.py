@@ -24,7 +24,7 @@ import smtplib
 
 # Custom Imports
 from .models import TaskModel, MessagesModel, SudoUserModel
-from .serializers import UserSerializer, TaskSerializer, MessagesSerializer
+from .serializers import UserSerializer, TaskSerializer, MessagesSerializer, SudoUserSerializer
 
 
 # https://www.django-rest-framework.org/api-guide/generic-views/
@@ -478,6 +478,8 @@ class SudoUser:
     def __init__(self, user_id):
         self.sudo = SudoUserModel.objects.get(user=User.objects.get(pk=user_id))
         self.team = self.sudo.team_members.all()
+        self.requested = self.sudo.requested_by.all()
+        self.requesting = self.sudo.requesting.all()
 
 class TeamMembersView(APIView):
     def get(self, request):
@@ -486,11 +488,25 @@ class TeamMembersView(APIView):
         :param request:
         :return DRF.Response = json:
         """
+        # print(type(request.user)) -> django.utils.functional.SimpleLazyObject
         sudo_user = SudoUser(request.user.id)
-        print(sudo_user.team)
-        print(request.user.requested_by.all())
+        # You can't Serialize lazy objects easily
+
         searlized_team = UserSerializer(sudo_user.team, many=True)
-        return Response(data=searlized_team.data, status=status.HTTP_200_OK)
+
+        searlized_requested_by = UserSerializer(sudo_user.requested, many=True)
+
+        searlized_requesting = UserSerializer(sudo_user.requesting, many=True)
+
+        try:
+            serialized_response = {
+                'team': searlized_team.data,
+                'requested_by': searlized_requested_by.data,
+                'requesting': searlized_requesting.data,
+            }
+        except Exception as error:
+            return Response(data={'status': 'error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(data=serialized_response, status=status.HTTP_200_OK)
 
     def post(self, request):
         # Getting requested team member
