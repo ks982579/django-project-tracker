@@ -74,3 +74,5 @@ class SudoUserModel(models.Model):
 
     def __str__(self):
         return f'SudoUser: {self.user.username}'
+
+# Do I need a TeamMemberRequest Table to track requests?

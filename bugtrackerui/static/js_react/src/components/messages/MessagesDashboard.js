@@ -54,7 +54,7 @@ const MessagesDashboard = props => {
         (async () => {
             const members = await AuthActions.fetchTeamMembers();
             console.log(members)
-            setTeamMembers(members);
+            setTeamMembers(members.team);
         })();
     }, []);
 

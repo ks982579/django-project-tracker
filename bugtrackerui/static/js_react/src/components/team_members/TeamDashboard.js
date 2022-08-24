@@ -11,6 +11,9 @@ import sassy from './TeamDashboard.module.scss';
 
 /**
  * Generic reusable team member component
+ * Thinking of having 3 objects with similar properties.
+ * Could create a class and throw it in helpers
+ * Should we be able to see if a request was rejected? 
  */
 
 const TeamDashboard = () => {
@@ -43,6 +46,25 @@ const TeamDashboard = () => {
             );
         };
     };
+
+    const requestedByJSX = (
+        <Card>
+            <h3>Requests Received</h3>
+            {requestedBy}
+        </Card>
+    );
+    const requestingJSX = (
+        <Card>
+            <h3>Requests Sent</h3>
+            {requesting}
+        </Card>
+    );
+    const membersListJSX = (
+        <Card>
+            <h3>Current Team Members</h3>
+            {membersList}
+        </Card>
+    );
 
     return (
         <div>
