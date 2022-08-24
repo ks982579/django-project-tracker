@@ -25,6 +25,8 @@ const TeamDashboard = () => {
     }, []);
 
     let membersList = [];
+    let requestedBy = [];
+    let requesting = [];
     console.log('About to run through members');
     console.log(`${JSON.stringify(members)}`);
     console.log(`Members length = ${Object.keys(members).length}`);
