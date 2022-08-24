@@ -4,30 +4,43 @@ import AuthActions from "../../actions/auth-actions";
 // Import components
 import Card from "../ui/Card";
 import TeamMembersNavBar from "./TeamMembersNavBar";
+import Members from "./member_components/Members";
 
 // Get Sassy
 import sassy from './TeamDashboard.module.scss';
 
+/**
+ * Generic reusable team member component
+ */
+
 const TeamDashboard = () => {
-    const [members, setMembers] = useState([]);
+    const [members, setMembers] = useState({});
 
     useEffect(() => {
         (async () => {
             const apiResponse = await AuthActions.fetchTeamMembers();
+            // {requested_by, requesting, team}
             setMembers(apiResponse);
         })();
     }, []);
 
-    let membersList = []
-    for (let _efk of members) {
-        console.log(_efk.username)
-        membersList.push(
-            <Card className={sassy['membership-card']}>
-                {_efk.username}
-                <input type='button' name='delete' value='Delete?'/>
-            </Card>
-        )
-    }
+    let membersList = [];
+    console.log('About to run through members');
+    console.log(`${JSON.stringify(members)}`);
+    console.log(`Members length = ${Object.keys(members).length}`);
+    
+    // Check if data has been obtained yet
+    if(Object.keys(members).length > 0){
+        for (let _efk of members.team) {
+            console.log(_efk.username)
+            membersList.push(
+                <Card className={sassy['membership-card']}>
+                    {_efk.username}
+                    <input type='button' name='delete' value='Delete?'/>
+                </Card>
+            );
+        };
+    };
 
     return (
         <div>
