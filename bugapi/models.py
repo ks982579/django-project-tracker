@@ -76,3 +76,8 @@ class SudoUserModel(models.Model):
         return f'SudoUser: {self.user.username}'
 
 # Do I need a TeamMemberRequest Table to track requests?
+class MemberRequestModel(models.Model):
+    sent_by = models.OneToOneField(User, on_delete=models.CASCADE, related_name='sent_by_set')
+    sent_to = models.OneToOneField(User, on_delete=models.CASCADE, related_name='sent_to_set')
+    accepted = models.BooleanField(default=False)
+    rejected = models.BooleanField(default=False)
